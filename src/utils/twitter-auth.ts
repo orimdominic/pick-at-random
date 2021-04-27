@@ -1,6 +1,6 @@
 require("./config");
 import crypto from "crypto";
-const OAuth = require("oauth-1.0a");
+import OAuth from "oauth-1.0a";
 
 export const consumer = {
   key: process.env.TWITTER_CONSUMER_KEY as string,
@@ -14,7 +14,7 @@ export const token = {
 
 export const bearer = process.env.TWITTER_BEARER_TOKEN as string;
 
-export const twitterOAuth = OAuth({
+export const twitterOAuth = new OAuth({
   consumer: {
     key: process.env.TWITTER_CONSUMER_KEY as string,
     secret: process.env.TWITTER_CONSUMER_SECRET as string,
