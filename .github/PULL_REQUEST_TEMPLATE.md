@@ -3,9 +3,11 @@
 Include a summary of the change and which issue is fixed (if there is any).
 Also include relevant motivation and context.
 
-List any dependencies that were added for this change to be implemented.
-
 Fixes #(IssueNumber)
+
+### Points worth noting
+
+Include information to note before merging this PR.
 
 ### Type of change
 
