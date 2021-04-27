@@ -2,10 +2,10 @@
  * @fileoverview
  * Sample test for Travis
  */
-import {add} from "./"
+import { add } from "./";
 
 describe("add", () => {
   it("should return the correct additive value of two integers", () => {
-    expect(add(1,10)).toBe(11)
-  })
-})
+    expect(add(1, 10)).toBe(11);
+  });
+});
