@@ -1,13 +1,22 @@
 {
   "name": "pick-at-random",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Pick Twitter users at random",
   "license": "MIT",
   "scripts": {
     "format": "prettier --write ./src",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test": "NODE_ENV=test jest",
+    "test:watch": "NODE_ENV=test jest --watch --verbose true",
+    "lint": "eslint ./src",
+    "prettier:check": "prettier --check ./src",
+    "sanity-check": "yarn prettier:check && yarn lint && yarn test",
+    "cleanup": "rm -rf build",
+    "prebuild": "yarn cleanup",
+    "build": "tsc --sourceMap false --declaration false -p ./"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.22",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.12.1",
@@ -18,7 +27,11 @@
     "jest": "^26.6.3",
     "nodemon": "^2.0.7",
     "prettier": "^2.2.1",
+    "ts-jest": "^26.5.3",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0"
   }
 }
