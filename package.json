@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "Pick Twitter users at random",
   "license": "MIT",
+  "engines": {
+    "node": ">=12.x",
+    "yarn": "1.x.x"
+  },
   "scripts": {
     "format": "prettier --write ./src",
     "format:check": "prettier --check .",
