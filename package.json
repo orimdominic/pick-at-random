@@ -17,7 +17,8 @@
     "cleanup": "rm -rf build",
     "prebuild:prod": "yarn cleanup && yarn sanity-check",
     "build:prod": "tsc --sourceMap false --declaration false -p ./",
-    "dev:twitter-webhook": "vercel dev"
+    "dev:twitter-webhook": "vercel dev",
+    "register-webhook": "NODE_ENV=development ts-node src/bin/register-webhook"
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",
