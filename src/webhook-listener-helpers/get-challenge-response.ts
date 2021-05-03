@@ -1,4 +1,4 @@
-const { createHmac } = require("crypto");
+import { createHmac } from "crypto";
 
 /**
  * Creates and returns the required challenge response from
@@ -10,7 +10,7 @@ export function getChallengeResponse(crcToken: string): string | null {
   if (!crcToken) {
     return null;
   }
-  const consumerSecret = process.env.TWITTER_CONSUMER_SECRET;
+  const consumerSecret = process.env.TWITTER_CONSUMER_SECRET as string;
   return `sha256=${createHmac("sha256", consumerSecret)
     .update(crcToken)
     .digest("base64")}`;

@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import httpStatusCode, { getReasonPhrase } from "http-status-codes";
+import { StatusCodes, getReasonPhrase } from "http-status-codes";
 import { getChallengeResponse } from "../src/webhook-listener-helpers";
 
 module.exports = async (req: VercelRequest, res: VercelResponse) => {
@@ -13,13 +13,14 @@ module.exports = async (req: VercelRequest, res: VercelResponse) => {
         });
       }
       res
-        .status(httpStatusCode.BAD_REQUEST)
-        .send(getReasonPhrase(httpStatusCode.BAD_REQUEST));
+        .status(StatusCodes.BAD_REQUEST)
+        .send(getReasonPhrase(StatusCodes.BAD_REQUEST));
+      return;
     }
     default:
       res
-        .status(httpStatusCode.METHOD_NOT_ALLOWED)
-        .send(getReasonPhrase(httpStatusCode.METHOD_NOT_ALLOWED));
+        .status(StatusCodes.METHOD_NOT_ALLOWED)
+        .send(getReasonPhrase(StatusCodes.METHOD_NOT_ALLOWED));
       break;
   }
 };
