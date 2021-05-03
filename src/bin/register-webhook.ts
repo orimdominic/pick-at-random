@@ -1,3 +1,10 @@
+/**
+ * The contents of this file run via the `yarn register-webhook`
+ * script.
+ * Running this file activates a CRC check from Twitter for
+ * the validation of a webhook URL for registration
+ */
+
 import * as readline from "readline";
 const rl = readline.createInterface(process.stdin, process.stdout);
 import * as util from "util";
