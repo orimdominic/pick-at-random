@@ -16,7 +16,8 @@
     "test:watch": "NODE_ENV=test jest --watch --verbose true",
     "cleanup": "rm -rf build",
     "prebuild": "yarn cleanup && yarn sanity-check",
-    "build": "tsc --sourceMap false --declaration false -p ./"
+    "build": "tsc --sourceMap false --declaration false -p ./",
+    "dev:twitter-webhook": "vercel dev"
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",
