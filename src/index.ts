@@ -1,4 +1,4 @@
 require("./utils/config");
-export function add(a: number, b: number) {
-  return a + b;
-}
+import { getChallengeResponse } from "./webhook-listener-helpers";
+
+console.log(getChallengeResponse("xyz"));

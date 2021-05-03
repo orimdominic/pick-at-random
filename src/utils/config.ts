@@ -1,7 +1,9 @@
 /**
  * @file Manages environment configurations for the application
  */
+
 import { config } from "dotenv";
+
 const envMode = {
   DEVELOPMENT: "development",
   PRODUCTION: "production",
