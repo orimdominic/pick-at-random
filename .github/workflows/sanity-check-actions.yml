@@ -37,4 +37,4 @@ jobs:
       - run: node -v
       - run: yarn -v
       - run: yarn install
-      - run: yarn build
+      - run: yarn build:prod

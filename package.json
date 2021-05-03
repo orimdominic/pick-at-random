@@ -15,8 +15,8 @@
     "test": "NODE_ENV=test jest",
     "test:watch": "NODE_ENV=test jest --watch --verbose true",
     "cleanup": "rm -rf build",
-    "prebuild": "yarn cleanup && yarn sanity-check",
-    "build": "tsc --sourceMap false --declaration false -p ./",
+    "prebuild:prod": "yarn cleanup && yarn sanity-check",
+    "build:prod": "tsc --sourceMap false --declaration false -p ./",
     "dev:twitter-webhook": "vercel dev"
   },
   "devDependencies": {
