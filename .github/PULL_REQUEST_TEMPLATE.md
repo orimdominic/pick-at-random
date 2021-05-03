@@ -1,8 +1,5 @@
 ## Description
 
-Include a summary of the change and which issue is fixed (if there is any).
-Also include relevant motivation and context.
-
 Fixes #(IssueNumber)
 
 ### Points worth noting
@@ -18,19 +15,8 @@ Include information to note before merging this PR.
 
 ### How has this been tested?
 
-Please describe the tests that you ran to verify your changes.
-Provide instructions so we can reproduce.
-Please, also list any relevant details for your test configuration.
-
-Add screenshots if possible.
-Please delete this paragraph and the immediate previous one before submitting.
-
-- [A link to a hosted version if available]()
-- Other proof that this works as you say it does
-
 ### Checklist:
 
-- [] My code follows the style guidelines of this project
 - [] I have performed a self-review of my own code
 - [] I have commented on my code, particularly in hard-to-understand areas
 - [] I have made corresponding changes to the documentation

@@ -4,20 +4,20 @@
   "description": "Pick Twitter users at random",
   "license": "MIT",
   "engines": {
-    "node": ">=12.x",
+    "node": ">=14.x",
     "yarn": "1.x.x"
   },
   "scripts": {
     "format": "prettier --write .",
-    "format:check": "prettier --check ./src",
+    "format:check": "prettier --check ./src ./api",
+    "lint": "eslint ./src ./api",
+    "sanity-check": "yarn format:check && yarn lint",
     "test": "NODE_ENV=test jest",
     "test:watch": "NODE_ENV=test jest --watch --verbose true",
-    "lint": "eslint ./src",
-    "prettier:check": "prettier --check ./src",
-    "sanity-check": "yarn prettier:check && yarn lint",
     "cleanup": "rm -rf build",
     "prebuild": "yarn cleanup && yarn sanity-check",
-    "build": "tsc --sourceMap false --declaration false -p ./"
+    "build": "tsc --sourceMap false --declaration false -p ./",
+    "dev:twitter-webhook": "vercel dev"
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",
@@ -33,9 +33,12 @@
     "prettier": "^2.2.1",
     "ts-jest": "^26.5.3",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "vercel": "^22.0.1"
   },
   "dependencies": {
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "http-status-codes": "^2.1.4",
+    "request": "^2.88.2"
   }
 }
