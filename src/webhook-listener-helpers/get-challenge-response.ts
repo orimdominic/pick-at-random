@@ -4,7 +4,7 @@ import { createHmac } from "crypto";
  * Creates and returns the required challenge response from
  * the challenge-response check token from Twitter
  * @param {string} crcToken - The challenge response check token
- * @returns {string | null} - The token
+ * @returns {string | null} The token
  */
 export function getChallengeResponse(crcToken: string): string | null {
   if (!crcToken) {
