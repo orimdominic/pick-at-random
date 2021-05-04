@@ -1,8 +1,9 @@
 /**
- * The contents of this file run via the `yarn register-webhook`
- * script.
+ * @fileoverview
+ * The content of this file can be run via `yarn register-webhook`
  * Running this file activates a CRC check from Twitter for
- * the validation of a webhook URL for registration
+ * the validation of a webhook URL to receive account activity events
+ * https://developer.twitter.com/en/docs/twitter-api/premium/account-activity-api/api-reference/aaa-premium#put-account-activity-all-env-name-webhooks-webhook-id
  */
 
 import * as readline from "readline";
