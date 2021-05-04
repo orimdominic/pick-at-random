@@ -22,6 +22,7 @@
     "delete-webhook": "NODE_ENV=development ts-node src/bin/delete-webhook",
     "create-subscription": "NODE_ENV=development ts-node src/bin/create-subscription",
     "get-user-token": "NODE_ENV=development ts-node src/bin/get-user-token"
+    "delete-webhook": "NODE_ENV=development ts-node src/bin/delete-webhook"
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",
