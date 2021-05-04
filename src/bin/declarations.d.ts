@@ -1,1 +1,1 @@
-declare module 'node-twitter-api'
+declare module "node-twitter-api";
