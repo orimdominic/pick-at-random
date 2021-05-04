@@ -15,7 +15,7 @@
     "test": "NODE_ENV=test jest",
     "test:watch": "NODE_ENV=test jest --watch --verbose true",
     "cleanup": "rm -rf build",
-    "prebuild:prod": "yarn cleanup && yarn sanity-check",
+    "prebuild:prod": "yarn cleanup",
     "build:prod": "tsc --sourceMap false --declaration false -p ./",
     "dev:twitter-webhook": "vercel dev",
     "register-webhook": "NODE_ENV=development ts-node src/bin/register-webhook",
