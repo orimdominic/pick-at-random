@@ -1,8 +1,8 @@
 /**
- * The contents of this file run via the `yarn register-webhook`
- * script.
- * Running this file activates a CRC check from Twitter for
- * the validation of a webhook URL for registration
+ * @fileoverview
+ * The contents of this file can be run via the `yarn delete-webhook`
+ * Running this file deletes a webhook URL from the list of account
+ * activity webhook URLs
  */
 
 import * as readline from "readline";
