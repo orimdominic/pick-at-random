@@ -18,7 +18,10 @@
     "prebuild:prod": "yarn cleanup && yarn sanity-check",
     "build:prod": "tsc --sourceMap false --declaration false -p ./",
     "dev:twitter-webhook": "vercel dev",
-    "register-webhook": "NODE_ENV=development ts-node src/bin/register-webhook"
+    "register-webhook": "NODE_ENV=development ts-node src/bin/register-webhook",
+    "delete-webhook": "NODE_ENV=development ts-node src/bin/delete-webhook",
+    "create-subscription": "NODE_ENV=development ts-node src/bin/create-subscription",
+    "get-user-token": "NODE_ENV=development ts-node src/bin/get-user-token"
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",
@@ -41,6 +44,7 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "http-status-codes": "^2.1.4",
+    "node-twitter-api": "^1.8.0",
     "request": "^2.88.2"
   }
 }
