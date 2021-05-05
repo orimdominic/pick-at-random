@@ -1,31 +1,37 @@
-import * as request from "request";
-import { createServer } from "vercel-node-server";
-import listen from "test-listen";
-import { promisify } from "util";
+import { StatusCodes } from "http-status-codes";
+import { createResponse } from "node-mocks-http";
 const twitterWebhookLambda = require("../../api/twitter-webhook-listener");
-
-const get = promisify(request.get);
-let server: any;
-let url: string;
+require("../utils/config");
 
 describe("twitter webhook listener", () => {
-  beforeAll(async () => {
-      server = createServer(twitterWebhookLambda);
-      url = await listen(server)
-      console.log("url:", url);
+  it("[GET /] should return 400 when crc_token is not supplied", async () => {
+    const mockReq = { method: "GET" };
+    const mockRes = createResponse();
+    await twitterWebhookLambda(mockReq, mockRes);
+    expect(mockRes._getStatusCode()).toBe(StatusCodes.BAD_REQUEST);
   });
 
-  afterAll(() => {
-    server.close();
+  it("[GET /] should return 200 when crc_token is supplied", async () => {
+    const mockReq = {
+      method: "GET",
+      query: {
+        crc_token: "token",
+      },
+    };
+    const mockRes = createResponse();
+    await twitterWebhookLambda(mockReq, mockRes);
+    expect(mockRes._getStatusCode()).toBe(StatusCodes.OK);
   });
 
-  it("should return the expected response", async () => {
-    // const server = createServer(twitterWebhookLambda)
-    // server.listen(8000)
-    try {
-      const res = await get({url})
-      // console.log(res)
-    } catch (error) {
-    }
+  it("[GET /] should return `response_token` in a JSON", async () => {
+    const mockReq = {
+      method: "GET",
+      query: {
+        crc_token: "token",
+      },
+    };
+    const mockRes = createResponse();
+    await twitterWebhookLambda(mockReq, mockRes);
+    expect(mockRes._getJSONData()).toHaveProperty("response_token");
   });
 });
