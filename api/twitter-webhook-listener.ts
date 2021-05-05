@@ -19,7 +19,7 @@ export default async (
       } catch (error) {
         return res.status(StatusCodes.BAD_REQUEST).send("");
       }
-      break;
+      return res.status(StatusCodes.BAD_REQUEST).send("");
     }
 
     default: {
