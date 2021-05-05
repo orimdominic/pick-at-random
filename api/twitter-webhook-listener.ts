@@ -16,6 +16,7 @@ module.exports = async (req: VercelRequest, res: VercelResponse) => {
       } catch (error) {
         return res.status(StatusCodes.BAD_REQUEST).send("");
       }
+      break;
     }
 
     default: {
