@@ -5,7 +5,7 @@ import { getChallengeResponse } from "../src/webhook-listener-helpers";
 module.exports = async (req: VercelRequest, res: VercelResponse) => {
   const method = req.method?.toLowerCase();
   switch (method) {
-    case "get":
+    case "get": {
       try {
         const { crc_token } = req.query;
         if (typeof crc_token === "string" && crc_token.length) {
@@ -16,10 +16,12 @@ module.exports = async (req: VercelRequest, res: VercelResponse) => {
       } catch (error) {
         return res.status(StatusCodes.BAD_REQUEST).send("");
       }
+    }
 
-    default:
+    default: {
       return res
         .status(StatusCodes.METHOD_NOT_ALLOWED)
         .send(getReasonPhrase(StatusCodes.METHOD_NOT_ALLOWED));
+    }
   }
 };

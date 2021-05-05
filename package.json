@@ -26,7 +26,6 @@
   "devDependencies": {
     "@types/jest": "^26.0.22",
     "@types/request": "^2.48.5",
-    "@types/test-listen": "^1.1.0",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.12.1",
