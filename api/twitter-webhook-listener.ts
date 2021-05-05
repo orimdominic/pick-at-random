@@ -2,7 +2,10 @@ import { VercelRequest, VercelResponse } from "@vercel/node";
 import { StatusCodes, getReasonPhrase } from "http-status-codes";
 import { getChallengeResponse } from "../src/webhook-listener-helpers";
 
-module.exports = async (req: VercelRequest, res: VercelResponse) => {
+export default async (
+  req: VercelRequest,
+  res: VercelResponse
+): Promise<VercelResponse> => {
   const method = req.method?.toLowerCase();
   switch (method) {
     case "get": {
