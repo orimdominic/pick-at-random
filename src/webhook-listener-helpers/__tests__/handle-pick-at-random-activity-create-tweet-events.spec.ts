@@ -91,6 +91,8 @@ describe("isValidCommandText", () => {
     const mockExpectations = [
       { cmdText: "hello", val: false },
       { cmdText: "@mykeels says hi", val: false },
+      { cmdText: "cancel", val: true }, // for cancelling
+      { cmdText: "feedback", val: true }, // for feedback
       { cmdText: "4 retweets tomorrow", val: true },
       { cmdText: "3 retweets in 2 days", val: true },
       { cmdText: "3 retweets on thursday", val: true },
