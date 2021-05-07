@@ -187,3 +187,23 @@ export const commandTweetEvent = {
     },
   ],
 };
+
+export const mockTweet = {
+  created_at: "date",
+  id_str: "string",
+  text: "string",
+  truncated: false,
+  in_reply_to_status_id_str: "string",
+  in_reply_to_user_id_str: "string",
+  retweeted_status: {
+    text: "string",
+  },
+  is_quote_status: { text: "string" },
+  user: {
+    id_str: "string",
+    screen_name: "string",
+  },
+  entities: {
+    urls: [],
+  },
+};
