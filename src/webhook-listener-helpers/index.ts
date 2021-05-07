@@ -1,5 +1,5 @@
 export * from "./IActivity";
-export * from "./ITweetEvent";
+export * from "./ITweet";
 export * from "./IUser";
 export * from "./ITweetEntityUrl";
 export * from "./IDirectMessageEvent";
