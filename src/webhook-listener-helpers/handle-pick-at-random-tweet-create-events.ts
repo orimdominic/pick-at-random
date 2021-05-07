@@ -1,4 +1,4 @@
-import { IRealMentionTweet, ITweet } from "./ITweet";
+import { IRealMentionTweet, ITweet, CommandType } from ".";
 import { VercelResponse } from "@vercel/node";
 
 /**
@@ -70,13 +70,23 @@ export const setCommandText = (tweet: IRealMentionTweet): IRealMentionTweet => {
  * @returns {boolean} true if the command text is valid
  */
 export const isValidCommandText = (text: string): boolean => {
-  if (text.length === 0) return false;
-  const splitText = text.split(" ");
-  // if the text doesn't start with a number
-  const [count] = splitText;
-  if (!Number.isInteger(parseInt(count, 10))) return false;
+  if (text.length === 0) {
+    return false;
+  }
+  if(text.startsWith(CommandType.Feedback) ||
+  text.startsWith(CommandType.Cancel)){return true}
+  const wordsArr = text.split(" ");
+  // if the text doesn't start with a number or 'cancel' or 'feedback'
+  const [firstWord] = wordsArr;
+  if (
+    !Number.isInteger(parseInt(firstWord, 10))
+  ) {
+    return false;
+  }
   // at minimum, the text should be like '4 retweets tomorrow'
-  if (splitText.length < 3) return false;
+  if (wordsArr.length < 3) {
+    return false;
+  }
   return true;
 };
 

@@ -1,3 +1,4 @@
+export * from "./constants";
 export * from "./IActivity";
 export * from "./ITweet";
 export * from "./IUser";
