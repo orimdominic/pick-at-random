@@ -1,5 +1,11 @@
 name: sanity-check
-on: [pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 jobs:
   code-style:
     runs-on: ubuntu-latest
@@ -18,6 +24,7 @@ jobs:
       TWITTER_CONSUMER_SECRET: "secret"
       TEST_CRC_TOKEN: "crc_token"
       TEST_CRC_RESPONSE: "sha256=gjiQ6uetgi4t5/+6PvFeAZ+idQ6rmuAfSEo3PnF6QV8="
+      PICKATRANDOM_SCREEN_NAME: ${{ secrets.PICKATRANDOM_SCREEN_NAME }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
