@@ -65,7 +65,7 @@ export const setCommandText = (tweet: IRealMentionTweet): IRealMentionTweet => {
 };
 
 /**
- * If validates a command text
+ * Validates a command text
  * @param {string} text - The command text
  * @returns {boolean} true if the command text is valid
  */
