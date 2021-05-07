@@ -20,7 +20,6 @@ Include information to note before merging this PR.
 - [] I have performed a self-review of my own code
 - [] I have commented on my code, particularly in hard-to-understand areas
 - [] I have made corresponding changes to the documentation
-- [] My changes generate no new warnings from the linter or any other source
 - [] I have added tests that prove my fix is effective or that my feature works
 - [] New and existing unit tests pass locally with my changes
 
