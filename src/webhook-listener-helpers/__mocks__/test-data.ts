@@ -207,3 +207,13 @@ export const mockTweet = {
     urls: [],
   },
 };
+
+export const mockRealMention = {
+  createdAt: "string",
+  id: "string",
+  refTweetId: "string",
+  authorName: "string",
+  authorId: "string",
+  text: "string",
+  urls: [],
+};

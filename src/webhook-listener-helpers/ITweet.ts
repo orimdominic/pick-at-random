@@ -24,5 +24,6 @@ export interface IRealMentionTweet {
   authorName: string;
   authorId: string;
   text: string;
+  cmdText?: string;
   urls: ITweetEntityUrl[];
 }

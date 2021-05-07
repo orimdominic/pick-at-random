@@ -27,7 +27,7 @@ export const isRealMention = (tweet: ITweet): boolean => {
 /**
  * Create a real mention tweet object from a full valid tweet
  *
- * @param tweet - A valid tweet
+ * @param {ITweet} tweet - A valid tweet
  * @returns {IRealMentionTweet} a real mention tweet
  */
 export const setRealMention = (tweet: ITweet): IRealMentionTweet => {
@@ -40,6 +40,44 @@ export const setRealMention = (tweet: ITweet): IRealMentionTweet => {
     text: tweet.truncated ? tweet.extended_tweet!.full_text : tweet.text,
     urls: tweet.entities.urls,
   };
+};
+
+/**
+ * Parses the text of a real mention tweet to extract
+ * and set the command text of the tweet
+ *
+ * @param {IRealMentionTweet} tweet - a real mention tweet
+ * @returns {IRealMentionTweet} - a tweet containing a command text if any
+ */
+export const setCommandText = (tweet: IRealMentionTweet): IRealMentionTweet => {
+  const lastMentionIndex = tweet.text.lastIndexOf(
+    `${process.env.PICKATRANDOM_SCREEN_NAME}`
+  );
+  const cmdText = tweet.text
+    .substring(lastMentionIndex)
+    .replace(`${process.env.PICKATRANDOM_SCREEN_NAME} `, "")
+    .toLowerCase()
+    .trim();
+  return {
+    ...tweet,
+    cmdText,
+  };
+};
+
+/**
+ * If validates a command text
+ * @param {string} text - The command text
+ * @returns {boolean} true if the command text is valid
+ */
+export const isValidCommandText = (text: string): boolean => {
+  if (text.length === 0) return false;
+  const splitText = text.split(" ");
+  // if the text doesn't start with a number
+  const [count] = splitText;
+  if (!Number.isInteger(parseInt(count, 10))) return false;
+  // at minimum, the text should be like '4 retweets tomorrow'
+  if (splitText.length < 3) return false;
+  return true;
 };
 
 export async function handlePickAtRandomTweetCreateEvents(
