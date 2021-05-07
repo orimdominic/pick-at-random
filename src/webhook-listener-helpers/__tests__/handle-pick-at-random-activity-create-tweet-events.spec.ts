@@ -1,6 +1,6 @@
 require("../../utils/config");
 
-import { ITweet, isRealMention } from "..";
+import { ITweet, IRealMentionTweet, isRealMention, setRealMention } from "..";
 import { mockTweet } from "../__mocks__/test-data";
 
 describe("isRealMention", () => {
@@ -39,5 +39,17 @@ describe("isRealMention", () => {
     } as ITweet;
     const val = isRealMention(tweetByPickAtRandom);
     expect(val).toBe(true);
+  });
+});
+
+describe("setRealMention", () => {
+  it("sets `text` to full text if `text` was truncated", () => {
+    const tweetFullText = "full text of tweet";
+    const tweet: ITweet = {
+      ...mockTweet,
+      truncated: true,
+      extended_tweet: { full_text: tweetFullText },
+    };
+    expect(setRealMention(tweet).text).toBe(tweetFullText);
   });
 });
