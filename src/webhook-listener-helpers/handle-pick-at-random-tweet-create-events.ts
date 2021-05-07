@@ -73,14 +73,16 @@ export const isValidCommandText = (text: string): boolean => {
   if (text.length === 0) {
     return false;
   }
-  if(text.startsWith(CommandType.Feedback) ||
-  text.startsWith(CommandType.Cancel)){return true}
+  if (
+    text.startsWith(CommandType.Feedback) ||
+    text.startsWith(CommandType.Cancel)
+  ) {
+    return true;
+  }
   const wordsArr = text.split(" ");
   // if the text doesn't start with a number or 'cancel' or 'feedback'
   const [firstWord] = wordsArr;
-  if (
-    !Number.isInteger(parseInt(firstWord, 10))
-  ) {
+  if (!Number.isInteger(parseInt(firstWord, 10))) {
     return false;
   }
   // at minimum, the text should be like '4 retweets tomorrow'
