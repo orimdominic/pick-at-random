@@ -6,7 +6,6 @@ import {
   isRealMention,
   setRealMention,
   setCommandText,
-  isValidRequestText,
   isCancelText,
   isFeedbackText,
   isPickCommand,
@@ -89,23 +88,6 @@ describe("setCommandText", () => {
   });
 });
 
-describe("isValidRequestText", () => {
-  it("returns true if the command text is valid", () => {
-    const mockExpectations = [
-      { cmdText: "hello", val: false },
-      { cmdText: "@mykeels says hi", val: false },
-      { cmdText: "cancel", val: true }, // for cancelling
-      { cmdText: "feedback", val: true }, // for feedback
-      { cmdText: "4 retweets tomorrow", val: true },
-      { cmdText: "3 retweets in 2 days", val: true },
-      { cmdText: "3 retweets on thursday", val: true },
-    ];
-    for (const exp of mockExpectations) {
-      expect(isValidRequestText(exp.cmdText)).toBe(exp.val);
-    }
-  });
-});
-
 describe("isCancelTweet", () => {
   it("returns true if the command tweet starts with 'cancel'", () => {
     expect(isCancelText("cancel")).toBe(true);
@@ -126,7 +108,9 @@ describe("isFeedbackTweet", () => {
 
 describe("isPickCommand", () => {
   it("returns true if the command tweet starts with a number", () => {
+    expect(isPickCommand("3 retweets today")).toBe(true);
     expect(isPickCommand("3 retweets on thursday")).toBe(true);
+    expect(isPickCommand("3 retweets")).toBe(false);
     expect(isPickCommand("feedback,")).toBe(false);
     expect(isPickCommand("cancel i did not get my picks")).toBe(false);
   });

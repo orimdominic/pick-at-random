@@ -74,23 +74,8 @@ export const isValidRequestText = (text: string): boolean => {
   if (text.length === 0) {
     return false;
   }
-  if (
-    text.startsWith(CommandType.Feedback) ||
-    text.startsWith(CommandType.Cancel)
-  ) {
-    return true;
-  }
-  const wordsArr = text.split(" ");
-  // if the text doesn't start with a number or 'cancel' or 'feedback'
-  const [firstWord] = wordsArr;
-  if (!Number.isInteger(parseInt(firstWord, 10))) {
-    return false;
-  }
   // at minimum, the text should be like '4 retweets tomorrow'
-  if (wordsArr.length < 3) {
-    return false;
-  }
-  return true;
+  return text.split(" ").length < 3 ? false : true;
 };
 
 /**
@@ -116,7 +101,10 @@ export const isFeedbackText = (text: string): boolean =>
  */
 export const isPickCommand = (text: string): boolean => {
   const [firstWord] = text.split(" ");
-  return Number.isInteger(parseInt(firstWord, 10));
+  // at minimum, a pick command text can be '2 retweets tomorrow'
+  return (
+    Number.isInteger(parseInt(firstWord, 10)) && text.split(" ").length >= 3
+  );
 };
 
 export async function handlePickAtRandomTweetCreateEvents(
@@ -127,29 +115,25 @@ export async function handlePickAtRandomTweetCreateEvents(
   if (!realMentions.length) {
     res.status(200).send(null);
   }
-  const validMentions = realMentions
-    .map(setRealMention)
-    .map(setCommandText)
-    .filter((m) => isValidRequestText(m.cmdText as string));
-  if (!validMentions.length) {
+  const mentions = realMentions.map(setRealMention).map(setCommandText);
+  if (!mentions.length) {
     return;
   }
   const [cancelTexts, feedbackTexts, pickCommandTexts] = [
-    validMentions.filter((m) => isCancelText(m.cmdText as string)),
-    validMentions.filter((m) => isFeedbackText(m.cmdText as string)),
-    validMentions.filter((m) => isPickCommand(m.cmdText as string)),
+    mentions.filter((m) => isCancelText(m.cmdText as string)),
+    mentions.filter((m) => isFeedbackText(m.cmdText as string)),
+    mentions.filter((m) => isPickCommand(m.cmdText as string)),
   ];
-  if(cancelTexts.length){
+  if (cancelTexts.length) {
     // handle cancel
   }
-  if(feedbackTexts.length){
+  if (feedbackTexts.length) {
     // handle feedback
   }
 
-  if(pickCommandTexts){
+  if (pickCommandTexts) {
     // handle pick commands
   }
-
 
   console.log("called");
   return;
