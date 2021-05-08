@@ -66,19 +66,6 @@ export const setCommandText = (tweet: IRealMentionTweet): IRealMentionTweet => {
 };
 
 /**
- * Validates a command text
- * @param {string} text - The command text
- * @returns {boolean} true if the command text is valid
- */
-export const isValidRequestText = (text: string): boolean => {
-  if (text.length === 0) {
-    return false;
-  }
-  // at minimum, the text should be like '4 retweets tomorrow'
-  return text.split(" ").length < 3 ? false : true;
-};
-
-/**
  * Determines if a command text is a cancel text
  * @param {string} text - The command text
  * @returns {boolean} true if it is a cancel text
