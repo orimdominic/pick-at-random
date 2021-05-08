@@ -103,9 +103,6 @@ export async function handlePickAtRandomTweetCreateEvents(
     res.status(200).send(null);
   }
   const mentions = realMentions.map(setRealMention).map(setCommandText);
-  if (!mentions.length) {
-    return;
-  }
   const [cancelTexts, feedbackTexts, pickCommandTexts] = [
     mentions.filter((m) => isCancelText(m.cmdText as string)),
     mentions.filter((m) => isFeedbackText(m.cmdText as string)),
