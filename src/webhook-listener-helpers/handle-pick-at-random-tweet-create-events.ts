@@ -37,6 +37,7 @@ export const setRealMention = (tweet: ITweet): IRealMentionTweet => {
     refTweetId: tweet.in_reply_to_status_id_str,
     authorName: tweet.user.screen_name,
     authorId: tweet.user.id_str,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     text: tweet.truncated ? tweet.extended_tweet!.full_text : tweet.text,
     urls: tweet.entities.urls,
   };
@@ -65,31 +66,32 @@ export const setCommandText = (tweet: IRealMentionTweet): IRealMentionTweet => {
 };
 
 /**
- * Validates a command text
+ * Determines if a command text is a cancel text
  * @param {string} text - The command text
- * @returns {boolean} true if the command text is valid
+ * @returns {boolean} true if it is a cancel text
  */
-export const isValidCommandText = (text: string): boolean => {
-  if (text.length === 0) {
-    return false;
-  }
-  if (
-    text.startsWith(CommandType.Feedback) ||
-    text.startsWith(CommandType.Cancel)
-  ) {
-    return true;
-  }
-  const wordsArr = text.split(" ");
-  // if the text doesn't start with a number or 'cancel' or 'feedback'
-  const [firstWord] = wordsArr;
-  if (!Number.isInteger(parseInt(firstWord, 10))) {
-    return false;
-  }
-  // at minimum, the text should be like '4 retweets tomorrow'
-  if (wordsArr.length < 3) {
-    return false;
-  }
-  return true;
+export const isCancelText = (text: string): boolean =>
+  text.startsWith(CommandType.Cancel);
+
+/**
+ * Determines if a command text is a feedback text
+ * @param {string} text - The command text
+ * @returns {boolean} true if it is a feedback text
+ */
+export const isFeedbackText = (text: string): boolean =>
+  text.startsWith(CommandType.Feedback);
+
+/**
+ * Determines if a command text is a pick command
+ * @param {string} text - The command text
+ * @returns {boolean} true if it is a pick command
+ */
+export const isPickCommand = (text: string): boolean => {
+  const [firstWord] = text.split(" ");
+  // at minimum, a pick command text can be '2 retweets tomorrow'
+  return (
+    Number.isInteger(parseInt(firstWord, 10)) && text.split(" ").length >= 3
+  );
 };
 
 export async function handlePickAtRandomTweetCreateEvents(
@@ -100,6 +102,23 @@ export async function handlePickAtRandomTweetCreateEvents(
   if (!realMentions.length) {
     res.status(200).send(null);
   }
+  const mentions = realMentions.map(setRealMention).map(setCommandText);
+  const [cancelTexts, feedbackTexts, pickCommandTexts] = [
+    mentions.filter((m) => isCancelText(m.cmdText as string)),
+    mentions.filter((m) => isFeedbackText(m.cmdText as string)),
+    mentions.filter((m) => isPickCommand(m.cmdText as string)),
+  ];
+  if (cancelTexts.length) {
+    // handle cancel
+  }
+  if (feedbackTexts.length) {
+    // handle feedback
+  }
+
+  if (pickCommandTexts) {
+    // handle pick commands
+  }
+
   console.log("called");
   return;
 }

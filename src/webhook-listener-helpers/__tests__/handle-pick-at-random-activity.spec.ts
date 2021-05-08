@@ -4,7 +4,6 @@ import {
   setPickAtRandomAccountActivityHandler,
   handlePickAtRandomTweetCreateEvents,
   IActivity,
-  ITweet,
 } from "..";
 
 describe("handlePickAtRandomAccountActivity", () => {

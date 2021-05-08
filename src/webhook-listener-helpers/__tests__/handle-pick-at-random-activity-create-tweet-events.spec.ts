@@ -6,7 +6,9 @@ import {
   isRealMention,
   setRealMention,
   setCommandText,
-  isValidCommandText,
+  isCancelText,
+  isFeedbackText,
+  isPickCommand,
 } from "..";
 import { mockRealMention, mockTweet } from "../__mocks__/test-data";
 
@@ -86,19 +88,30 @@ describe("setCommandText", () => {
   });
 });
 
-describe("isValidCommandText", () => {
-  it("returns true if the command text is valid", () => {
-    const mockExpectations = [
-      { cmdText: "hello", val: false },
-      { cmdText: "@mykeels says hi", val: false },
-      { cmdText: "cancel", val: true }, // for cancelling
-      { cmdText: "feedback", val: true }, // for feedback
-      { cmdText: "4 retweets tomorrow", val: true },
-      { cmdText: "3 retweets in 2 days", val: true },
-      { cmdText: "3 retweets on thursday", val: true },
-    ];
-    for (const exp of mockExpectations) {
-      expect(isValidCommandText(exp.cmdText)).toBe(exp.val);
-    }
+describe("isCancelTweet", () => {
+  it("returns true if the command tweet starts with 'cancel'", () => {
+    expect(isCancelText("cancel")).toBe(true);
+    expect(isCancelText("cancel!")).toBe(true);
+    expect(isCancelText("feedback!")).toBe(false);
+    expect(isCancelText("3 retweets on thursday")).toBe(false);
+  });
+});
+
+describe("isFeedbackTweet", () => {
+  it("returns true if the command tweet starts with 'feedback'", () => {
+    expect(isFeedbackText("feedback:")).toBe(true);
+    expect(isFeedbackText("feedback,")).toBe(true);
+    expect(isFeedbackText("cancel i did not get my picks")).toBe(false);
+    expect(isFeedbackText("3 retweets on thursday")).toBe(false);
+  });
+});
+
+describe("isPickCommand", () => {
+  it("returns true if the command tweet starts with a number", () => {
+    expect(isPickCommand("3 retweets today")).toBe(true);
+    expect(isPickCommand("3 retweets on thursday")).toBe(true);
+    expect(isPickCommand("3 retweets")).toBe(false);
+    expect(isPickCommand("feedback,")).toBe(false);
+    expect(isPickCommand("cancel i did not get my picks")).toBe(false);
   });
 });
