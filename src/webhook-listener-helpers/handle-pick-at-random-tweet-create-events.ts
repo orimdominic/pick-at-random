@@ -37,6 +37,7 @@ export const setRealMention = (tweet: ITweet): IRealMentionTweet => {
     refTweetId: tweet.in_reply_to_status_id_str,
     authorName: tweet.user.screen_name,
     authorId: tweet.user.id_str,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     text: tweet.truncated ? tweet.extended_tweet!.full_text : tweet.text,
     urls: tweet.entities.urls,
   };
@@ -69,7 +70,7 @@ export const setCommandText = (tweet: IRealMentionTweet): IRealMentionTweet => {
  * @param {string} text - The command text
  * @returns {boolean} true if the command text is valid
  */
-export const isValidCommandText = (text: string): boolean => {
+export const isValidRequestText = (text: string): boolean => {
   if (text.length === 0) {
     return false;
   }
@@ -92,6 +93,32 @@ export const isValidCommandText = (text: string): boolean => {
   return true;
 };
 
+/**
+ * Determines if a command text is a cancel text
+ * @param {string} text - The command text
+ * @returns {boolean} true if it is a cancel text
+ */
+export const isCancelText = (text: string): boolean =>
+  text.startsWith(CommandType.Cancel);
+
+/**
+ * Determines if a command text is a feedback text
+ * @param {string} text - The command text
+ * @returns {boolean} true if it is a feedback text
+ */
+export const isFeedbackText = (text: string): boolean =>
+  text.startsWith(CommandType.Feedback);
+
+/**
+ * Determines if a command text is a pick command
+ * @param {string} text - The command text
+ * @returns {boolean} true if it is a pick command
+ */
+export const isPickCommand = (text: string): boolean => {
+  const [firstWord] = text.split(" ");
+  return Number.isInteger(parseInt(firstWord, 10));
+};
+
 export async function handlePickAtRandomTweetCreateEvents(
   events: ITweet[],
   res: VercelResponse
@@ -100,6 +127,30 @@ export async function handlePickAtRandomTweetCreateEvents(
   if (!realMentions.length) {
     res.status(200).send(null);
   }
+  const validMentions = realMentions
+    .map(setRealMention)
+    .map(setCommandText)
+    .filter((m) => isValidRequestText(m.cmdText as string));
+  if (!validMentions.length) {
+    return;
+  }
+  const [cancelTexts, feedbackTexts, pickCommandTexts] = [
+    validMentions.filter((m) => isCancelText(m.cmdText as string)),
+    validMentions.filter((m) => isFeedbackText(m.cmdText as string)),
+    validMentions.filter((m) => isPickCommand(m.cmdText as string)),
+  ];
+  if(cancelTexts.length){
+    // handle cancel
+  }
+  if(feedbackTexts.length){
+    // handle feedback
+  }
+
+  if(pickCommandTexts){
+    // handle pick commands
+  }
+
+
   console.log("called");
   return;
 }
