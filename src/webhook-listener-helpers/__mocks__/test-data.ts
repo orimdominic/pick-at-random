@@ -1,5 +1,3 @@
-require("../../utils/config");
-
 export const nonCommandTweetEvent = {
   for_user_id: "1364541567894224902",
   user_has_blocked: false,

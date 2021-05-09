@@ -2,7 +2,6 @@ import { StatusCodes } from "http-status-codes";
 import { createResponse } from "node-mocks-http";
 import twitterWebhookLambda from "../../api/twitter-webhook-listener";
 import { VercelRequest } from "@vercel/node";
-require("../utils/config");
 
 describe("twitter webhook listener", () => {
   it("[GET /] should return 400 when crc_token is not supplied", async () => {
@@ -16,7 +15,7 @@ describe("twitter webhook listener", () => {
     const mockReq = ({
       method: "GET",
       query: {
-        crc_token: "token",
+        crc_token: process.env.TEST_CRC_TOKEN as string,
       },
     } as unknown) as VercelRequest;
     const mockRes = createResponse();
@@ -28,7 +27,7 @@ describe("twitter webhook listener", () => {
     const mockReq = ({
       method: "GET",
       query: {
-        crc_token: "token",
+        crc_token: process.env.TEST_CRC_TOKEN as string,
       },
     } as unknown) as VercelRequest;
     const mockRes = createResponse();

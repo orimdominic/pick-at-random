@@ -15,10 +15,7 @@ switch (env) {
   case envMode.PRODUCTION:
     config();
     break;
-  case envMode.TEST:
-    config({ path: ".test.env" });
-    break;
   default:
-    config({ path: ".dev.env" });
+    config({ path: ".local.env" });
     break;
 }
