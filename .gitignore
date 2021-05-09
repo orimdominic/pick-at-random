@@ -64,8 +64,7 @@ node_modules/
 
 # dotenv environment variables file
 .env
-.dev.env
-.test.env
+.local.env
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache

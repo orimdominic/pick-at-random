@@ -118,7 +118,5 @@ export async function handlePickAtRandomTweetCreateEvents(
   if (pickCommandTexts) {
     // handle pick commands
   }
-
-  console.log("called");
   return;
 }
