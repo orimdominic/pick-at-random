@@ -1,4 +1,4 @@
-import { IRealMentionTweet, ITweet, CommandType } from ".";
+import { IRealMentionTweet, ITweet, CommandType, parTwitterClient } from ".";
 import { VercelResponse } from "@vercel/node";
 
 /**
@@ -65,6 +65,14 @@ export const setCommandText = (tweet: IRealMentionTweet): IRealMentionTweet => {
   };
 };
 
+export const handleFeedbackMention = async ({
+  authorName,
+  id,
+}: IRealMentionTweet) => {
+  const message = "Feedback received. Thanks!";
+  await parTwitterClient.replyMention(id, message, authorName);
+};
+
 /**
  * Determines if a command text is a cancel text
  * @param {string} text - The command text
@@ -103,19 +111,27 @@ export async function handlePickAtRandomTweetCreateEvents(
     res.status(200).send(null);
   }
   const mentions = realMentions.map(setRealMention).map(setCommandText);
-  const [cancelTexts, feedbackTexts, pickCommandTexts] = [
+  const [cancelMentions, feedbackMentions, pickCommandMentions] = [
     mentions.filter((m) => isCancelText(m.cmdText as string)),
     mentions.filter((m) => isFeedbackText(m.cmdText as string)),
     mentions.filter((m) => isPickCommand(m.cmdText as string)),
   ];
-  if (cancelTexts.length) {
+  if (cancelMentions.length) {
     // handle cancel
   }
-  if (feedbackTexts.length) {
+  if (feedbackMentions.length) {
     // handle feedback
+    for (const feedback of feedbackMentions) {
+      try {
+        await handleFeedbackMention(feedback);
+      } catch (err) {
+        console.error("handleFeedbackMentionError".toUpperCase(), err);
+        // Sentry records error
+      }
+    }
   }
 
-  if (pickCommandTexts) {
+  if (pickCommandMentions) {
     // handle pick commands
   }
   return;
