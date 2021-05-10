@@ -1,5 +1,6 @@
 import { IRealMentionTweet, ITweet, CommandType, parTwitterClient } from ".";
 import { VercelResponse } from "@vercel/node";
+import { StatusCodes } from "http-status-codes";
 
 /**
  * Validates if a mention tweet is a quoted reply and also
@@ -68,9 +69,9 @@ export const setCommandText = (tweet: IRealMentionTweet): IRealMentionTweet => {
 export const handleFeedbackMention = async ({
   authorName,
   id,
-}: IRealMentionTweet) => {
+}: IRealMentionTweet): Promise<ITweet> => {
   const message = "Feedback received. Thanks!";
-  await parTwitterClient.replyMention(id, message, authorName);
+  return await parTwitterClient.replyMention(id, message, authorName);
 };
 
 /**
@@ -105,10 +106,10 @@ export const isPickCommand = (text: string): boolean => {
 export async function handlePickAtRandomTweetCreateEvents(
   events: ITweet[],
   res: VercelResponse
-): Promise<undefined> {
+): Promise<VercelResponse> {
   const realMentions = events.filter(isRealMention);
   if (!realMentions.length) {
-    res.status(200).send(null);
+    return res.status(StatusCodes.UNPROCESSABLE_ENTITY).send(null);
   }
   const mentions = realMentions.map(setRealMention).map(setCommandText);
   const [cancelMentions, feedbackMentions, pickCommandMentions] = [
@@ -134,5 +135,5 @@ export async function handlePickAtRandomTweetCreateEvents(
   if (pickCommandMentions) {
     // handle pick commands
   }
-  return;
+  return res.status(StatusCodes.OK).send(null);
 }

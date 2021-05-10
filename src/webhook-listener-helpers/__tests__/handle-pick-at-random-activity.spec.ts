@@ -6,7 +6,7 @@ import {
   IActivity,
   ITweet,
 } from "..";
-import { mockTweet } from "../__mocks__/test-data";
+import { mockTweet, mockVercelResponse } from "../__mocks__/data";
 
 describe("handlePickAtRandomAccountActivity", () => {
   let handlePickAtRandomAccountActivity: (
@@ -38,13 +38,12 @@ describe("handlePickAtRandomAccountActivity", () => {
       for_user_id: process.env.PICKATRANDOM_USERID as string,
       tweet_create_events: [mockTweet] as ITweet[],
     } as unknown) as IActivity;
-    const mockRes = {} as VercelResponse;
-    await handlePickAtRandomAccountActivity(ev, mockRes);
+    await handlePickAtRandomAccountActivity(ev, mockVercelResponse);
     expect(mockTweetCreateEventHandler).toBeCalled();
     expect(mockTweetCreateEventHandler).toHaveBeenCalledTimes(1);
     expect(mockTweetCreateEventHandler).toHaveBeenCalledWith(
       ev.tweet_create_events,
-      mockRes
+      mockVercelResponse
     );
   });
 });

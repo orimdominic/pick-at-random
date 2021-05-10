@@ -9,8 +9,15 @@ import {
   isCancelText,
   isFeedbackText,
   isPickCommand,
+  handleFeedbackMention,
+  handlePickAtRandomTweetCreateEvents,
 } from "..";
-import { mockRealMention, mockTweet } from "../__mocks__/test-data";
+import {
+  mockRealMention,
+  mockTweet,
+  mockVercelResponse,
+} from "../__mocks__/data";
+import { StatusCodes } from "http-status-codes";
 
 describe("isRealMention", () => {
   it("returns false if a tweet is by PickAtRandom", () => {
@@ -114,4 +121,36 @@ describe("isPickCommand", () => {
     expect(isPickCommand("feedback,")).toBe(false);
     expect(isPickCommand("cancel i did not get my picks")).toBe(false);
   });
+});
+
+describe("handlePickAtRandomTweetCreateEvents", () => {
+  it("should respond with 422 and null when all mentions are not real", async () => {
+    const events: ITweet[] = [
+      {
+        ...mockTweet,
+        user: { ...mockTweet.user, screen_name: "PickAtRandom" },
+      },
+    ];
+    const mockStatusFn = jest.spyOn(mockVercelResponse, "status");
+    const mockSendFn = jest.spyOn(mockVercelResponse, "send");
+    await handlePickAtRandomTweetCreateEvents(events, mockVercelResponse);
+    expect(mockStatusFn).toHaveBeenCalled();
+    expect(mockStatusFn).toHaveBeenCalledWith(StatusCodes.UNPROCESSABLE_ENTITY);
+    expect(mockSendFn).toHaveBeenCalledWith(null);
+    jest.resetAllMocks();
+  });
+
+  // it("should execute `handleFeedbackMentions` if there are feedback mentions", async () => {
+  //   const mockHandleFeedback = jest.fn(handleFeedbackMention)
+  //   const mockHandleTweetcreateEvents = jest.fn(handlePickAtRandomTweetCreateEvents)
+  //   const events: ITweet[] = [
+  //     {
+  //       ...mockTweet,
+  //       text: "Hello @PickAtRandom feedback - this is a feedback",
+  //       user: { ...mockTweet.user, screen_name: "RandomUser" },
+  //     },
+  //   ];
+  //   await mockHandleTweetcreateEvents(events, mockVercelResponse);
+  //   expect(mockHandleFeedback).toHaveBeenCalled()
+  // });
 });
