@@ -36,7 +36,11 @@ class ParTwitterClient {
    * @param {string} author - The screen name of the author
    * @returns {Promise<ITweet>} The tweeted feedback
    */
-  async replyMention(id: string, message: string, author: string): Promise<ITweet> {
+  async replyMention(
+    id: string,
+    message: string,
+    author: string
+  ): Promise<ITweet> {
     return await this.v1.post(TwitterEndpoint.StatusUpdate, {
       status: `@${author} ${message}`,
       in_reply_to_status_id: id,
