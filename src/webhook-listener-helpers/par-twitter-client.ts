@@ -1,39 +1,47 @@
 import Twitter from "twitter-lite";
-import {TwitterEndpoint} from "."
+import { TwitterEndpoint } from ".";
 import { ITweet } from "./ITweet";
 
-export class ParTwitterClient {
-  private static client: Twitter;
+class ParTwitterClient {
+  private v1: Twitter;
+  private v2: Twitter;
 
   /**
-   * Initialise the paramneters for PAR account
+   * Initialise the parameters for PAR account
    */
-  static init():void {
-    if(ParTwitterClient.client){
-      ParTwitterClient.client = new Twitter({
-        extension: false,
-        version: "2",
-        consumer_key: process.env.TWITTER_CONSUMER_KEY as string,
-        consumer_secret: process.env.TWITTER_CONSUMER_SECRET as string,
-        access_token_key: process.env.TWITTER_PAR_ACCESS_TOKEN as string,
-        access_token_secret: process.env
-          .TWITTER_PAR_ACCESS_TOKEN_SECRET as string,
-          bearer_token: process.env.TWITTER_BEARER_TOKEN
-      });
-    }
+  constructor() {
+    this.v1 = new Twitter({
+      consumer_key: process.env.TWITTER_CONSUMER_KEY as string,
+      consumer_secret: process.env.TWITTER_CONSUMER_SECRET as string,
+      access_token_key: process.env.TWITTER_PAR_ACCESS_TOKEN as string,
+      access_token_secret: process.env
+        .TWITTER_PAR_ACCESS_TOKEN_SECRET as string,
+    });
+    this.v2 = new Twitter({
+      extension: false,
+      version: "2",
+      consumer_key: process.env.TWITTER_CONSUMER_KEY as string,
+      consumer_secret: process.env.TWITTER_CONSUMER_SECRET as string,
+      access_token_key: process.env.TWITTER_PAR_ACCESS_TOKEN as string,
+      access_token_secret: process.env
+        .TWITTER_PAR_ACCESS_TOKEN_SECRET as string,
+    });
   }
 
   /**
    * Reply/Acknowledge a real mention with a feedback of the computed
    * result
-   * @param {string} id - The id of the tweet to reply
+   * @param {string} id - The id of the mention to reply
    * @param {string} message - The feedback message
+   * @param {string} author - The screen name of the author
    * @returns {Promise<ITweet>} The tweeted feedback
    */
-  static async replyTweet(id: string, message: string):Promise<ITweet> {
-   return await this.client.post(TwitterEndpoint.StatusUpdate,{
-      status: message,
-      in_reply_to_status_id: id
-    })
+  async replyMention(id: string, message: string, author: string): Promise<ITweet> {
+    return await this.v1.post(TwitterEndpoint.StatusUpdate, {
+      status: `@${author} ${message}`,
+      in_reply_to_status_id: id,
+    });
   }
 }
+
+export const parTwitterClient = new ParTwitterClient();

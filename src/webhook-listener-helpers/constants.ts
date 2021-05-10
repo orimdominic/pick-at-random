@@ -1,8 +1,8 @@
-export enum CommandType  {
+export enum CommandType {
   Cancel = "cancel",
-  Feedback = "feedback"
+  Feedback = "feedback",
 }
 
-export enum TwitterEndpoint  {
-  StatusUpdate = "statuses/update"
+export enum TwitterEndpoint {
+  StatusUpdate = "statuses/update",
 }

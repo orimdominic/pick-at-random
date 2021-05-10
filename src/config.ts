@@ -4,15 +4,14 @@
 
 import { config } from "dotenv";
 
-const envMode = {
-  DEVELOPMENT: "development",
-  PRODUCTION: "production",
-  TEST: "test",
-};
+enum EnvMode {
+  Production = "production",
+  Test = "test",
+}
 
-const env = process.env.NODE_ENV || envMode.DEVELOPMENT;
+const env = process.env.NODE_ENV;
 switch (env) {
-  case envMode.PRODUCTION:
+  case EnvMode.Production:
     config();
     break;
   default:

@@ -4,7 +4,7 @@
  * It is used to get a user's token for maybe, adding to a subscribe
  * list
  */
-require("../config")
+require("../config");
 import twitterAPI from "node-twitter-api";
 import readline from "readline";
 const rl = readline.createInterface(process.stdin, process.stdout);

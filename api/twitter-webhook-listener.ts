@@ -1,7 +1,7 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { StatusCodes, getReasonPhrase } from "http-status-codes";
 import { getChallengeResponse } from "../src/webhook-listener-helpers";
-require("../src/utils/config");
+require("../src/config");
 
 export default async (
   req: VercelRequest,
