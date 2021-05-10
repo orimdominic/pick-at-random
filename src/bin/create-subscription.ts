@@ -11,7 +11,7 @@ import * as readline from "readline";
 const rl = readline.createInterface(process.stdin, process.stdout);
 import * as util from "util";
 import * as request from "request";
-require("../utils/config");
+require("../config");
 
 const post = util.promisify(request.post);
 

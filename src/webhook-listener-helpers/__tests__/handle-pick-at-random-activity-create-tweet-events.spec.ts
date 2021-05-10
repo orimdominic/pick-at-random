@@ -1,4 +1,4 @@
-require("../../utils/config");
+require("../../config");
 
 import {
   ITweet,

@@ -7,3 +7,4 @@ export * from "./IDirectMessageEvent";
 export * from "./get-challenge-response";
 export * from "./handle-pick-at-random-activity";
 export * from "./handle-pick-at-random-tweet-create-events";
+export * from "./par-twitter-client";

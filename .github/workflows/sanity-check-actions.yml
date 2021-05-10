@@ -21,9 +21,10 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     env:
-      TWITTER_CONSUMER_SECRET: "secret"
-      TEST_CRC_TOKEN: "crc_token"
-      TEST_CRC_RESPONSE: "sha256=gjiQ6uetgi4t5/+6PvFeAZ+idQ6rmuAfSEo3PnF6QV8="
+      TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
+      TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
+      TEST_CRC_TOKEN: ${{ secrets.TEST_CRC_TOKEN }}
+      TEST_CRC_RESPONSE: ${{ secrets.TEST_CRC_RESPONSE }}
       PICKATRANDOM_SCREEN_NAME: ${{ secrets.PICKATRANDOM_SCREEN_NAME }}
       PICKATRANDOM_USERID: ${{ secrets.PICKATRANDOM_USERID }}
     steps:

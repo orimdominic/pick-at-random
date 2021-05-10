@@ -8,7 +8,7 @@
     "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
-    "lib": ["es2017"],
+    "lib": ["es2017", "DOM"], // https://github.com/draftbit/twitter-lite/issues/135
     "forceConsistentCasingInFileNames": true,
     "removeComments": true
   },

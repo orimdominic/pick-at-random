@@ -1,4 +1,4 @@
-require("../../utils/config");
+require("../../config");
 import { VercelResponse } from "@vercel/node";
 import {
   setPickAtRandomAccountActivityHandler,
