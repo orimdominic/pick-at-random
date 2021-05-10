@@ -34,10 +34,10 @@ export default async (
     case "post": {
       try {
         await handleParActivity(req.body, res);
-        res.status(StatusCodes.OK).send(null)
+        res.status(StatusCodes.OK).send(null);
       } catch (error) {
         console.error(error);
-        return res.status(StatusCodes.BAD_REQUEST).send(error)
+        return res.status(StatusCodes.BAD_REQUEST).send(error);
       }
       return res.status(StatusCodes.BAD_REQUEST).send("");
     }
