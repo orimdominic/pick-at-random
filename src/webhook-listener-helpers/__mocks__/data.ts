@@ -1,3 +1,7 @@
+/* eslint-disable */
+
+import { VercelResponse } from "@vercel/node";
+
 export const nonCommandTweetEvent = {
   for_user_id: "1364541567894224902",
   user_has_blocked: false,
@@ -185,6 +189,12 @@ export const commandTweetEvent = {
     },
   ],
 };
+
+export const mockVercelResponse = {
+  send: (body: any) => mockVercelResponse as VercelResponse,
+  json: (jsonBody: any) => mockVercelResponse as VercelResponse,
+  status: (statusCode: number) => mockVercelResponse as VercelResponse,
+} as VercelResponse;
 
 export const mockTweet = {
   created_at: "date",

@@ -1,9 +1,5 @@
 import { VercelResponse } from "@vercel/node";
-import {
-  IActivity,
-  handlePickAtRandomTweetCreateEvents,
-  parTwitterClient,
-} from ".";
+import { IActivity, handlePickAtRandomTweetCreateEvents } from ".";
 /**
  * Set dependencies for handlePickAtRandomAccountActivity
  */

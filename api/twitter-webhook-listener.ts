@@ -1,7 +1,15 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { StatusCodes, getReasonPhrase } from "http-status-codes";
-import { getChallengeResponse } from "../src/webhook-listener-helpers";
+import {
+  getChallengeResponse,
+  setPickAtRandomAccountActivityHandler,
+  handlePickAtRandomTweetCreateEvents,
+} from "../src/webhook-listener-helpers";
 require("../src/config");
+
+const handleParActivity = setPickAtRandomAccountActivityHandler(
+  handlePickAtRandomTweetCreateEvents
+);
 
 export default async (
   req: VercelRequest,
@@ -14,11 +22,22 @@ export default async (
         const { crc_token } = req.query;
         if (typeof crc_token === "string" && crc_token.length) {
           return res.status(StatusCodes.OK).json({
-            response_token: getChallengeResponse(crc_token as string),
+            response_token: getChallengeResponse(crc_token),
           });
         }
       } catch (error) {
         return res.status(StatusCodes.BAD_REQUEST).send("");
+      }
+      return res.status(StatusCodes.BAD_REQUEST).send("");
+    }
+
+    case "post": {
+      try {
+        await handleParActivity(req.body, res);
+        res.status(StatusCodes.OK).send(null)
+      } catch (error) {
+        console.error(error);
+        return res.status(StatusCodes.BAD_REQUEST).send(error)
       }
       return res.status(StatusCodes.BAD_REQUEST).send("");
     }
