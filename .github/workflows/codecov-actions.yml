@@ -1,11 +1,5 @@
 name: code coverage
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+on: [push]
 jobs:
   code-coverage-tests:
     runs-on: ubuntu-latest
