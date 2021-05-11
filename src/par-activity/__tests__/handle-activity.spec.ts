@@ -8,7 +8,7 @@ import {
 import { mockTweet } from "../__mocks__/data";
 
 describe("handleParActivity", () => {
-  let handleParActivity: (activity: IActivity) => Promise<boolean>
+  let handleParActivity: (activity: IActivity) => Promise<boolean>;
 
   const mockHandleTweetCreate = jest.fn(handleTweetCreate);
 

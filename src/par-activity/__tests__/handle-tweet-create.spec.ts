@@ -10,10 +10,7 @@ import {
   isPickCommand,
   handleTweetCreate,
 } from "..";
-import {
-  mockRealMention,
-  mockTweet,
-} from "../__mocks__/data";
+import { mockRealMention, mockTweet } from "../__mocks__/data";
 
 describe("isRealMention", () => {
   it("returns false if a tweet is by PickAtRandom", () => {
@@ -128,7 +125,7 @@ describe("handleTweetCreate", () => {
       },
     ];
     const res = await handleTweetCreate(events);
-    expect(res).toBe(false)
+    expect(res).toBe(false);
   });
 
   // TODO: Handle test mock for asserting that `handleFeedbackMentions` was called
