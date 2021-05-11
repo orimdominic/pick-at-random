@@ -11,6 +11,9 @@ import {
   handleTweetCreate,
   getEngagementCount,
   EngagementCountErrorMsg,
+  getEngagementType,
+  EngagementType,
+  EngagementTypeErrorMsg,
 } from "..";
 import { mockRealMention, mockTweet } from "../__mocks__/data";
 
@@ -120,44 +123,67 @@ describe("isPickCommand", () => {
 
 describe("getEngagementCount", () => {
   it("returns the correct engagement count when passed valid arguments", async () => {
-    let count = await getEngagementCount("4 retweets in one hour");
-    expect(count).toBe(4);
-    count = await getEngagementCount("2 retweets tomorrow");
-    expect(count).toBe(2);
-    count = await getEngagementCount("2.5 retweets tomorrow");
-    expect(count).toBe(2);
-    count = await getEngagementCount("10e retweets tomorrow");
-    expect(count).toBe(10);
+    await expect(getEngagementCount("4 retweets in one hour")).resolves.toBe(4);
+    await expect(getEngagementCount("2 retweets tomorrow")).resolves.toBe(2);
+    await expect(getEngagementCount("2.5 retweets tomorrow")).resolves.toBe(2);
+    await expect(getEngagementCount("10e retweets tomorrow")).resolves.toBe(10);
+    expect.assertions(4);
   });
 
   it("throws an error with the proper message when passed invalid arguments", async () => {
     const inputs = [
       {
-        text: "X retweets in one hour",
-        errMsg: EngagementCountErrorMsg.CannotParseToNumber,
+        val: "X retweets in one hour",
+        err: EngagementCountErrorMsg.CannotParse,
       },
       {
-        text: "-1 retweets in one hour",
-        errMsg: EngagementCountErrorMsg.LessThanOne,
+        val: "-1 retweets in one hour",
+        err: EngagementCountErrorMsg.LessThanOne,
       },
       {
-        text: "0 retweets today",
-        errMsg: EngagementCountErrorMsg.LessThanOne,
+        val: "0 retweets today",
+        err: EngagementCountErrorMsg.LessThanOne,
       },
       {
-        text: "e retweets in tomorrow",
-        errMsg: EngagementCountErrorMsg.CannotParseToNumber,
+        val: "e retweets in tomorrow",
+        err: EngagementCountErrorMsg.CannotParse,
       },
     ];
     for (const input of inputs) {
-      await expect(getEngagementCount(input.text)).rejects.toThrow(input.errMsg);
+      await expect(getEngagementCount(input.val)).rejects.toThrow(input.err);
     }
+  });
+});
 
+describe("getEngagementType", () => {
+  it("returns the correct engagement type if it can be handled", async () => {
+    const inputs = [
+      { val: "2 retweets in one hour", type: EngagementType.Retweet },
+      { val: "5 retw in 4 days", type: EngagementType.Retweet },
+      { val: "5 ret in 4 days", type: EngagementType.Retweet },
+      { val: "5 rets in 4 days", type: EngagementType.Retweet },
+      { val: "5 followers in 4 days", type: EngagementType.Follow },
+      { val: "5 follows in 4 days", type: EngagementType.Follow },
+    ];
+    for (const input of inputs) {
+      await expect(getEngagementType(input.val)).resolves.toBe(input.type);
+    }
+  });
+
+  it("throws an error with the correct error message when passed invalid arguments", async () => {
+    const inputs = [
+      { val: "2 in one hour", err: EngagementTypeErrorMsg.CannotParse },
+      { val: "5 likes in 4 days", err: EngagementTypeErrorMsg.CannotHandle },
+      {val: "5 fav in 4 days", err: EngagementTypeErrorMsg.CannotHandle},
+    ];
+    for (const input of inputs) {
+      await expect(getEngagementType(input.val)).rejects.toThrow(input.err);
+    }
   });
 });
 
 describe("handleTweetCreate", () => {
-  it("should respond with when tweets are not real", async () => {
+  it("returns false when tweets are not real", async () => {
     const events: ITweet[] = [
       {
         ...mockTweet,

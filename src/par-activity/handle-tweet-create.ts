@@ -1,5 +1,9 @@
 import { IRealMentionTweet, ITweet, CommandType, parTwitterClient } from ".";
-import { EngagementCountErrorMsg } from "./constants";
+import {
+  EngagementCountErrorMsg,
+  EngagementType,
+  EngagementTypeErrorMsg,
+} from "./constants";
 
 /**
  * Validates if a mention tweet is a quoted reply and also
@@ -106,17 +110,50 @@ export const handleFeedbackMention = async ({
   return await parTwitterClient.replyMention(id, message, authorName);
 };
 
-export const getEngagementCount = async (text: string): Promise<number> => {
+/**
+ * Extracts and returns the engagement count in a command
+ * tweet
+ * @param {string} text - The command text
+ * @returns {Promise<Number>} The engagement count
+ * @throws {Error}
+ */
+export const getEngagementCount = async (text: string): Promise<Number> => {
   return new Promise((resolve, reject) => {
     const [countStr] = text.split(" ");
     const count = parseInt(countStr.trim(), 10);
     if (Number.isNaN(count)) {
-      reject(new Error(EngagementCountErrorMsg.CannotParseToNumber));
+      reject(new Error(EngagementCountErrorMsg.CannotParse));
     }
     if (count < 1) {
       reject(new Error(EngagementCountErrorMsg.LessThanOne));
     }
     resolve(count);
+  });
+};
+
+/**
+ * Extracts and returns the engagement type from a command
+ * tweet
+ * @param {string} text - The command text
+ * @returns {Promise<string>} The engagement count
+ * @throws {Error}
+ */
+export const getEngagementType = async (text: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const [_, engagementType] = text.split(" ");
+    if (engagementType.trim().length < 3) {
+      reject(new Error(EngagementTypeErrorMsg.CannotParse));
+    }
+    const sub = engagementType.trim().substring(0, 3);
+    switch (sub) {
+      case "ret":
+        resolve(EngagementType.Retweet);
+      case "fol":
+        resolve(EngagementType.Follow);
+      default:
+        // FIXME: When the algorithm for finding replies is developed, include it
+        reject(new Error(EngagementTypeErrorMsg.CannotHandle));
+    }
   });
 };
 
@@ -153,11 +190,12 @@ export async function handleTweetCreate(events: ITweet[]): Promise<boolean> {
     for (const mention of pickCommandMentions) {
       try {
         /*
-        using promise.all for this cos the design pattern helps catch
+        using Promise.all for this cos the design pattern helps catch
         any of the errors in one place and responds adequately
          */
         const [count] = await Promise.all([
           await getEngagementCount(mention.cmdText as string),
+          await getEngagementType(mention.cmdText as string),
         ]);
       } catch (e) {
         console.error(JSON.stringify(e));
