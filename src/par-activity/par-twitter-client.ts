@@ -1,6 +1,5 @@
 import Twitter from "twitter-lite";
-import { TwitterEndpoint } from ".";
-import { ITweet } from "./ITweet";
+import { TwitterEndpoint, ITweet } from ".";
 
 class ParTwitterClient {
   private v1: Twitter;
