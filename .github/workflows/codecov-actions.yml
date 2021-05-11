@@ -1,10 +1,22 @@
 name: code coverage
 on: [push]
 jobs:
-  test:
+  tests:
     runs-on: ubuntu-latest
+    env:
+      TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
+      TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
+      TEST_CRC_TOKEN: ${{ secrets.TEST_CRC_TOKEN }}
+      TEST_CRC_RESPONSE: ${{ secrets.TEST_CRC_RESPONSE }}
+      PICKATRANDOM_SCREEN_NAME: ${{ secrets.PICKATRANDOM_SCREEN_NAME }}
+      PICKATRANDOM_USERID: ${{ secrets.PICKATRANDOM_USERID }}
     steps:
-    - uses: actions/checkout@v2 # Check out your repository
-    - run: yarn # Install dependencies
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+      - run: node -v
+      - run: yarn -v
+      - run: yarn install
     - run: yarn test --coverage # Run test
     - run: bash <(curl -s https://codecov.io/bash) # Upload to Codecov
