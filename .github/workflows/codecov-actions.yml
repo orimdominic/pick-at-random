@@ -1,8 +1,5 @@
-name: Run Test Suites
-on:
-  push:
-    branches:
-      - main
+name: code coverage
+on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest

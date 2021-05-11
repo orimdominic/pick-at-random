@@ -1,4 +1,4 @@
-name: sanity-check
+name: sanity check
 on:
   push:
     branches:
