@@ -114,10 +114,10 @@ export const handleFeedbackMention = async ({
  * Extracts and returns the engagement count in a command
  * tweet
  * @param {string} text - The command text
- * @returns {Promise<Number>} The engagement count
+ * @returns {Promise<number>} The engagement count
  * @throws {Error}
  */
-export const getEngagementCount = async (text: string): Promise<Number> => {
+export const getEngagementCount = async (text: string): Promise<number> => {
   return new Promise((resolve, reject) => {
     const [countStr] = text.split(" ");
     const count = parseInt(countStr.trim(), 10);
@@ -148,8 +148,10 @@ export const getEngagementType = async (text: string): Promise<string> => {
     switch (sub) {
       case "ret":
         resolve(EngagementType.Retweet);
+        break;
       case "fol":
         resolve(EngagementType.Follow);
+        break;
       default:
         // FIXME: When the algorithm for finding replies is developed, include it
         reject(new Error(EngagementTypeErrorMsg.CannotHandle));
