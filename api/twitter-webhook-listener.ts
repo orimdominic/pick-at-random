@@ -23,10 +23,11 @@ export default async (
             response_token: getChallengeResponse(crc_token),
           });
         }
-        return res.status(StatusCodes.BAD_REQUEST).send(getReasonPhrase(StatusCodes.BAD_REQUEST));
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .send(getReasonPhrase(StatusCodes.BAD_REQUEST));
       } catch (error) {
-        console.error(error)
-        return res.status(StatusCodes.BAD_REQUEST).send(getReasonPhrase(StatusCodes.BAD_REQUEST));
+        return res.status(StatusCodes.BAD_REQUEST).send(error);
       }
     }
 

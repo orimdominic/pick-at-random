@@ -9,6 +9,8 @@ import {
   isFeedbackText,
   isPickCommand,
   handleTweetCreate,
+  getEngagementCount,
+  EngagementCountErrorMsg,
 } from "..";
 import { mockRealMention, mockTweet } from "../__mocks__/data";
 
@@ -113,6 +115,44 @@ describe("isPickCommand", () => {
     expect(isPickCommand("3 retweets")).toBe(false);
     expect(isPickCommand("feedback,")).toBe(false);
     expect(isPickCommand("cancel i did not get my picks")).toBe(false);
+  });
+});
+
+describe("getEngagementCount", () => {
+  it("returns the correct engagement count when passed valid arguments", async () => {
+    let count = await getEngagementCount("4 retweets in one hour");
+    expect(count).toBe(4);
+    count = await getEngagementCount("2 retweets tomorrow");
+    expect(count).toBe(2);
+    count = await getEngagementCount("2.5 retweets tomorrow");
+    expect(count).toBe(2);
+    count = await getEngagementCount("10e retweets tomorrow");
+    expect(count).toBe(10);
+  });
+
+  it("throws an error with the proper message when passed invalid arguments", async () => {
+    const inputs = [
+      {
+        text: "X retweets in one hour",
+        errMsg: EngagementCountErrorMsg.CannotParseToNumber,
+      },
+      {
+        text: "-1 retweets in one hour",
+        errMsg: EngagementCountErrorMsg.LessThanOne,
+      },
+      {
+        text: "0 retweets today",
+        errMsg: EngagementCountErrorMsg.LessThanOne,
+      },
+      {
+        text: "e retweets in tomorrow",
+        errMsg: EngagementCountErrorMsg.CannotParseToNumber,
+      },
+    ];
+    for (const input of inputs) {
+      await expect(getEngagementCount(input.text)).rejects.toThrow(input.errMsg);
+    }
+
   });
 });
 
