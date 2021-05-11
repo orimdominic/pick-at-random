@@ -1,4 +1,9 @@
 import { IRealMentionTweet, ITweet, CommandType, parTwitterClient } from ".";
+import {
+  EngagementCountErrorMsg,
+  EngagementType,
+  EngagementTypeErrorMsg,
+} from "./constants";
 
 /**
  * Validates if a mention tweet is a quoted reply and also
@@ -64,14 +69,6 @@ export const setCommandText = (tweet: IRealMentionTweet): IRealMentionTweet => {
   };
 };
 
-export const handleFeedbackMention = async ({
-  authorName,
-  id,
-}: IRealMentionTweet): Promise<ITweet> => {
-  const message = "Feedback received. Thanks!";
-  return await parTwitterClient.replyMention(id, message, authorName);
-};
-
 /**
  * Determines if a command text is a cancel text
  * @param {string} text - The command text
@@ -102,6 +99,67 @@ export const isPickCommand = (text: string): boolean => {
 };
 
 /**
+ * @param {IRealMentionTweet} mention - The mention tweet to handle
+ * @returns { Promise<ITweet>}
+ */
+export const handleFeedbackMention = async ({
+  authorName,
+  id,
+}: IRealMentionTweet): Promise<ITweet> => {
+  const message = "Feedback received. Thanks!";
+  return await parTwitterClient.replyMention(id, message, authorName);
+};
+
+/**
+ * Extracts and returns the engagement count in a command
+ * tweet
+ * @param {string} text - The command text
+ * @returns {Promise<number>} The engagement count
+ * @throws {Error}
+ */
+export const getEngagementCount = async (text: string): Promise<number> => {
+  return new Promise((resolve, reject) => {
+    const [countStr] = text.split(" ");
+    const count = parseInt(countStr.trim(), 10);
+    if (Number.isNaN(count)) {
+      reject(new Error(EngagementCountErrorMsg.CannotParse));
+    }
+    if (count < 1) {
+      reject(new Error(EngagementCountErrorMsg.LessThanOne));
+    }
+    resolve(count);
+  });
+};
+
+/**
+ * Extracts and returns the engagement type from a command
+ * tweet
+ * @param {string} text - The command text
+ * @returns {Promise<string>} The engagement count
+ * @throws {Error}
+ */
+export const getEngagementType = async (text: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const [_, engagementType] = text.split(" ");
+    if (engagementType.trim().length < 3) {
+      reject(new Error(EngagementTypeErrorMsg.CannotParse));
+    }
+    const sub = engagementType.trim().substring(0, 3);
+    switch (sub) {
+      case "ret":
+        resolve(EngagementType.Retweet);
+        break;
+      case "fol":
+        resolve(EngagementType.Follow);
+        break;
+      default:
+        // FIXME: When the algorithm for finding replies is developed, include it
+        reject(new Error(EngagementTypeErrorMsg.CannotHandle));
+    }
+  });
+};
+
+/**
  * Handles tweet_create_events for the PickAtRandom Twitter account
  */
 export async function handleTweetCreate(events: ITweet[]): Promise<boolean> {
@@ -120,18 +178,35 @@ export async function handleTweetCreate(events: ITweet[]): Promise<boolean> {
   }
   if (feedbackMentions.length) {
     // handle feedback
-    for (const feedback of feedbackMentions) {
+    for (const mention of feedbackMentions) {
       try {
-        await handleFeedbackMention(feedback);
+        await handleFeedbackMention(mention);
       } catch (err) {
         console.error("handleFeedbackMentionError".toUpperCase(), err);
-        // Sentry records error
+        // TODO: Report failure metric
       }
     }
   }
 
-  if (pickCommandMentions) {
-    // handle pick commands
+  if (pickCommandMentions.length) {
+    for (const mention of pickCommandMentions) {
+      try {
+        /*
+        using Promise.all for this cos the design pattern helps catch
+        any of the errors in one place and responds adequately
+         */
+        const [count] = await Promise.all([
+          await getEngagementCount(mention.cmdText as string),
+          await getEngagementType(mention.cmdText as string),
+        ]);
+      } catch (e) {
+        console.error(JSON.stringify(e));
+        console.error(`make selection request for "${mention.id}" failed`);
+        const { id, authorName } = mention;
+        await parTwitterClient.replyMention(id, `${e.message}`, authorName);
+        // TODO: Report failure metric
+      }
+    }
   }
   return true;
 }
