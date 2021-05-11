@@ -1,4 +1,4 @@
-import { getChallengeResponse } from "../index";
+import { getChallengeResponse } from "..";
 
 describe("getChallengeResponse", () => {
   it("returns the correct challenge response from a crc token", () => {
