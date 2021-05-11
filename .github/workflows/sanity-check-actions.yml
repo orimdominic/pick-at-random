@@ -16,6 +16,7 @@ jobs:
           node-version: "14"
       - run: node -v
       - run: yarn -v
+      - run: yarn install
       - run: yarn sanity-check
   tests:
     runs-on: ubuntu-latest
