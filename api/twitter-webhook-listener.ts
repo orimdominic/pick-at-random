@@ -1,15 +1,13 @@
+require("../src/config");
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { StatusCodes, getReasonPhrase } from "http-status-codes";
 import {
   getChallengeResponse,
-  setPickAtRandomAccountActivityHandler,
-  handlePickAtRandomTweetCreateEvents,
-} from "../src/webhook-listener-helpers";
-require("../src/config");
+  setParActivityHandler,
+  handleTweetCreate,
+} from "../src/par-activity";
 
-const handleParActivity = setPickAtRandomAccountActivityHandler(
-  handlePickAtRandomTweetCreateEvents
-);
+const handleParActivity = setParActivityHandler(handleTweetCreate);
 
 export default async (
   req: VercelRequest,
@@ -33,7 +31,7 @@ export default async (
 
     case "post": {
       try {
-        await handleParActivity(req.body, res);
+        await handleParActivity(req.body);
         res.status(StatusCodes.OK).send(null);
       } catch (error) {
         console.error(error);
