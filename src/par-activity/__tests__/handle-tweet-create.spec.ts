@@ -174,7 +174,7 @@ describe("getEngagementType", () => {
     const inputs = [
       { val: "2 in one hour", err: EngagementTypeErrorMsg.CannotParse },
       { val: "5 likes in 4 days", err: EngagementTypeErrorMsg.CannotHandle },
-      {val: "5 fav in 4 days", err: EngagementTypeErrorMsg.CannotHandle},
+      { val: "5 fav in 4 days", err: EngagementTypeErrorMsg.CannotHandle },
     ];
     for (const input of inputs) {
       await expect(getEngagementType(input.val)).rejects.toThrow(input.err);
