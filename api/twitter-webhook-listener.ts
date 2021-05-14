@@ -18,14 +18,9 @@ export default async (
     case "get": {
       try {
         const { crc_token } = req.query;
-        if (typeof crc_token === "string" && crc_token.length) {
-          return res.status(StatusCodes.OK).json({
-            response_token: getChallengeResponse(crc_token),
-          });
-        }
-        return res
-          .status(StatusCodes.BAD_REQUEST)
-          .send(getReasonPhrase(StatusCodes.BAD_REQUEST));
+        return res.status(StatusCodes.OK).json({
+          response_token: getChallengeResponse(crc_token.toString()),
+        });
       } catch (error) {
         return res.status(StatusCodes.BAD_REQUEST).send(error);
       }
