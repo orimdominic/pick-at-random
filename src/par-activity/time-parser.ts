@@ -12,7 +12,6 @@ import {
   Refiner,
   Parser,
   Meridiem,
-  ParsedComponents,
 } from "chrono-node";
 const customChronoParser = casual.clone();
 
@@ -109,6 +108,7 @@ const combineDateAndTime: Refiner = {
 const hrsMinsParser: Parser = {
   pattern: () => /(\d+)\s*hrs?(\s+(\d+)\s*min(s|ute|utes)?)?/i, // Match a pattern like "in 22hrs (30 mins)"
   extract: ({ refDate, createParsingResult }, match) => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     let dateMoment = require("moment")(refDate);
     dateMoment = dateMoment.add(match[1], "hours");
     dateMoment = dateMoment.add(match[3], "minutes");

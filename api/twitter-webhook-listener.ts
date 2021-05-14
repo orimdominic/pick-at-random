@@ -38,8 +38,8 @@ export default async (
 
     default: {
       return res
-        .status(StatusCodes.METHOD_NOT_ALLOWED)
-        .send(getReasonPhrase(StatusCodes.METHOD_NOT_ALLOWED));
+        .status(StatusCodes.NOT_IMPLEMENTED)
+        .send(getReasonPhrase(StatusCodes.NOT_IMPLEMENTED));
     }
   }
 };

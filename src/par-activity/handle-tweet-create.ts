@@ -45,7 +45,7 @@ export async function handleTweetCreate(
         const [count, engagementType, selectionDateStr] = await Promise.all([
           await service.getEngagementCount(mention.cmdText as string),
           await service.getEngagementType(mention.cmdText as string),
-          await service.getSelectionDate(mention)
+          await service.getSelectionDate(mention),
         ]);
       } catch (e) {
         console.error(JSON.stringify(e));
