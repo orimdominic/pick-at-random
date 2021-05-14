@@ -4,11 +4,12 @@ import {
   handleTweetCreate,
   IActivity,
   ITweet,
+  handleTweetCreateService,
 } from "..";
 import { mockTweet } from "../__mocks__/data";
 
 describe("handleParActivity", () => {
-  let handleParActivity: (activity: IActivity) => Promise<boolean>;
+  let handleParActivity: (activity: IActivity) => Promise<undefined>;
 
   const mockHandleTweetCreate = jest.fn(handleTweetCreate);
 
@@ -16,12 +17,12 @@ describe("handleParActivity", () => {
     handleParActivity = setParActivityHandler(mockHandleTweetCreate);
   });
 
-  it("should return false when event is not for @PickAtRandom", async () => {
+  it("should return undefined when event is not for @PickAtRandom", async () => {
     const ev = {
       for_user_id: "WRONG_PICKATRANDOMID",
     } as IActivity;
     const res = await handleParActivity(ev);
-    expect(res).toBe(false);
+    expect(res).toBe(undefined);
   });
 
   it("should execute `handlePickAtRandomTweetCreateEvents` when the activity is a tweet create event", async () => {
@@ -34,6 +35,9 @@ describe("handleParActivity", () => {
     await handleParActivity(ev);
     expect(mockHandleTweetCreate).toBeCalled();
     expect(mockHandleTweetCreate).toHaveBeenCalledTimes(1);
-    expect(mockHandleTweetCreate).toHaveBeenCalledWith(ev.tweet_create_events);
+    expect(mockHandleTweetCreate).toHaveBeenCalledWith(
+      ev.tweet_create_events,
+      handleTweetCreateService
+    );
   });
 });

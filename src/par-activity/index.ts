@@ -4,6 +4,7 @@ export * from "./IDirectMessageEvent";
 export * from "./ITweet";
 export * from "./ITweetEntityUrl";
 export * from "./IUser";
+export * as handleTweetCreateService from "./handle-tweet-create.service";
 export * from "./get-challenge-response";
 export * from "./handle-tweet-create";
 export * from "./par-twitter-client";
