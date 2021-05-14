@@ -43,10 +43,12 @@ describe("twitter webhook listener", () => {
       },
     } as unknown) as VercelRequest;
     const mockRes = createResponse();
-    const mockStatusFn = jest.spyOn(mockRes, "status")
-    const mockSendFn = jest.spyOn(mockRes, "send")
+    const mockStatusFn = jest.spyOn(mockRes, "status");
+    const mockSendFn = jest.spyOn(mockRes, "send");
     await twitterWebhookLambda(mockReq, mockRes);
     expect(mockStatusFn).toHaveBeenCalledWith(StatusCodes.NOT_IMPLEMENTED);
-    expect(mockSendFn).toHaveBeenCalledWith(getReasonPhrase(StatusCodes.NOT_IMPLEMENTED))
-  })
+    expect(mockSendFn).toHaveBeenCalledWith(
+      getReasonPhrase(StatusCodes.NOT_IMPLEMENTED)
+    );
+  });
 });

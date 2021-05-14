@@ -7,12 +7,7 @@
  * Borrows heavily from shalvah/RemindMeOfThisTweet timeparser.js
  * at https://github.com/shalvah/RemindMeOfThisTweet/blob/master/src/timeparser.js
  */
-import {
-  casual,
-  Refiner,
-  Parser,
-  Meridiem,
-} from "chrono-node";
+import { casual, Refiner, Parser, Meridiem } from "chrono-node";
 const customChronoParser = casual.clone();
 
 /**
