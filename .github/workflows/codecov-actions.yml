@@ -18,5 +18,5 @@ jobs:
       - run: node -v
       - run: yarn -v
       - run: yarn install
-      - run: yarn test --coverage # Run test
+      - run: yarn test:codecov
       - run: bash <(curl -s https://codecov.io/bash) # Upload to Codecov
