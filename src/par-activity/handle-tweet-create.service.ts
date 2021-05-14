@@ -5,8 +5,9 @@ import {
   EngagementCountErrorMsg,
   EngagementType,
   EngagementTypeErrorMsg,
-  parTwitterClient,
 } from ".";
+
+import {parTwitterClient} from "./par-twitter-client"
 
 /**
  * Validates if a mention tweet is a quoted reply and also
