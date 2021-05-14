@@ -42,9 +42,10 @@ export async function handleTweetCreate(
         any of the errors in one place and responds adequately
          */
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [count, engagementType] = await Promise.all([
+        const [count, engagementType, selectionDateStr] = await Promise.all([
           await service.getEngagementCount(mention.cmdText as string),
           await service.getEngagementType(mention.cmdText as string),
+          await service.getSelectionDate(mention),
         ]);
       } catch (e) {
         console.error(JSON.stringify(e));

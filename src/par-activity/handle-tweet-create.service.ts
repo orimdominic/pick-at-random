@@ -5,8 +5,11 @@ import {
   EngagementCountErrorMsg,
   EngagementType,
   EngagementTypeErrorMsg,
-  parTwitterClient,
+  TimeParserError,
 } from ".";
+
+import { parTwitterClient } from "./par-twitter-client";
+import { customChronoParser as timeParser } from "./time-parser";
 
 /**
  * Validates if a mention tweet is a quoted reply and also
@@ -125,10 +128,10 @@ export const getEngagementCount = async (text: string): Promise<number> => {
     const [countStr] = text.split(" ");
     const count = parseInt(countStr.trim(), 10);
     if (Number.isNaN(count)) {
-      reject(new Error(EngagementCountErrorMsg.CannotParse));
+      return reject(new Error(EngagementCountErrorMsg.CannotParse));
     }
     if (count < 1) {
-      reject(new Error(EngagementCountErrorMsg.LessThanOne));
+      return reject(new Error(EngagementCountErrorMsg.LessThanOne));
     }
     resolve(count);
   });
@@ -145,15 +148,12 @@ export const getEngagementType = async (text: string): Promise<string> => {
   return new Promise((resolve, reject) => {
     const [, engagementType] = text.split(" ");
     if (engagementType.trim().length < 3) {
-      reject(new Error(EngagementTypeErrorMsg.CannotParse));
+      return reject(new Error(EngagementTypeErrorMsg.CannotParse));
     }
     const sub = engagementType.trim().substring(0, 3);
     switch (sub) {
       case "ret":
         resolve(EngagementType.Retweet);
-        break;
-      case "fol":
-        resolve(EngagementType.Follow);
         break;
       default:
         // FIXME: When the algorithm for finding replies is developed, include it
@@ -162,4 +162,24 @@ export const getEngagementType = async (text: string): Promise<string> => {
   });
 };
 
+export const getSelectionDate = async ({
+  cmdText,
+  createdAt,
+}: IRealMentionTweet): Promise<Date> => {
+  // this snippet of code runs on vibes and insha Allah. lol
+  // converting human language to computer language is a feat!
+  return new Promise((resolve, reject) => {
+    const refDate = new Date(createdAt);
+    const selectionDateStr = timeParser.parseDate(cmdText as string, refDate, {
+      forwardDate: true,
+    }); // returns either a date string or null
+    if (!selectionDateStr) {
+      return reject(new Error(TimeParserError.NullValue));
+    }
+    if (new Date(selectionDateStr).getTime() < Date.now()) {
+      return reject(new Error(TimeParserError.PastDate));
+    }
+    return resolve(selectionDateStr);
+  });
+};
 export { parTwitterClient };

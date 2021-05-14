@@ -7,5 +7,4 @@ export * from "./IUser";
 export * as handleTweetCreateService from "./handle-tweet-create.service";
 export * from "./get-challenge-response";
 export * from "./handle-tweet-create";
-export * from "./par-twitter-client";
 export * from "./handle-activity";
