@@ -7,6 +7,7 @@ import {
   EngagementType,
   EngagementTypeErrorMsg,
 } from "..";
+import { TimeParserError } from "../constants";
 import { mockRealMention, mockTweet } from "../__mocks__/data";
 
 const {
@@ -18,6 +19,7 @@ const {
   isPickCommand,
   setRealMention,
   setCommandText,
+  getSelectionDate,
 } = handleTweetCreateService;
 
 describe("handleTweetCreateService", () => {
@@ -172,8 +174,6 @@ describe("handleTweetCreateService", () => {
         { val: "5 retw in 4 days", type: EngagementType.Retweet },
         { val: "5 ret in 4 days", type: EngagementType.Retweet },
         { val: "5 rets in 4 days", type: EngagementType.Retweet },
-        { val: "5 followers in 4 days", type: EngagementType.Follow },
-        { val: "5 follows in 4 days", type: EngagementType.Follow },
       ];
       for (const input of inputs) {
         await expect(getEngagementType(input.val)).resolves.toBe(input.type);
@@ -188,6 +188,81 @@ describe("handleTweetCreateService", () => {
       ];
       for (const input of inputs) {
         await expect(getEngagementType(input.val)).rejects.toThrow(input.err);
+      }
+    });
+  });
+
+  describe("getSelectionDate", () => {
+    const refDate = "Sat May 01 12:00 +0000 2021";
+
+    it("returns the correct selection date on valid inputs", async () => {
+      const vals = [
+        {
+          ...mockRealMention,
+          cmdText: "3 retweets in january",
+          createdAt: refDate,
+          date: 1,
+          month: 0,
+          year: 2022,
+        },
+        {
+          ...mockRealMention,
+          cmdText: "3 retweets on february 4",
+          createdAt: refDate,
+          date: 4,
+          month: 1,
+          year: 2022,
+        },
+        {
+          ...mockRealMention,
+          cmdText: "3 retweets in mar",
+          createdAt: refDate,
+          date: 1,
+          month: 2,
+          year: 2022,
+        },
+        {
+          ...mockRealMention,
+          cmdText: "3 retweets three months from now",
+          createdAt: refDate,
+          date: 1,
+          month: 7,
+          year: 2021,
+        },
+        {
+          ...mockRealMention,
+          cmdText: "3 retweets in three months",
+          createdAt: refDate,
+          date: 1,
+          month: 7,
+          year: 2021,
+        },
+      ];
+      for (const val of vals) {
+        const parsedDate = await getSelectionDate(val);
+        expect(parsedDate.getDate()).toBe(val.date);
+        expect(parsedDate.getMonth()).toBe(val.month);
+        expect(parsedDate.getFullYear()).toBe(val.year);
+      }
+    });
+
+    it("throws the correct errors when passed an invalid/indecipherable date", async () => {
+      const vals = [
+        {
+          ...mockRealMention,
+          cmdText: "3 retweets in",
+          createdAt: refDate,
+          err: TimeParserError.NullValue,
+        },
+        {
+          ...mockRealMention,
+          cmdText: "3 retweets last year",
+          createdAt: refDate,
+          err: TimeParserError.PastDate,
+        },
+      ];
+      for (const val of vals) {
+        await expect(getSelectionDate(val)).rejects.toThrowError(val.err);
       }
     });
   });

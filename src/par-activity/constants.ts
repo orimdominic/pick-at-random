@@ -20,6 +20,13 @@ export enum EngagementType {
 
 export enum EngagementTypeErrorMsg {
   CannotParse = `Uh oh 😟! I couldn't decipher the engagement type you provided.
-  Could you try again with any of 'retweets'/'followers'`,
-  CannotHandle = `Uh oh 😟! I cannot handle picks for that engagement type for now. Can you try again with 'retweets'/'follows'?`,
+  Could you try again with 'retweets'`,
+  CannotHandle = `Uh oh 😟! I can handle only 'retweets' for now. Other engagement types are under construction 🤖🏗`,
+}
+
+export enum TimeParserError {
+  NullValue = `Oh my. 😟 I couldn't decipher the date you submitted.
+  Could you please try again with a more specific date? 🙏`,
+  PastDate = `Uh oh. I understand the date you submitted as being in the past.
+  If this is false, please leave a feedback with a link to the tweet, otherwise, please provide a clearer date 🙂`,
 }
