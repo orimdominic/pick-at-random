@@ -6,6 +6,5 @@ module.exports = {
   moduleFileExtensions: ["ts", "js"],
   testEnvironment: "node",
   testPathIgnorePatterns: ["/node_modules/", "/build/"],
-  collectCoverage: true,
   coverageReporters: ["html", "lcov"],
 };
