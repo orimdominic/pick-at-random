@@ -34,4 +34,13 @@ describe("twitter webhook listener", () => {
     await twitterWebhookLambda(mockReq, mockRes);
     expect(mockRes._getJSONData()).toHaveProperty("response_token");
   });
+
+  it("[XXX /] should return 501 if req.method is not handled", async () => {
+    const mockReq = ({
+      method: "XXX",
+    } as unknown) as VercelRequest;
+    const mockRes = createResponse();
+    await twitterWebhookLambda(mockReq, mockRes);
+    expect(mockRes._getStatusCode()).toBe(StatusCodes.NOT_IMPLEMENTED);
+  });
 });

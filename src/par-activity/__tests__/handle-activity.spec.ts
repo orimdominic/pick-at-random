@@ -3,7 +3,6 @@ import {
   setParActivityHandler,
   handleTweetCreate,
   IActivity,
-  ITweet,
   handleTweetCreateService,
 } from "..";
 import { mockTweet } from "../__mocks__/data";
@@ -28,12 +27,11 @@ describe("handleParActivity", () => {
   it("should execute `handlePickAtRandomTweetCreateEvents` when the activity is a tweet create event", async () => {
     const ev: IActivity = {
       for_user_id: process.env.PICKATRANDOM_USERID as string,
-      tweet_create_events: [mockTweet] as ITweet[],
+      tweet_create_events: [mockTweet],
       source: "",
       target: "",
     };
     await handleParActivity(ev);
-    expect(mockHandleTweetCreate).toBeCalled();
     expect(mockHandleTweetCreate).toHaveBeenCalledTimes(1);
     expect(mockHandleTweetCreate).toHaveBeenCalledWith(
       ev.tweet_create_events,
