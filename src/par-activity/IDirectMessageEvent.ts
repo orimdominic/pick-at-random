@@ -1,5 +1,3 @@
-import { ITweetEntityUrl } from "./ITweetEntityUrl";
-
 export interface IDirectMessageEvent {
   type: string;
   id: string;
@@ -15,9 +13,6 @@ export interface IDirectMessageEvent {
     source_app_id: string;
     message_data: {
       text: string;
-      entities: {
-        urls: ITweetEntityUrl[];
-      };
     };
   };
 }
