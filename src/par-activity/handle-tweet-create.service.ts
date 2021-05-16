@@ -5,7 +5,8 @@ import {
   EngagementCountErrorMsg,
   EngagementType,
   EngagementTypeErrorMsg,
-  TimeParserError,
+  TimeParserErrorMsg,
+  SelectionTweetIdErrorMsg,
 } from ".";
 
 import { parTwitterClient } from "./par-twitter-client";
@@ -49,7 +50,6 @@ export const setRealMention = (tweet: ITweet): IRealMentionTweet => {
     authorId: tweet.user.id_str,
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     text: tweet.truncated ? tweet.extended_tweet!.full_text : tweet.text,
-    urls: tweet.entities.urls,
   };
 };
 
@@ -162,6 +162,12 @@ export const getEngagementType = async (text: string): Promise<string> => {
   });
 };
 
+/**
+ * Parses and extracts the date for the random pick from the mention tweet
+ * @param {IRealMentionTweet}
+ * @returns {Promise<Date>} The date for the random selection e.g "2021-05-01T05:30:06.000Z"
+ * @throws {Error} if the date in the tweet is in the past or invalid
+ */
 export const getSelectionDate = async ({
   cmdText,
   createdAt,
@@ -174,12 +180,28 @@ export const getSelectionDate = async ({
       forwardDate: true,
     }); // returns either a date string or null
     if (!selectionDateStr) {
-      return reject(new Error(TimeParserError.NullValue));
+      return reject(new Error(TimeParserErrorMsg.NullValue));
     }
     if (new Date(selectionDateStr).getTime() < Date.now()) {
-      return reject(new Error(TimeParserError.PastDate));
+      return reject(new Error(TimeParserErrorMsg.PastDate));
     }
     return resolve(selectionDateStr);
+  });
+};
+
+/**
+ * Get the tweet id to make a random selection for
+ * @param {IRealMentionTweet}
+ * @returns {Promise<string>} The id of the tweet that was replied to
+ * @throws {Error} if the reply tweet id is null
+ */
+export const getSelectionTweetId = async ({
+  refTweetId,
+}: IRealMentionTweet): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    return !refTweetId
+      ? reject(new Error(SelectionTweetIdErrorMsg.NoneFound))
+      : resolve(refTweetId);
   });
 };
 export { parTwitterClient };

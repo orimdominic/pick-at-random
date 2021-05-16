@@ -24,9 +24,15 @@ export enum EngagementTypeErrorMsg {
   CannotHandle = `Uh oh 😟! I can handle only 'retweets' for now. Other engagement types are under construction 🤖🏗`,
 }
 
-export enum TimeParserError {
+export enum TimeParserErrorMsg {
   NullValue = `Oh my. 😟 I couldn't decipher the date you submitted.
   Could you please try again with a more specific date? 🙏`,
   PastDate = `Uh oh. I understand the date you submitted as being in the past.
   If this is false, please leave a feedback with a link to the tweet, otherwise, please provide a clearer date 🙂`,
+}
+
+export enum SelectionTweetIdErrorMsg {
+  NoneFound = `Sorry, I couldn't find the tweet that you want random selections for.
+  I will find it if you make your request as a reply to the tweet that you want random selections for.
+  Cheers!`,
 }

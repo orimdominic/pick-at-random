@@ -41,12 +41,20 @@ export async function handleTweetCreate(
         using Promise.all for this cos the design pattern helps catch
         any of the errors in one place and responds adequately
          */
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [count, engagementType, selectionDateStr] = await Promise.all([
+        // eslint-disable @typescript-eslint/no-unused-vars
+        const [
+          count,
+          engagementType,
+          selectionDateStr,
+          selectionTweetId,
+        ] = await Promise.all([
           await service.getEngagementCount(mention.cmdText as string),
           await service.getEngagementType(mention.cmdText as string),
           await service.getSelectionDate(mention),
+          await service.getSelectionTweetId(mention),
         ]);
+        // TODO: Persist necessary data to db
+        // TODO: Reply to tweet
       } catch (e) {
         console.error(JSON.stringify(e));
         console.error(`make selection request for "${mention.id}" failed`);
