@@ -6,8 +6,9 @@ import {
   EngagementCountErrorMsg,
   EngagementType,
   EngagementTypeErrorMsg,
+  TimeParserErrorMsg,
+  SelectionTweetIdErrorMsg,
 } from "..";
-import { TimeParserError } from "../constants";
 import { mockRealMention, mockTweet } from "../__mocks__/data";
 
 const {
@@ -20,6 +21,7 @@ const {
   setRealMention,
   setCommandText,
   getSelectionDate,
+  getSelectionTweetId,
 } = handleTweetCreateService;
 
 describe("handleTweetCreateService", () => {
@@ -252,18 +254,38 @@ describe("handleTweetCreateService", () => {
           ...mockRealMention,
           cmdText: "3 retweets in",
           createdAt: refDate,
-          err: TimeParserError.NullValue,
+          err: TimeParserErrorMsg.NullValue,
         },
         {
           ...mockRealMention,
           cmdText: "3 retweets last year",
           createdAt: refDate,
-          err: TimeParserError.PastDate,
+          err: TimeParserErrorMsg.PastDate,
         },
       ];
       for (const val of vals) {
         await expect(getSelectionDate(val)).rejects.toThrowError(val.err);
       }
+    });
+  });
+
+  describe("getSelectionTweetId", () => {
+    it("throws the correct error if the mention is not a reply", async () => {
+      expect.assertions(1);
+      const m: IRealMentionTweet = { ...mockRealMention, refTweetId: null };
+      await expect(getSelectionTweetId(m)).rejects.toThrowError(
+        SelectionTweetIdErrorMsg.NoneFound
+      );
+    });
+
+    it("returns the id of the tweet replied to if the mention is a reply", async () => {
+      expect.assertions(1);
+      const inReplyTo = "ref_tweet_id";
+      const m: IRealMentionTweet = {
+        ...mockRealMention,
+        refTweetId: inReplyTo,
+      };
+      await expect(getSelectionTweetId(m)).resolves.toBe(inReplyTo);
     });
   });
 });

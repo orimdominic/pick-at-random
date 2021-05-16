@@ -211,9 +211,6 @@ export const mockTweet = {
     id_str: "string",
     screen_name: "string",
   },
-  entities: {
-    urls: [],
-  },
 };
 
 export const mockRealMention = {
@@ -223,5 +220,4 @@ export const mockRealMention = {
   authorName: "string",
   authorId: "string",
   text: "string",
-  urls: [],
 };

@@ -1,6 +1,4 @@
 import { IUser } from ".";
-import { ITweetEntityUrl } from "./ITweetEntityUrl";
-
 export interface ITweet {
   created_at: string;
   id_str: string;
@@ -12,9 +10,6 @@ export interface ITweet {
   retweeted_status: { text: string } | null;
   is_quote_status: { text: string } | null;
   user: IUser;
-  entities: {
-    urls: ITweetEntityUrl[];
-  };
 }
 
 export interface IRealMentionTweet {
@@ -25,5 +20,4 @@ export interface IRealMentionTweet {
   authorId: string;
   text: string;
   cmdText?: string;
-  urls: ITweetEntityUrl[];
 }
