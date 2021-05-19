@@ -25,7 +25,7 @@ const rollOverYearRefiner: Refiner = {
         !start.isCertain("year") &&
         start.date().getTime() < refDate.getTime()
       ) {
-        start.imply("year", start.date().getFullYear() + 1);
+        start.assign("year", start.date().getFullYear() + 1);
       }
     });
     return results;
@@ -40,7 +40,7 @@ const rollOverDayRefiner: Refiner = {
         !start.isCertain("day") &&
         start.date().getTime() < refDate.getTime()
       ) {
-        start.imply("day", start.date().getDate() + 1);
+        start.assign("day", start.date().getDate() + 1);
       }
     });
     return results;
@@ -66,36 +66,35 @@ const combineDateAndTime: Refiner = {
       return results;
     }
 
-    resultWithDate.start.imply("hour", resultWithTime.start.date().getHours());
-    resultWithDate.start.imply(
+    resultWithDate.start.assign("hour", resultWithTime.start.date().getHours());
+    resultWithDate.start.assign(
       "minute",
       resultWithTime.start.date().getMinutes()
     );
     const meridiem =
       resultWithTime.start.date().getHours() < 12 ? Meridiem.AM : Meridiem.PM;
-    resultWithDate.start.imply("meridiem", meridiem);
-    resultWithDate.start.imply(
-      "timezoneOffset",
-      resultWithTime.start.date().getTimezoneOffset()
-    );
+    resultWithDate.start.assign("meridiem", meridiem);
+    // resultWithDate.start.assign(
+    //   "timezoneOffset",
+    //   resultWithTime.start.date().getTimezoneOffset()
+    // );
 
-    resultWithTime.start.imply(
+    resultWithTime.start.assign(
       "weekday",
       resultWithDate.start.get("weekday") as number
     );
-    resultWithTime.start.imply(
+    resultWithTime.start.assign(
       "day",
       resultWithDate.start.get("day") as number
     );
-    resultWithTime.start.imply(
+    resultWithTime.start.assign(
       "month",
       resultWithDate.start.get("month") as number
     );
-    resultWithTime.start.imply(
+    resultWithTime.start.assign(
       "year",
       resultWithDate.start.get("year") as number
     );
-
     return results;
   },
 };

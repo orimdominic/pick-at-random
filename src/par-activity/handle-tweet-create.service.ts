@@ -176,16 +176,18 @@ export const getSelectionDate = async ({
   // converting human language to computer language is a feat!
   return new Promise((resolve, reject) => {
     const refDate = new Date(createdAt);
-    const selectionDateStr = timeParser.parseDate(cmdText as string, refDate, {
+    const [parsedResult] = timeParser.parse(cmdText as string, refDate, {
       forwardDate: true,
     }); // returns either a date string or null
-    if (!selectionDateStr) {
+    // console.log("parsedResult:::--:::", JSON.stringify(parsedResult, null, 2), JSON.stringify(pr2, null, 2));
+    // resolve(parsedResult.start.date())
+    if (!parsedResult) {
       return reject(new Error(TimeParserErrorMsg.NullValue));
     }
-    if (new Date(selectionDateStr).getTime() < Date.now()) {
+    if (parsedResult.start.date().getTime() < Date.now()) {
       return reject(new Error(TimeParserErrorMsg.PastDate));
     }
-    return resolve(selectionDateStr);
+    return resolve(parsedResult.start.date());
   });
 };
 
