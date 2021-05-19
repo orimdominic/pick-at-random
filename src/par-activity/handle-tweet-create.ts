@@ -59,16 +59,23 @@ export async function handleTweetCreate(
         );
         // TODO
         // schedule selection by persisting to db
-        await service.scheduleSelection(selectionRequest)
+        await service.scheduleSelection(selectionRequest);
         // FIXME: prepare better reply message
-        const replyMessage = `Suure! Will do on ${selectionRequest.selectionTime}`
+        const replyMessage = `Suure! Will do on ${selectionRequest.selectionTime}`;
         // reply to tweet
-        const replyTweet = await service.parTwitterClient.replyMention(mention.id, replyMessage, mention.authorName)
-        if(replyTweet){
-        await  service.persistForCancellation(`${replyTweet.id_str}`, selectionRequest)
-        return
+        const replyTweet = await service.parTwitterClient.replyMention(
+          mention.id,
+          replyMessage,
+          mention.authorName
+        );
+        if (replyTweet) {
+          await service.persistForCancellation(
+            `${replyTweet.id_str}`,
+            selectionRequest
+          );
+          return;
         }
-        return
+        return;
         // get reply tweet id
         // persist with reply tweet id and author screen name as key for cancellations
         // exit
