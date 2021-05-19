@@ -1,4 +1,4 @@
-import { ITweet, handleTweetCreateService } from ".";
+import { ITweet, handleTweetCreateService, SelectionRequest } from ".";
 
 /**
  * Handles tweet_create_events for the PickAtRandom Twitter account
@@ -42,19 +42,36 @@ export async function handleTweetCreate(
         any of the errors in one place and responds adequately
          */
         // eslint-disable @typescript-eslint/no-unused-vars
-        const [
-          count,
-          engagementType,
-          selectionDateStr,
-          selectionTweetId,
-        ] = await Promise.all([
+        const [count, engagement, selectionDate, _] = await Promise.all([
           await service.getEngagementCount(mention.cmdText as string),
           await service.getEngagementType(mention.cmdText as string),
           await service.getSelectionDate(mention),
           await service.getSelectionTweetId(mention),
         ]);
-        // TODO: Persist necessary data to db
-        // TODO: Reply to tweet
+        const selectionDateStr = service
+          .roundToNearestMinute(new Date(selectionDate))
+          .toISOString();
+        const selectionRequest = new SelectionRequest(
+          mention,
+          count,
+          engagement,
+          selectionDateStr
+        );
+        // TODO
+        // schedule selection by persisting to db
+        await service.scheduleSelection(selectionRequest)
+        // FIXME: prepare better reply message
+        const replyMessage = `Suure! Will do on ${selectionRequest.selectionTime}`
+        // reply to tweet
+        const replyTweet = await service.parTwitterClient.replyMention(mention.id, replyMessage, mention.authorName)
+        if(replyTweet){
+        await  service.persistForCancellation(`${replyTweet.id_str}`, selectionRequest)
+        return
+        }
+        return
+        // get reply tweet id
+        // persist with reply tweet id and author screen name as key for cancellations
+        // exit
       } catch (e) {
         console.error(JSON.stringify(e));
         console.error(`make selection request for "${mention.id}" failed`);
@@ -64,7 +81,7 @@ export async function handleTweetCreate(
           `${e.message}`,
           authorName
         );
-        // TODO: Report failure metric
+        // TODO: Report failure metric with sentry
       }
     }
   }

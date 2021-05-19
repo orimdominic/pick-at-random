@@ -7,3 +7,4 @@ export * as handleTweetCreateService from "./handle-tweet-create.service";
 export * from "./get-challenge-response";
 export * from "./handle-tweet-create";
 export * from "./handle-activity";
+export * from "./SelectionRequest";

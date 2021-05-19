@@ -46,9 +46,11 @@
   "dependencies": {
     "chrono-node": "^2.2.6",
     "dotenv": "^8.2.0",
+    "handy-redis": "^2.2.1",
     "http-status-codes": "^2.1.4",
     "moment": "^2.29.1",
     "node-twitter-api": "^1.8.0",
+    "redis": "^3.1.2",
     "request": "^2.88.2",
     "twitter-error-handler": "^3.1.0",
     "twitter-lite": "^1.1.0"
