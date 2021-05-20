@@ -25,5 +25,5 @@ jobs:
       - run: yarn -v
       # - run: redis-cli ping
       - run: yarn install
-      - run: yarn test:codecov
+      - run: yarn test:codecov --forceExit
       - run: bash <(curl -s https://codecov.io/bash) # Upload to Codecov
