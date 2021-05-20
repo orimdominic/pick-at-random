@@ -14,24 +14,12 @@ export async function handleTweetCreate(
   const mentions = realMentions
     .map(service.setRealMention)
     .map(service.setCommandText);
-  const [cancelMentions, feedbackMentions, pickCommandMentions] = [
+  const [cancelMentions, pickCommandMentions] = [
     mentions.filter((m) => service.isCancelText(m.cmdText as string)),
-    mentions.filter((m) => service.isFeedbackText(m.cmdText as string)),
     mentions.filter((m) => service.isPickCommand(m.cmdText as string)),
   ];
   if (cancelMentions.length) {
     // handle cancel
-  }
-  if (feedbackMentions.length) {
-    // handle feedback
-    for (const mention of feedbackMentions) {
-      try {
-        await service.handleFeedbackMention(mention);
-      } catch (err) {
-        console.error("handleFeedbackMentionError".toUpperCase(), err);
-        // TODO: Report failure metric
-      }
-    }
   }
 
   if (pickCommandMentions.length) {

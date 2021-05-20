@@ -108,18 +108,6 @@ export const isPickCommand = (text: string): boolean => {
 };
 
 /**
- * @param {IRealMentionTweet} mention - The mention tweet to handle
- * @returns { Promise<ITweet>}
- */
-export const handleFeedbackMention = async ({
-  authorName,
-  id,
-}: IRealMentionTweet): Promise<void> => {
-  const message = "Feedback received. Thanks!";
-  await parTwitterClient.replyMention(id, message, authorName);
-};
-
-/**
  * Extracts and returns the engagement count in a command
  * tweet
  * @param {string} text - The command text

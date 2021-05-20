@@ -290,43 +290,11 @@ describe("handleTweetCreateService", () => {
       const vals = [
         {
           ...mockRealMention,
-          cmdText: "3 retweets in january",
-          createdAt: refDate,
-          date: 1,
-          month: 0,
-          year: 2022,
-        },
-        {
-          ...mockRealMention,
           cmdText: "3 retweets on february 4",
           createdAt: refDate,
           date: 4,
           month: 1,
           year: 2022,
-        },
-        {
-          ...mockRealMention,
-          cmdText: "3 retweets in mar",
-          createdAt: refDate,
-          date: 1,
-          month: 2,
-          year: 2022,
-        },
-        {
-          ...mockRealMention,
-          cmdText: "3 retweets three months from now",
-          createdAt: refDate,
-          date: 1,
-          month: 7,
-          year: 2021,
-        },
-        {
-          ...mockRealMention,
-          cmdText: "3 retweets in three months",
-          createdAt: refDate,
-          date: 1,
-          month: 7,
-          year: 2021,
         },
       ];
       for (const val of vals) {

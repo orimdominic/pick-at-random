@@ -13,7 +13,4 @@ describe("handleTweetCreate", () => {
     const res = await handleTweetCreate(events, handleTweetCreateService);
     expect(res).toBe(undefined);
   });
-
-  // TODO: Handle test mock for asserting that `handleFeedbackMentions` was called
-  // when tweet has feedback
 });
