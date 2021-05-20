@@ -79,6 +79,9 @@ node_modules/
 # DynamoDB Local files
 .dynamodb/
 
+# Redis db file
+.rdb
+
 # TernJS port file
 .tern-port
 
