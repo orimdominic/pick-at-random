@@ -263,14 +263,18 @@ export const getScheduleSuccessReply = (selReq: SelectionRequest): string => {
   const engagement = `${selReq.engagement}${selReq.count > 1 ? "s" : ""}`;
   const selectionTime = new Date(selReq.selectionTime).toUTCString();
   const messages = [
-    `Got you covered! ${selReq.count} randomly picked ${engagement} coming up on ${selectionTime}`,
-    `Sealed! Expect ${selReq.count} ${engagement} picked at random and delivered on ${selectionTime}`,
+    `Got you covered!
+${selReq.count} randomly picked ${engagement} coming up on ${selectionTime}`,
+    `Sealed!
+Expect ${selReq.count} ${engagement} picked at random and delivered on ${selectionTime}`,
     `🤝 ${selReq.count} randomly picked ${engagement} coming up on ${selectionTime}`,
-    `Got that! ${selReq.count} randomly picked ${engagement} scheduled to be delivered on ${selectionTime}`,
+    `Got that!
+${selReq.count} randomly picked ${engagement} scheduled to be delivered on ${selectionTime}`,
   ];
   const message = messages[Math.floor(Math.random() * messages.length)];
   return `${message}.
-  Reply this tweet with "@PickAtRandom cancel" to cancel the selection`;
+
+Reply this tweet with "@PickAtRandom cancel" to cancel the selection`;
 };
 
 export { parTwitterClient };
