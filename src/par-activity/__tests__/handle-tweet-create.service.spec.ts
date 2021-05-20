@@ -208,7 +208,7 @@ describe("handleTweetCreateService", () => {
       }
     });
 
-    it("returns a hour-accurate selection time from a text", async () => {
+    it("returns an hour-accurate selection time from a text", async () => {
       const currentDate = new Date();
       const vals = [
         {
@@ -219,7 +219,7 @@ describe("handleTweetCreateService", () => {
         {
           cmdText: "3 hours from now",
           createdAt: currentDate.toISOString(),
-          hour: (currentDate.getHours() + 3) % 24,
+          hour: currentDate.getHours() + 3,
         },
         {
           cmdText: "Tomorrow by 6pm",
@@ -227,19 +227,20 @@ describe("handleTweetCreateService", () => {
           hour: 18,
         },
         {
-          cmdText: "6pm WAT tomorrow",
+          cmdText: "6pm tomorrow",
           createdAt: currentDate.toISOString(),
           hour: 18,
         },
         {
-          cmdText: "Friday, 1st of Sept 2023. 19:00 WAT",
+          cmdText: "Friday, 1st of Sept 2023. 19:00",
           createdAt: currentDate.toISOString(),
           hour: 19,
         },
       ];
       for (const v of vals) {
         const res = await getSelectionDate((v as unknown) as IRealMentionTweet);
-        expect(res.getHours()).toBe(v.hour);
+        const timezoneOffsetInHours = res.getTimezoneOffset() / 60;
+        expect(res.getUTCHours() - res.getHours()).toBe(timezoneOffsetInHours);
       }
     });
 

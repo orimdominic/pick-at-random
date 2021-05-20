@@ -74,10 +74,11 @@ const combineDateAndTime: Refiner = {
     const meridiem =
       resultWithTime.start.date().getHours() < 12 ? Meridiem.AM : Meridiem.PM;
     resultWithDate.start.assign("meridiem", meridiem);
-    // resultWithDate.start.assign(
-    //   "timezoneOffset",
-    //   resultWithTime.start.date().getTimezoneOffset()
-    // );
+
+    resultWithDate.start.imply(
+      "timezoneOffset",
+      resultWithTime.start.date().getTimezoneOffset()
+    );
 
     resultWithTime.start.assign(
       "weekday",

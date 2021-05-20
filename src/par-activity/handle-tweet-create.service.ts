@@ -179,8 +179,6 @@ export const getSelectionDate = async ({
     const [parsedResult] = timeParser.parse(cmdText as string, refDate, {
       forwardDate: true,
     }); // returns either a date string or null
-    // console.log("parsedResult:::--:::", JSON.stringify(parsedResult, null, 2), JSON.stringify(pr2, null, 2));
-    // resolve(parsedResult.start.date())
     if (!parsedResult) {
       return reject(new Error(TimeParserErrorMsg.NullValue));
     }
