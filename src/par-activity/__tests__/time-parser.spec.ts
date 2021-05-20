@@ -43,7 +43,6 @@ describe("time parser", () => {
       weekdays[weekdays.length % (today + 1)],
       weekdays[weekdays.length % today],
     ];
-    console.log(theDayBeforeYesterday, yesterday);
     const vals = [
       {
         text: `3 retweets on ${theDayBeforeYesterday}`,
