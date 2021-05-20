@@ -7,4 +7,5 @@ module.exports = {
   testEnvironment: "node",
   testPathIgnorePatterns: ["/node_modules/", "/build/"],
   coverageReporters: ["html", "lcov"],
+  globalTeardown: "<rootDir>/src/par-activity/jest.teardown.ts",
 };
