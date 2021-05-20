@@ -39,9 +39,7 @@ jobs:
       - run: yarn -v
       # - run: redis-cli ping
       - run: yarn install
-      - run: yarn test
-        env:
-          CI: true
+      - run: yarn test --detectOpenHandles
   build:
     runs-on: ubuntu-latest
     steps:
