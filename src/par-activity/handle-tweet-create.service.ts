@@ -229,15 +229,18 @@ export const roundToNearestMinute = (date: Date = new Date()): Date => {
  * Persists a selection request for selection in the future
  * @param {SelectionRequest} selReq - The selection request
  */
-export const scheduleSelection = async (selReq: SelectionRequest):Promise<void> => {
+export const scheduleSelection = async (
+  selReq: SelectionRequest
+): Promise<void> => {
   // FIXME: Not handling errors here.. Scary!
   const selReqExpiryTimeInSecs =
-    (new Date(selReq.selectionTime).getTime() /
-    NumericConstant.MillisecsInOneSec) + NumericConstant.SecsInOneHour // One hour later
-    // Push to list
-  await cache.rpush(selReq.selectionTime, selReq.stringify() );
+    new Date(selReq.selectionTime).getTime() /
+      NumericConstant.MillisecsInOneSec +
+    NumericConstant.SecsInOneHour; // One hour later
+  // Push to list
+  await cache.rpush(selReq.selectionTime, selReq.stringify());
   // delete after selReqExpiryTimeInSecs
-  await cache.expire(selReq.selectionTime, selReqExpiryTimeInSecs)
+  await cache.expire(selReq.selectionTime, selReqExpiryTimeInSecs);
 };
 
 /**
@@ -245,12 +248,20 @@ export const scheduleSelection = async (selReq: SelectionRequest):Promise<void> 
  * @param {string} replyTweetId - The PAR reply tweet id
  * @param {SelectionRequest} selReq - The selection request
  */
-export const persistForCancellation = async (replyTweetId:string, selReq: SelectionRequest): Promise<void> => {
-    // FIXME: Not handling errors here.. Scary!
-    const selReqExpiryTimeInSecs =
-    (new Date(selReq.selectionTime).getTime() /
-    NumericConstant.MillisecsInOneSec) + NumericConstant.SecsInOneHour // One hour later
-  await cache.setex(`${replyTweetId}-${selReq.authorId}`, selReqExpiryTimeInSecs, selReq.stringify())
-}
+export const persistForCancellation = async (
+  replyTweetId: string,
+  selReq: SelectionRequest
+): Promise<void> => {
+  // FIXME: Not handling errors here.. Scary!
+  const selReqExpiryTimeInSecs =
+    new Date(selReq.selectionTime).getTime() /
+      NumericConstant.MillisecsInOneSec +
+    NumericConstant.SecsInOneHour; // One hour later
+  await cache.setex(
+    `${replyTweetId}-${selReq.authorId}`,
+    selReqExpiryTimeInSecs,
+    selReq.stringify()
+  );
+};
 
 export { parTwitterClient };

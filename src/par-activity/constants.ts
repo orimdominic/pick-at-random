@@ -40,5 +40,5 @@ export enum SelectionTweetIdErrorMsg {
 export enum NumericConstant {
   MillisecsInOneMin = 60000,
   MillisecsInOneSec = 1000,
-  SecsInOneHour = 3600
+  SecsInOneHour = 3600,
 }

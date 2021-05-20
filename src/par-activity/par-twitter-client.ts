@@ -45,10 +45,10 @@ class ParTwitterClient {
         status: `@${author} ${message}`,
         in_reply_to_status_id: id,
       });
-      return resp
+      return resp;
     } catch (e) {
       // TODO: handle error via sentry
-      console.error("parTwitterClient.replyMention", e)
+      console.error("parTwitterClient.replyMention", e);
     }
   }
 }
