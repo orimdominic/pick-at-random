@@ -197,6 +197,91 @@ describe("handleTweetCreateService", () => {
   describe("getSelectionDate", () => {
     const refDate = "Sat May 01 12:00 +0000 2021";
 
+    it("returns a month-accurate selection date from a text", async () => {
+      const vals = [
+        { cmdText: "3 retweets in three months", createdAt: refDate, month: 7 },
+        { cmdText: "3 retweets in eight months", createdAt: refDate, month: 0 },
+      ];
+      for (const v of vals) {
+        const res = await getSelectionDate((v as unknown) as IRealMentionTweet);
+        expect(res.getMonth()).toBe(v.month);
+      }
+    });
+
+    it("returns an hour-accurate selection time from a text", async () => {
+      const currentDate = new Date();
+      const vals = [
+        {
+          cmdText: "Tomorrow at 6am",
+          createdAt: currentDate.toISOString(),
+        },
+        {
+          cmdText: "3 hours from now",
+          createdAt: currentDate.toISOString(),
+        },
+        {
+          cmdText: "Tomorrow by 6pm",
+          createdAt: currentDate.toISOString(),
+        },
+        {
+          cmdText: "6pm tomorrow",
+          createdAt: currentDate.toISOString(),
+        },
+        {
+          cmdText: "Friday, 1st of Sept 2023. 19:00",
+          createdAt: currentDate.toISOString(),
+        },
+      ];
+      for (const v of vals) {
+        const res = await getSelectionDate((v as unknown) as IRealMentionTweet);
+        const timezoneOffsetInHours = res.getTimezoneOffset() / 60;
+        expect(res.getUTCHours() - res.getHours()).toBe(timezoneOffsetInHours);
+      }
+    });
+
+    it("returns a minute-accurate selection time from a text", async () => {
+      const currentDate = new Date();
+      const in3Hrs30Mins = new Date(
+        currentDate.getTime() + 3 * 60 * 60 * 1000 + 30 * 60 * 1000
+      );
+      const vals = [
+        {
+          cmdText: "Tomorrow at 6:30am",
+          createdAt: currentDate.toISOString(),
+          mins: 30,
+          hour: 6,
+        },
+        {
+          cmdText: "3 hours 33 mins from now",
+          createdAt: currentDate.toISOString(),
+          hour: in3Hrs30Mins.getHours() % 24,
+          mins: in3Hrs30Mins.getMinutes(),
+        },
+        {
+          cmdText: "Tomorrow by 6:13pm",
+          createdAt: currentDate.toISOString(),
+          hour: 18,
+          mins: 13,
+        },
+        {
+          cmdText: "6:10 pm WAT tomorrow",
+          createdAt: currentDate.toISOString(),
+          hour: 18,
+          mins: 10,
+        },
+        {
+          cmdText: "Friday, 1st of Sept 2023. 19:01 WAT",
+          createdAt: currentDate.toISOString(),
+          hour: 19,
+          mins: 1,
+        },
+      ];
+      for (const v of vals) {
+        const res = await getSelectionDate((v as unknown) as IRealMentionTweet);
+        expect(res.getMinutes()).toBeGreaterThanOrEqual(v.mins);
+      }
+    });
+
     it("returns the correct selection date on valid inputs", async () => {
       const vals = [
         {
