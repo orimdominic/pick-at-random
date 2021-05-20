@@ -35,12 +35,12 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "14"
-      - uses: supercharge/redis-github-action@1.2.0
+      - uses: shogo82148/actions-setup-redis@v1
         with:
-          redis-version: ${{ matrix.redis-version }}
+          redis-version: '6.x'
+      - run: redis-cli ping
       - run: node -v
       - run: yarn -v
-      # - run: redis-cli ping
       - run: yarn install
       - run: yarn test --detectOpenHandles
   build:
