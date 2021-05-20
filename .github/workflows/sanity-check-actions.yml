@@ -20,6 +20,9 @@ jobs:
       - run: yarn sanity-check
   tests:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        redis-version: [6]
     env:
       TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
       TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
@@ -32,10 +35,14 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "14"
+      - uses: shogo82148/actions-setup-redis@v1
+        with:
+          redis-version: "6.x"
+      - run: redis-cli ping
       - run: node -v
       - run: yarn -v
       - run: yarn install
-      - run: yarn test
+      - run: yarn test --forceExit
   build:
     runs-on: ubuntu-latest
     steps:

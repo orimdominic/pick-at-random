@@ -214,27 +214,26 @@ describe("handleTweetCreateService", () => {
         {
           cmdText: "Tomorrow at 6am",
           createdAt: currentDate.toISOString(),
-          hour: 6,
         },
         {
           cmdText: "3 hours from now",
           createdAt: currentDate.toISOString(),
-          hour: currentDate.getHours() + 3,
         },
         {
           cmdText: "Tomorrow by 6pm",
           createdAt: currentDate.toISOString(),
-          hour: 18,
         },
         {
           cmdText: "6pm tomorrow",
           createdAt: currentDate.toISOString(),
-          hour: 18,
+        },
+        {
+          cmdText: "6pm tomorrow JST",
+          createdAt: currentDate.toISOString(),
         },
         {
           cmdText: "Friday, 1st of Sept 2023. 19:00",
           createdAt: currentDate.toISOString(),
-          hour: 19,
         },
       ];
       for (const v of vals) {
@@ -283,7 +282,6 @@ describe("handleTweetCreateService", () => {
       ];
       for (const v of vals) {
         const res = await getSelectionDate((v as unknown) as IRealMentionTweet);
-        // expect(res.getHours()).toBe(v.hour)
         expect(res.getMinutes()).toBeGreaterThanOrEqual(v.mins);
       }
     });
@@ -292,43 +290,11 @@ describe("handleTweetCreateService", () => {
       const vals = [
         {
           ...mockRealMention,
-          cmdText: "3 retweets in january",
-          createdAt: refDate,
-          date: 1,
-          month: 0,
-          year: 2022,
-        },
-        {
-          ...mockRealMention,
           cmdText: "3 retweets on february 4",
           createdAt: refDate,
           date: 4,
           month: 1,
           year: 2022,
-        },
-        {
-          ...mockRealMention,
-          cmdText: "3 retweets in mar",
-          createdAt: refDate,
-          date: 1,
-          month: 2,
-          year: 2022,
-        },
-        {
-          ...mockRealMention,
-          cmdText: "3 retweets three months from now",
-          createdAt: refDate,
-          date: 1,
-          month: 7,
-          year: 2021,
-        },
-        {
-          ...mockRealMention,
-          cmdText: "3 retweets in three months",
-          createdAt: refDate,
-          date: 1,
-          month: 7,
-          year: 2021,
         },
       ];
       for (const val of vals) {

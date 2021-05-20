@@ -7,10 +7,13 @@ import {
   EngagementTypeErrorMsg,
   TimeParserErrorMsg,
   SelectionTweetIdErrorMsg,
+  NumericConstant,
+  SelectionRequest,
 } from ".";
 
 import { parTwitterClient } from "./par-twitter-client";
 import { customChronoParser as timeParser } from "./time-parser";
+import { cache } from "./cache";
 
 /**
  * Validates if a mention tweet is a quoted reply and also
@@ -105,18 +108,6 @@ export const isPickCommand = (text: string): boolean => {
 };
 
 /**
- * @param {IRealMentionTweet} mention - The mention tweet to handle
- * @returns { Promise<ITweet>}
- */
-export const handleFeedbackMention = async ({
-  authorName,
-  id,
-}: IRealMentionTweet): Promise<ITweet> => {
-  const message = "Feedback received. Thanks!";
-  return await parTwitterClient.replyMention(id, message, authorName);
-};
-
-/**
  * Extracts and returns the engagement count in a command
  * tweet
  * @param {string} text - The command text
@@ -144,7 +135,9 @@ export const getEngagementCount = async (text: string): Promise<number> => {
  * @returns {Promise<string>} The engagement count
  * @throws {Error}
  */
-export const getEngagementType = async (text: string): Promise<string> => {
+export const getEngagementType = async (
+  text: string
+): Promise<EngagementType> => {
   return new Promise((resolve, reject) => {
     const [, engagementType] = text.split(" ");
     if (engagementType.trim().length < 3) {
@@ -204,4 +197,59 @@ export const getSelectionTweetId = async ({
       : resolve(refTweetId);
   });
 };
+
+/**
+ * Rounds date to nearest minute
+ * @param {Date} date - The date string to round e.g 2021-05-01T05:30:36.000Z
+ * @returns {Date} The date rounded to the nearest minute
+ * @example
+ * roundToNearestMinute(2021-05-01T05:30:36.000Z)
+ * // returns 2021-05-01T05:30:00.000Z
+ */
+export const roundToNearestMinute = (date: Date = new Date()): Date => {
+  return new Date(
+    Math.floor(date.getTime() / NumericConstant.MillisecsInOneMin) *
+      NumericConstant.MillisecsInOneMin
+  );
+};
+
+/**
+ * Persists a selection request for selection in the future
+ * @param {SelectionRequest} selReq - The selection request
+ */
+export const scheduleSelection = async (
+  selReq: SelectionRequest
+): Promise<void> => {
+  // FIXME: Not handling errors here.. Scary!
+  const selReqExpiryTimeInSecs =
+    new Date(selReq.selectionTime).getTime() /
+      NumericConstant.MillisecsInOneSec +
+    NumericConstant.SecsInOneHour; // One hour later
+  // Push to list
+  await cache.rpush(selReq.selectionTime, selReq.stringify());
+  // delete after selReqExpiryTimeInSecs
+  await cache.expire(selReq.selectionTime, selReqExpiryTimeInSecs);
+};
+
+/**
+ * Persists a selection request for cancellation
+ * @param {string} replyTweetId - The PAR reply tweet id
+ * @param {SelectionRequest} selReq - The selection request
+ */
+export const persistForCancellation = async (
+  replyTweetId: string,
+  selReq: SelectionRequest
+): Promise<void> => {
+  // FIXME: Not handling errors here.. Scary!
+  const selReqExpiryTimeInSecs =
+    new Date(selReq.selectionTime).getTime() /
+      NumericConstant.MillisecsInOneSec +
+    NumericConstant.SecsInOneHour; // One hour later
+  await cache.setex(
+    `${replyTweetId}-${selReq.authorId}`,
+    selReqExpiryTimeInSecs,
+    selReq.stringify()
+  );
+};
+
 export { parTwitterClient };

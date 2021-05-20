@@ -4,7 +4,7 @@ about: Suggest a new idea for the project.
 labels: enhancement
 ---
 
-## Summary
+### Summary
 
 Brief explanation of the feature.
 

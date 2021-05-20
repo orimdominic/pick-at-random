@@ -32,18 +32,24 @@ class ParTwitterClient {
    * result
    * @param {string} id - The id of the mention to reply
    * @param {string} message - The feedback message
-   * @param {string} author - The screen name of the author
+   * @param {string} author - The screen name of the author e.g PickAtRandom
    * @returns {Promise<ITweet>} The tweeted feedback
    */
   async replyMention(
     id: string,
     message: string,
     author: string
-  ): Promise<ITweet> {
-    return await this.v1.post(TwitterEndpoint.StatusUpdate, {
-      status: `@${author} ${message}`,
-      in_reply_to_status_id: id,
-    });
+  ): Promise<ITweet | undefined> {
+    try {
+      const resp = await this.v1.post<ITweet>(TwitterEndpoint.StatusUpdate, {
+        status: `@${author} ${message}`,
+        in_reply_to_status_id: id,
+      });
+      return resp;
+    } catch (e) {
+      // TODO: handle error via sentry
+      console.error("parTwitterClient.replyMention", e);
+    }
   }
 }
 

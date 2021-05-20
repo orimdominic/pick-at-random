@@ -36,3 +36,9 @@ export enum SelectionTweetIdErrorMsg {
   I will find it if you make your request as a reply to the tweet that you want random selections for.
   Cheers!`,
 }
+
+export enum NumericConstant {
+  MillisecsInOneMin = 60000,
+  MillisecsInOneSec = 1000,
+  SecsInOneHour = 3600,
+}

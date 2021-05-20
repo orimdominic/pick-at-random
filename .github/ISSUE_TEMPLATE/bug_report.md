@@ -6,7 +6,7 @@ labels: bug
 assignees: ""
 ---
 
-## A clear and concise description of what the bug is
+### A clear and concise description of what the bug is
 
 ### Steps to reproduce the behavior:
 
