@@ -8,7 +8,9 @@ import {
   EngagementTypeErrorMsg,
   TimeParserErrorMsg,
   SelectionTweetIdErrorMsg,
+  SelectionRequest,
 } from "..";
+import { getScheduleSuccessReply } from "../handle-tweet-create.service";
 import { mockRealMention, mockTweet } from "../__mocks__/data";
 
 const {
@@ -345,4 +347,16 @@ describe("handleTweetCreateService", () => {
       await expect(getSelectionTweetId(m)).resolves.toBe(inReplyTo);
     });
   });
+
+  describe("getScheduleSuccessReply", () => {
+    it("returns a pluralised engagement reply when engagement count > 1", ()=> {
+      const reply = getScheduleSuccessReply({engagement: EngagementType.Retweet, count: 2, selectionTime: new Date().toISOString()} as SelectionRequest)
+      expect(reply).toContain(`${EngagementType.Retweet}s`)
+    })
+
+    it("doesn't return a string greater than 280 in length", ()=> {
+      const reply = getScheduleSuccessReply({engagement: EngagementType.Retweet, count: 2, selectionTime: new Date().toISOString()} as SelectionRequest)
+      expect(reply.length).toBeLessThan(280)
+    })
+  })
 });

@@ -232,11 +232,12 @@ export const scheduleSelection = async (
 };
 
 /**
- * Persists a selection request for cancellation
+ * Schedules a selection request for expiration and removal from
+ * cache
  * @param {string} replyTweetId - The PAR reply tweet id
  * @param {SelectionRequest} selReq - The selection request
  */
-export const persistForCancellation = async (
+export const scheduleExpiration = async (
   replyTweetId: string,
   selReq: SelectionRequest
 ): Promise<void> => {
@@ -250,6 +251,26 @@ export const persistForCancellation = async (
     selReqExpiryTimeInSecs,
     selReq.stringify()
   );
+};
+
+/**
+ * Generates a random message to notifiy a requester that that their
+ * request has been scheduled
+ * @param {SelectionRequest} selReq - The selection request
+ * @returns {string} The success message
+ */
+export const getScheduleSuccessReply = (selReq: SelectionRequest): string => {
+  const engagement = `${selReq.engagement}${selReq.count > 1 ? "s" : ""}`;
+  const selectionTime = new Date(selReq.selectionTime).toUTCString();
+  const messages = [
+    `Got you covered! ${selReq.count} randomly picked ${engagement} coming up on ${selectionTime}`,
+    `Sealed! Expect ${selReq.count} ${engagement} picked at random and delivered on ${selectionTime}`,
+    `🤝 ${selReq.count} randomly picked ${engagement} coming up on ${selectionTime}`,
+    `Got that! ${selReq.count} randomly picked ${engagement} scheduled to be delivered on ${selectionTime}`,
+  ];
+  const message = messages[Math.floor(Math.random() * messages.length)];
+  return `${message}.
+  Reply this tweet with "@PickAtRandom cancel" to cancel the selection`;
 };
 
 export { parTwitterClient };
