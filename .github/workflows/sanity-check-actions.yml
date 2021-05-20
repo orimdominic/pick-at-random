@@ -37,7 +37,7 @@ jobs:
           redis-version: "6"
       - run: node -v
       - run: yarn -v
-      - run: redis-server
+      - run: redis-cli ping
       - run: yarn install
       - run: yarn test
   build:

@@ -228,6 +228,10 @@ describe("handleTweetCreateService", () => {
           createdAt: currentDate.toISOString(),
         },
         {
+          cmdText: "6pm tomorrow JST",
+          createdAt: currentDate.toISOString(),
+        },
+        {
           cmdText: "Friday, 1st of Sept 2023. 19:00",
           createdAt: currentDate.toISOString(),
         },
