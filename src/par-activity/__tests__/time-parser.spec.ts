@@ -36,14 +36,14 @@ describe("time parser", () => {
       "friday",
       "saturday",
     ];
-    const currentDate = new Date()
+    const currentDate = new Date();
     const today = currentDate.getDay();
-    const currentTime = currentDate.getTime()
+    const currentTime = currentDate.getTime();
     const [theDayBeforeYesterday, yesterday] = [
-      weekdays[weekdays.length % (today + 1) ],
+      weekdays[weekdays.length % (today + 1)],
       weekdays[weekdays.length % today],
     ];
-    console.log(theDayBeforeYesterday, yesterday)
+    console.log(theDayBeforeYesterday, yesterday);
     const vals = [
       {
         text: `3 retweets on ${theDayBeforeYesterday}`,
@@ -56,7 +56,7 @@ describe("time parser", () => {
         forwardDate: true,
       }) as Date;
       expect(weekdays[parsedDate.getDay()]).toBe(v.day);
-      expect(parsedDate.getTime()).toBeGreaterThan(currentTime)
+      expect(parsedDate.getTime()).toBeGreaterThan(currentTime);
     }
   });
 });

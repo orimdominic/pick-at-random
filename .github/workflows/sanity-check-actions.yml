@@ -37,7 +37,7 @@ jobs:
           node-version: "14"
       - uses: shogo82148/actions-setup-redis@v1
         with:
-          redis-version: '6.x'
+          redis-version: "6.x"
       - run: redis-cli ping
       - run: node -v
       - run: yarn -v
