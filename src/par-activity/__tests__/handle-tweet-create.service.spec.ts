@@ -349,14 +349,22 @@ describe("handleTweetCreateService", () => {
   });
 
   describe("getScheduleSuccessReply", () => {
-    it("returns a pluralised engagement reply when engagement count > 1", ()=> {
-      const reply = getScheduleSuccessReply({engagement: EngagementType.Retweet, count: 2, selectionTime: new Date().toISOString()} as SelectionRequest)
-      expect(reply).toContain(`${EngagementType.Retweet}s`)
-    })
+    it("returns a pluralised engagement reply when engagement count > 1", () => {
+      const reply = getScheduleSuccessReply({
+        engagement: EngagementType.Retweet,
+        count: 2,
+        selectionTime: new Date().toISOString(),
+      } as SelectionRequest);
+      expect(reply).toContain(`${EngagementType.Retweet}s`);
+    });
 
-    it("doesn't return a string greater than 280 in length", ()=> {
-      const reply = getScheduleSuccessReply({engagement: EngagementType.Retweet, count: 2, selectionTime: new Date().toISOString()} as SelectionRequest)
-      expect(reply.length).toBeLessThan(280)
-    })
-  })
+    it("doesn't return a string greater than 280 in length", () => {
+      const reply = getScheduleSuccessReply({
+        engagement: EngagementType.Retweet,
+        count: 2,
+        selectionTime: new Date().toISOString(),
+      } as SelectionRequest);
+      expect(reply.length).toBeLessThan(280);
+    });
+  });
 });
