@@ -40,6 +40,8 @@ jobs:
       # - run: redis-cli ping
       - run: yarn install
       - run: yarn test
+        env:
+          CI: true
   build:
     runs-on: ubuntu-latest
     steps:

@@ -23,4 +23,6 @@ jobs:
       # - run: redis-cli ping
       - run: yarn install
       - run: yarn test:codecov
+        env:
+          CI: true
       - run: bash <(curl -s https://codecov.io/bash) # Upload to Codecov
