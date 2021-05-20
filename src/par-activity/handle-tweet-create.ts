@@ -19,7 +19,7 @@ export async function handleTweetCreate(
     mentions.filter((m) => service.isPickCommand(m.cmdText as string)),
   ];
   if (cancelMentions.length) {
-    // handle cancel
+    //TODO: handle cancel
   }
 
   if (pickCommandMentions.length) {
@@ -39,34 +39,24 @@ export async function handleTweetCreate(
         const selectionDateStr = service
           .roundToNearestMinute(new Date(selectionDate))
           .toISOString();
-        const selectionRequest = new SelectionRequest(
+        const selReq = new SelectionRequest(
           mention,
           count,
           engagement,
           selectionDateStr
         );
-        // TODO
-        // schedule selection by persisting to db
-        await service.scheduleSelection(selectionRequest);
-        // FIXME: prepare better reply message
-        const replyMessage = `Suure! Will do on ${selectionRequest.selectionTime}`;
-        // reply to tweet
+        await service.scheduleSelection(selReq);
+        const reply = service.getScheduleSuccessReply(selReq);
         const replyTweet = await service.parTwitterClient.replyMention(
           mention.id,
-          replyMessage,
+          reply,
           mention.authorName
         );
         if (replyTweet) {
-          await service.persistForCancellation(
-            `${replyTweet.id_str}`,
-            selectionRequest
-          );
+          await service.scheduleExpiration(`${replyTweet.id_str}`, selReq);
           return;
         }
         return;
-        // get reply tweet id
-        // persist with reply tweet id and author screen name as key for cancellations
-        // exit
       } catch (e) {
         console.error(JSON.stringify(e));
         console.error(`make selection request for "${mention.id}" failed`);
