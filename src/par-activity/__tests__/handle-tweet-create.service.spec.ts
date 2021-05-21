@@ -9,9 +9,11 @@ import {
   TimeParserErrorMsg,
   SelectionTweetIdErrorMsg,
   SelectionRequest,
+  NumericConstant,
 } from "..";
-import { getScheduleSuccessReply } from "../handle-tweet-create.service";
-import { mockRealMention, mockTweet } from "../__mocks__/data";
+import { mockRealMention, mockSelReq, mockTweet } from "../__mocks__/data";
+import { cache } from "../cache";
+import { scheduleExpiration } from "../handle-tweet-create.service";
 
 const {
   isRealMention,
@@ -24,6 +26,9 @@ const {
   setCommandText,
   getSelectionDate,
   getSelectionTweetId,
+  scheduleSelection,
+  getScheduleSuccessReply,
+  roundToNearestMinute,
 } = handleTweetCreateService;
 
 describe("handleTweetCreateService", () => {
@@ -345,6 +350,63 @@ describe("handleTweetCreateService", () => {
         refTweetId: inReplyTo,
       };
       await expect(getSelectionTweetId(m)).resolves.toBe(inReplyTo);
+    });
+  });
+
+  describe("roundToNearestMinute", () => {
+    it("rounds a date to the nearest minute", async () => {
+      const currentDate = new Date();
+      const currentDateMins = currentDate.getMinutes();
+      const res = roundToNearestMinute(currentDate);
+      expect(res.getMinutes()).toBe(currentDateMins);
+      expect(res.getSeconds()).toBe(0);
+    });
+  });
+
+  describe("scheduleSelection", () => {
+    it("properly adds a selection request to cache", async () => {
+      const rpush = jest.spyOn(cache, "rpush");
+      await scheduleSelection(mockSelReq);
+      expect(rpush).toHaveBeenCalledWith(
+        mockSelReq.selectionTime,
+        mockSelReq.stringify()
+      );
+    });
+
+    it("properly sets the expiration time for a request added to cache", async () => {
+      const selReqExpiryTimeInSecs =
+        new Date(mockSelReq.selectionTime).getTime() /
+          NumericConstant.MillisecsInOneSec +
+        NumericConstant.SecsInOneHour;
+      const expire = jest.spyOn(cache, "expire");
+      await scheduleSelection(mockSelReq);
+      expect(expire).toHaveBeenCalledWith(
+        mockSelReq.selectionTime,
+        selReqExpiryTimeInSecs
+      );
+    });
+  });
+
+  describe("scheduleExpiration", () => {
+    it("properly sets the expiration time for a request for cancellation", async () => {
+      // TODO:
+      const selReqExpiryTimeInSecs =
+        new Date(mockSelReq.selectionTime).getTime() /
+          NumericConstant.MillisecsInOneSec +
+        NumericConstant.SecsInOneHour;
+      const setex = jest.spyOn(cache, "setex");
+      await scheduleExpiration("reply_tweet_id", mockSelReq);
+      expect(setex).toHaveBeenCalledWith(
+        "reply_tweet_id" + "-" + mockSelReq.authorId,
+        selReqExpiryTimeInSecs,
+        mockSelReq.stringify()
+      );
+    });
+  });
+
+  describe("cancelSelectionRequest", () => {
+    it("removes a selection request from the cache", async () => {
+      // TODO
     });
   });
 

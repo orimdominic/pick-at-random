@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 import { VercelResponse } from "@vercel/node";
+import { EngagementType, SelectionRequest } from "..";
 
 export const nonCommandTweetEvent = {
   for_user_id: "1364541567894224902",
@@ -220,4 +221,15 @@ export const mockRealMention = {
   authorName: "string",
   authorId: "string",
   text: "string",
+};
+
+export const mockSelReq: SelectionRequest = {
+  authorId: "author_id",
+  authorName: "author_name",
+  count: 1,
+  engagement: EngagementType.Retweet,
+  id: "tweet_id",
+  refTweetId: "ref_tweet_id",
+  selectionTime: new Date().toISOString(),
+  stringify: () => "",
 };

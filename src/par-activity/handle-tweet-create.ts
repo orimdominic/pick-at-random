@@ -20,6 +20,7 @@ export async function handleTweetCreate(
   ];
   if (cancelMentions.length) {
     //TODO: handle cancel
+    // get the reply id
   }
 
   if (pickCommandMentions.length) {
