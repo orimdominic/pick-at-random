@@ -14,6 +14,7 @@ import {
 import { parTwitterClient } from "./par-twitter-client";
 import { customChronoParser as timeParser } from "./time-parser";
 import { cache } from "./cache";
+import { POTOFactory } from "./POTOFactory";
 
 /**
  * Validates if a mention tweet is a quoted reply and also
@@ -252,6 +253,22 @@ export const scheduleExpiration = async (
     selReq.stringify()
   );
 };
+
+/**
+ * Removes a persisted selection from the cache
+ * @param {IRealMentionTweet} mention - The mention request for a cancel
+ * @returns {Promise<void>}
+ */
+export const cancelSelection = async (mention: IRealMentionTweet): Promise<void> => {
+  const req = await cache.get(`${mention.refTweetId}-${mention.authorId}`)
+  if(!req){
+    return
+  }
+  const selReq = POTOFactory.buildSelectionRequest(req)
+  await cache.lrem(selReq.selectionTime, 0, selReq.stringify())
+  await cache.del(`${mention.refTweetId}-${mention.authorId}`)
+  return;
+}
 
 /**
  * Generates a random message to notifiy a requester that that their

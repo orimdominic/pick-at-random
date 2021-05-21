@@ -13,7 +13,7 @@ import {
 } from "..";
 import { mockRealMention, mockSelReq, mockTweet } from "../__mocks__/data";
 import { cache } from "../cache";
-import { scheduleExpiration } from "../handle-tweet-create.service";
+import { cancelSelection, scheduleExpiration } from "../handle-tweet-create.service";
 
 const {
   isRealMention,
@@ -389,7 +389,6 @@ describe("handleTweetCreateService", () => {
 
   describe("scheduleExpiration", () => {
     it("properly sets the expiration time for a request for cancellation", async () => {
-      // TODO:
       const selReqExpiryTimeInSecs =
         new Date(mockSelReq.selectionTime).getTime() /
           NumericConstant.MillisecsInOneSec +
@@ -405,8 +404,27 @@ describe("handleTweetCreateService", () => {
   });
 
   describe("cancelSelectionRequest", () => {
-    it("removes a selection request from the cache", async () => {
-      // TODO
+    beforeEach(() => {
+      jest.clearAllMocks()
+    })
+    it("removes a valid selection request from the cache", async () => {
+      const get = jest.spyOn(cache, "get").mockImplementation(()=> Promise.resolve("value"));
+      const lrem = jest.spyOn(cache, "lrem");
+      const del = jest.spyOn(cache, "del");
+      await cancelSelection(mockRealMention)
+      expect(get).toHaveBeenCalled()
+      expect(lrem).toHaveBeenCalled()
+      expect(del).toHaveBeenCalled()
+    });
+
+    it("doesn't remove a selection request if the key isnt found", async () => {
+      const get = jest.spyOn(cache, "get").mockImplementation(() => Promise.resolve(null));
+      const lrem = jest.spyOn(cache, "lrem");
+      const del = jest.spyOn(cache, "del");
+      await cancelSelection(mockRealMention)
+      expect(get).toHaveBeenCalled()
+      expect(lrem).toHaveBeenCalledTimes(0)
+      expect(del).toHaveBeenCalledTimes(0)
     });
   });
 

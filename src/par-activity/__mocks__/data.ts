@@ -215,12 +215,12 @@ export const mockTweet = {
 };
 
 export const mockRealMention = {
-  createdAt: "string",
-  id: "string",
-  refTweetId: "string",
-  authorName: "string",
-  authorId: "string",
-  text: "string",
+  createdAt: "created_at",
+  id: "tweet_id",
+  refTweetId: "ref_tweet_id",
+  authorName: "author_name",
+  authorId: "author_id",
+  text: "text",
 };
 
 export const mockSelReq: SelectionRequest = {
