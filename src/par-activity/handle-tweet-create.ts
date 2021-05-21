@@ -19,8 +19,8 @@ export async function handleTweetCreate(
     mentions.filter((m) => service.isPickCommand(m.cmdText as string)),
   ];
   if (cancelMentions.length) {
-    //TODO: handle cancel
-    // get the reply id
+    for (const cancelMention of cancelMentions)
+      await service.cancelSelection(cancelMention);
   }
 
   if (pickCommandMentions.length) {
