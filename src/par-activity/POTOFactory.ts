@@ -1,14 +1,17 @@
+import { IRealMentionTweet } from "./ITweet";
 import { SelectionRequest } from "./SelectionRequest";
 
 export class POTOFactory {
-  constructor() {}
+  // constructor() {}
 
   /**
    * Builds a SelectionRequest from a json response
    * @param {any} jsonSelReq
    * @return {SelectionRequest}
    */
-  static buildSelectionRequest(jsonSelReq: any): SelectionRequest {
+  static buildSelectionRequest(
+    jsonSelReq: IRealMentionTweet & SelectionRequest
+  ): SelectionRequest {
     return new SelectionRequest(
       {
         authorId: jsonSelReq.authorId,

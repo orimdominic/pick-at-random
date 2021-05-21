@@ -266,7 +266,8 @@ export const cancelSelection = async (
   if (!req) {
     return;
   }
-  const selReq = POTOFactory.buildSelectionRequest(req);
+  const parsedReq = JSON.parse(req as string);
+  const selReq = POTOFactory.buildSelectionRequest(parsedReq);
   await cache.lrem(selReq.selectionTime, 0, selReq.stringify());
   await cache.del(`${mention.refTweetId}-${mention.authorId}`);
   return;
