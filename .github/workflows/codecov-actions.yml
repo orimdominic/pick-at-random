@@ -18,12 +18,12 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "14"
-      - uses: supercharge/redis-github-action@1.2.0
-        with:
-          redis-version: ${{ matrix.redis-version }}
+      - name: Install redis
+        run: sudo apt-get install -y redis-tools redis-server
       - run: node -v
       - run: yarn -v
-      # - run: redis-cli ping
+      - name: Verify that redis is up
+        run: redis-cli ping
       - run: yarn install
-      - run: yarn test:codecov --forceExit
+      - run: yarn test:codecov
       - run: bash <(curl -s https://codecov.io/bash) # Upload to Codecov
