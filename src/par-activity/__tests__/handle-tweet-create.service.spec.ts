@@ -413,7 +413,7 @@ describe("handleTweetCreateService", () => {
     it("removes a valid selection request from the cache", async () => {
       const get = jest
         .spyOn(cache, "get")
-        .mockImplementation(() => Promise.resolve("value"));
+        .mockImplementation(() => Promise.resolve(JSON.stringify(mockSelReq)));
       const lrem = jest.spyOn(cache, "lrem");
       const del = jest.spyOn(cache, "del");
       await cancelSelection(mockRealMention);
