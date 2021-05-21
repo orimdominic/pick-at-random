@@ -45,7 +45,8 @@ describe("handleParActivity", () => {
     const ev = {
       for_user_id: process.env.PICKATRANDOM_USERID as string,
       source: "",
-      target: ""} as IActivity;
+      target: "",
+    } as IActivity;
     const res = await handleParActivity(ev);
     expect(res).toBe(undefined);
   });
