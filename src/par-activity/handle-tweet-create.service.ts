@@ -223,9 +223,10 @@ export const scheduleSelection = async (
 ): Promise<void> => {
   // FIXME: Not handling errors here.. Scary!
   const selReqExpiryTimeInSecs =
-    new Date(selReq.selectionTime).getTime() /
-      NumericConstant.MillisecsInOneSec +
-    NumericConstant.SecsInOneHour; // One hour later
+    Math.floor(
+      (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
+        NumericConstant.MillisecsInOneSec
+    ) + NumericConstant.SecsInOneHour; // One hour later
   // Push to list
   await cache.rpush(selReq.selectionTime, selReq.stringify());
   // delete after selReqExpiryTimeInSecs
@@ -244,9 +245,10 @@ export const scheduleExpiration = async (
 ): Promise<void> => {
   // FIXME: Not handling errors here.. Scary!
   const selReqExpiryTimeInSecs =
-    new Date(selReq.selectionTime).getTime() /
-      NumericConstant.MillisecsInOneSec +
-    NumericConstant.SecsInOneHour; // One hour later
+    Math.floor(
+      (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
+        NumericConstant.MillisecsInOneSec
+    ) + NumericConstant.SecsInOneHour; // One hour later
   await cache.setex(
     `${replyTweetId}-${selReq.authorId}`,
     selReqExpiryTimeInSecs,
@@ -263,6 +265,7 @@ export const scheduleExpiration = async (
 export const cancelSelection = async (
   mention: IRealMentionTweet
 ): Promise<void> => {
+  console.log(JSON.stringify(mention));
   const req = await cache.get(`${mention.refTweetId}-${mention.authorId}`);
   if (!req) {
     throw Error();

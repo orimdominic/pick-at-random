@@ -22,7 +22,7 @@ export async function handleTweetCreate(
     for (const cancelMention of cancelCommandlMentions)
       try {
         await service.cancelSelection(cancelMention);
-        service.parTwitterClient.likeTweet(cancelMention.id);
+        await service.parTwitterClient.likeTweet(cancelMention.id);
       } catch (error) {
         // TODO: Sentry report
         console.error(error);
