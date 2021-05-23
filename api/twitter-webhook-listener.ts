@@ -1,4 +1,5 @@
 require("../src/config");
+console.log("env:", process.env.NODE_ENV)
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { StatusCodes, getReasonPhrase } from "http-status-codes";
 import {
@@ -7,7 +8,6 @@ import {
   handleTweetCreate,
 } from "../src/par-activity";
 
-console.log("env:", process.env.NODE_ENV)
 
 export default async (
   req: VercelRequest,
