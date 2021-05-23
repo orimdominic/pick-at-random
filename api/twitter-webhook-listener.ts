@@ -3,8 +3,8 @@ import { VercelRequest, VercelResponse } from "@vercel/node";
 import { StatusCodes, getReasonPhrase } from "http-status-codes";
 import {
   getChallengeResponse,
-  setParActivityHandler,
-  handleTweetCreate,
+  // setParActivityHandler,
+  // handleTweetCreate,
 } from "../src/par-activity";
 
 
@@ -25,16 +25,16 @@ export default async (
         }
       }
 
-      case "post": {
-        try {
-        const handleParActivity = setParActivityHandler(handleTweetCreate);
-        await handleParActivity(req.body);
-        return res.status(StatusCodes.OK).send(getReasonPhrase(StatusCodes.OK));
-      } catch (error) {
-        console.error(error);
-        return res.status(StatusCodes.BAD_REQUEST).send(error);
-      }
-    }
+    //   case "post": {
+    //     try {
+    //     const handleParActivity = setParActivityHandler(handleTweetCreate);
+    //     await handleParActivity(req.body);
+    //     return res.status(StatusCodes.OK).send(getReasonPhrase(StatusCodes.OK));
+    //   } catch (error) {
+    //     console.error(error);
+    //     return res.status(StatusCodes.BAD_REQUEST).send(error);
+    //   }
+    // }
 
     default: {
       return res
