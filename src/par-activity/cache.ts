@@ -1,7 +1,6 @@
 import { createNodeRedisClient } from "handy-redis";
 
-console.log("cache env:", process.env.NODE_ENV);
-let cache;
+let cache: any;
 if (process.env.NODE_ENV === "production") {
   cache = createNodeRedisClient({
     url: process.env.REDIS_URL,
