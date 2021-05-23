@@ -9,12 +9,12 @@ import {
   SelectionTweetIdErrorMsg,
   NumericConstant,
   SelectionRequest,
+  POTOFactory,
 } from ".";
 
 import { parTwitterClient } from "./par-twitter-client";
 import { customChronoParser as timeParser } from "./time-parser";
 import { cache } from "./cache";
-import { POTOFactory } from "./POTOFactory";
 
 /**
  * Validates if a mention tweet is a quoted reply and also
