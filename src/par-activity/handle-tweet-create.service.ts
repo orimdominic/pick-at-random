@@ -265,7 +265,6 @@ export const scheduleExpiration = async (
 export const cancelSelection = async (
   mention: IRealMentionTweet
 ): Promise<void> => {
-  console.log(JSON.stringify(mention));
   const req = await cache.get(`${mention.refTweetId}-${mention.authorId}`);
   if (!req) {
     throw Error();

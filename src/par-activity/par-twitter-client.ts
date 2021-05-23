@@ -60,7 +60,7 @@ class ParTwitterClient {
   ): Promise<{ data: { liked: boolean } } | undefined> {
     try {
       const resp = await this.v2.post<{ data: { liked: boolean } }>(
-        `/users/${process.env.PICKATRANDOM_USERID}/likes`,
+        `users/${process.env.PICKATRANDOM_USERID}/likes`,
         {
           tweet_id: id,
         }
