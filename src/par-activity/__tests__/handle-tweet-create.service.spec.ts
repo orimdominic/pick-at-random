@@ -414,7 +414,6 @@ describe("handleTweetCreateService", () => {
     beforeEach(() => {
       jest.clearAllMocks();
     });
-
     it("removes a valid selection request from the cache", async () => {
       const get = jest
         .spyOn(cache, "get")
