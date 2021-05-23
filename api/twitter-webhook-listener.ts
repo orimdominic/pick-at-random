@@ -7,6 +7,8 @@ import {
   handleTweetCreate,
 } from "../src/par-activity";
 
+console.log("env:", process.env.NODE_ENV)
+
 export default async (
   req: VercelRequest,
   res: VercelResponse
