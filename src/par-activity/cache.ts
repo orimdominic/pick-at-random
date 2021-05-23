@@ -1,6 +1,7 @@
-import { createNodeRedisClient } from "handy-redis";
+import { createNodeRedisClient, WrappedNodeRedisClient } from "handy-redis";
 
-let cache: any;
+let cache: WrappedNodeRedisClient;
+
 if (process.env.NODE_ENV === "production") {
   cache = createNodeRedisClient({
     url: process.env.REDIS_URL,
