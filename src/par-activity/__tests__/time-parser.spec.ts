@@ -40,8 +40,8 @@ describe("time parser", () => {
     const today = currentDate.getDay();
     const currentTime = currentDate.getTime();
     const [theDayBeforeYesterday, yesterday] = [
-      weekdays[weekdays.length % (today + 1)],
-      weekdays[weekdays.length % today],
+      weekdays[weekdays.length - 1 - (today + 1)],
+      weekdays[weekdays.length - 1 - today],
     ];
     const vals = [
       {
