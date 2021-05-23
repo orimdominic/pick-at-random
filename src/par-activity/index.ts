@@ -8,3 +8,4 @@ export * from "./get-challenge-response";
 export * from "./handle-tweet-create";
 export * from "./handle-activity";
 export * from "./SelectionRequest";
+export * from "./POTOFactory";
