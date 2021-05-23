@@ -57,12 +57,9 @@ class ParTwitterClient {
   async likeTweet(id: string) {
     console.log(id);
     try {
-      const resp = await this.v2.post(
-        `users/${process.env.PICKATRANDOM_USERID}/likes`,
-        {
-          tweet_id: id,
-        }
-      );
+      const resp = await this.v1.post(`favorites/create.json`, {
+        id
+      });
       console.log(resp);
       return resp;
     } catch (error) {
