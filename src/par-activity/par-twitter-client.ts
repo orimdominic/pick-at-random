@@ -9,21 +9,20 @@ class ParTwitterClient {
    * Initialise the parameters for PAR account
    */
   constructor() {
-    this.v1 = new Twitter({
+    const params = {
       consumer_key: process.env.TWITTER_CONSUMER_KEY as string,
       consumer_secret: process.env.TWITTER_CONSUMER_SECRET as string,
       access_token_key: process.env.TWITTER_PAR_ACCESS_TOKEN as string,
       access_token_secret: process.env
         .TWITTER_PAR_ACCESS_TOKEN_SECRET as string,
+    };
+    this.v1 = new Twitter({
+      ...params,
     });
     this.v2 = new Twitter({
       extension: false,
       version: "2",
-      consumer_key: process.env.TWITTER_CONSUMER_KEY as string,
-      consumer_secret: process.env.TWITTER_CONSUMER_SECRET as string,
-      access_token_key: process.env.TWITTER_PAR_ACCESS_TOKEN as string,
-      access_token_secret: process.env
-        .TWITTER_PAR_ACCESS_TOKEN_SECRET as string,
+      ...params,
     });
   }
 
@@ -55,12 +54,10 @@ class ParTwitterClient {
    * Like a tweet
    * @param {string} id - The id of the tweet to be liked
    */
-  async likeTweet(
-    id: string
-  ): Promise<{ data: { liked: boolean } } | undefined> {
+  async likeTweet(id: string) {
     console.log(id);
     try {
-      const resp = await this.v2.post<{ data: { liked: boolean } }>(
+      const resp = await this.v2.post(
         `users/${process.env.PICKATRANDOM_USERID}/likes`,
         {
           tweet_id: id,
@@ -70,7 +67,7 @@ class ParTwitterClient {
       return resp;
     } catch (error) {
       // TODO: handle error via sentry
-      console.error("parTwitterClient.likeTweet", error);
+      console.error("parTwitterClient.likeTweet", JSON.stringify(error));
     }
   }
 }
