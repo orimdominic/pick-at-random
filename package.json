@@ -19,10 +19,10 @@
     "prebuild:prod": "yarn cleanup",
     "build:prod": "tsc --sourceMap false --declaration false -p ./",
     "dev:twitter-webhook": "vercel dev",
-    "register-webhook": "NODE_ENV=development ts-node src/bin/register-webhook",
-    "delete-webhook": "NODE_ENV=development ts-node src/bin/delete-webhook",
-    "create-subscription": "NODE_ENV=development ts-node src/bin/create-subscription",
-    "get-user-token": "NODE_ENV=development ts-node src/bin/get-user-token"
+    "register-webhook": "NODE_ENV=development ts-node src/scripts/register-webhook",
+    "delete-webhook": "NODE_ENV=development ts-node src/scripts/delete-webhook",
+    "create-subscription": "NODE_ENV=development ts-node src/scripts/create-subscription",
+    "get-user-token": "NODE_ENV=development ts-node src/scripts/get-user-token"
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",

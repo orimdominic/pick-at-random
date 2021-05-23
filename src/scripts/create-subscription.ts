@@ -34,9 +34,9 @@ rl.question(
         (async (opts) => {
           try {
             const body = await post(opts);
-            console.log("result", JSON.stringify(body));
+            console.log("result", JSON.stringify(body, null, 2));
           } catch (e) {
-            console.error("error: ", JSON.stringify(e));
+            console.error("error: ", JSON.stringify(e, null, 2));
           }
         })(requestOptions);
         rl.close();
