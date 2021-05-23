@@ -80,7 +80,7 @@ node_modules/
 .dynamodb/
 
 # Redis db file
-.rdb
+*.rdb
 
 # TernJS port file
 .tern-port

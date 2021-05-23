@@ -28,8 +28,7 @@ class ParTwitterClient {
   }
 
   /**
-   * Reply/Acknowledge a real mention with a feedback of the computed
-   * result
+   * Reply a mention
    * @param {string} id - The id of the mention to reply
    * @param {string} message - The feedback message
    * @param {string} author - The screen name of the author e.g PickAtRandom
@@ -46,9 +45,31 @@ class ParTwitterClient {
         in_reply_to_status_id: id,
       });
       return resp;
-    } catch (e) {
+    } catch (error) {
       // TODO: handle error via sentry
-      console.error("parTwitterClient.replyMention", e);
+      console.error("parTwitterClient.replyMention", error);
+    }
+  }
+
+  /**
+   * Like a tweet
+   * @param {string} id - The id of the tweet to be liked
+   */
+
+  async likeTweet(
+    id: string
+  ): Promise<{ data: { liked: boolean } } | undefined> {
+    try {
+      const resp = await this.v2.post<{ data: { liked: boolean } }>(
+        `/users/${process.env.PICKATRANDOM_USERID}/likes`,
+        {
+          id,
+        }
+      );
+      return resp;
+    } catch (error) {
+      // TODO: handle error via sentry
+      console.error("parTwitterClient.likeTweet", error);
     }
   }
 }
