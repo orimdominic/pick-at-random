@@ -382,9 +382,11 @@ describe("handleTweetCreateService", () => {
 
     it("properly sets the expiration time for a request added to cache", async () => {
       const selReqExpiryTimeInSecs =
-        new Date(mockSelReq.selectionTime).getTime() /
-          NumericConstant.MillisecsInOneSec +
-        NumericConstant.SecsInOneHour;
+        Math.floor(
+          (new Date(mockSelReq.selectionTime).getTime() -
+            new Date().getTime()) /
+            NumericConstant.MillisecsInOneSec
+        ) + NumericConstant.SecsInOneHour; // One hour later
       const expire = jest.spyOn(cache, "expire");
       await scheduleSelection(mockSelReq);
       expect(expire).toHaveBeenCalledWith(
@@ -397,9 +399,11 @@ describe("handleTweetCreateService", () => {
   describe("scheduleExpiration", () => {
     it("properly sets the expiration time for a request for cancellation", async () => {
       const selReqExpiryTimeInSecs =
-        new Date(mockSelReq.selectionTime).getTime() /
-          NumericConstant.MillisecsInOneSec +
-        NumericConstant.SecsInOneHour;
+        Math.floor(
+          (new Date(mockSelReq.selectionTime).getTime() -
+            new Date().getTime()) /
+            NumericConstant.MillisecsInOneSec
+        ) + NumericConstant.SecsInOneHour; // One hour later
       const setex = jest.spyOn(cache, "setex");
       await scheduleExpiration("reply_tweet_id", mockSelReq);
       expect(setex).toHaveBeenCalledWith(
