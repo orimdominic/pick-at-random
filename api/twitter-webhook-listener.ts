@@ -7,27 +7,27 @@ import {
   handleTweetCreate,
 } from "../src/par-activity";
 
-const handleParActivity = setParActivityHandler(handleTweetCreate);
 
 export default async (
   req: VercelRequest,
   res: VercelResponse
-): Promise<VercelResponse> => {
-  const method = req.method?.toLowerCase();
-  switch (method) {
-    case "get": {
-      try {
-        const { crc_token } = req.query;
-        return res.status(StatusCodes.OK).json({
-          response_token: getChallengeResponse(crc_token.toString()),
-        });
-      } catch (error) {
-        return res.status(StatusCodes.BAD_REQUEST).send(error);
+  ): Promise<VercelResponse> => {
+    const method = req.method?.toLowerCase();
+    switch (method) {
+      case "get": {
+        try {
+          const { crc_token } = req.query;
+          return res.status(StatusCodes.OK).json({
+            response_token: getChallengeResponse(crc_token.toString()),
+          });
+        } catch (error) {
+          return res.status(StatusCodes.BAD_REQUEST).send(error);
+        }
       }
-    }
 
-    case "post": {
-      try {
+      case "post": {
+        try {
+        const handleParActivity = setParActivityHandler(handleTweetCreate);
         await handleParActivity(req.body);
         return res.status(StatusCodes.OK).send(getReasonPhrase(StatusCodes.OK));
       } catch (error) {
