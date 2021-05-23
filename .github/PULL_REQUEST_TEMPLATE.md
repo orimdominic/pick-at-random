@@ -15,6 +15,9 @@ Include information to note before merging this PR.
 
 ### How has this been tested?
 
+- [ ] Unit test
+- [ ] Integration test
+
 ### Checklist:
 
 - [ ] I have performed a self-review of my own code
