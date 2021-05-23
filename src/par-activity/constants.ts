@@ -42,3 +42,7 @@ export enum NumericConstant {
   MillisecsInOneSec = 1000,
   SecsInOneHour = 3600,
 }
+
+export enum CancelSelectionErrorMsg {
+  NotFound = "Could not find selection request with id -",
+}

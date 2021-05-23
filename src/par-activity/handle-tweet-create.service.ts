@@ -258,13 +258,14 @@ export const scheduleExpiration = async (
  * Removes a persisted selection from the cache
  * @param {IRealMentionTweet} mention - The mention request for a cancel
  * @returns {Promise<void>}
+ * @throws Error if selection tweet is not found
  */
 export const cancelSelection = async (
   mention: IRealMentionTweet
 ): Promise<void> => {
   const req = await cache.get(`${mention.refTweetId}-${mention.authorId}`);
   if (!req) {
-    return;
+    throw Error();
   }
   const parsedReq = JSON.parse(req as string);
   const selReq = POTOFactory.buildSelectionRequest(parsedReq);
