@@ -256,7 +256,11 @@ describe("handleTweetCreateService", () => {
     it("returns a minute-accurate selection time from a text", async () => {
       const currentDate = new Date();
       const in3Hrs30Mins = new Date(
-        currentDate.getTime() + 3 * 60 * 60 * 1000 + 30 * 60 * 1000
+        currentDate.getTime() +
+          3 *
+            NumericConstant.SecsInOneHour *
+            NumericConstant.MillisecsInOneSec +
+          30 * NumericConstant.MillisecsInOneMin
       );
       const vals = [
         {
@@ -410,6 +414,7 @@ describe("handleTweetCreateService", () => {
     beforeEach(() => {
       jest.clearAllMocks();
     });
+
     it("removes a valid selection request from the cache", async () => {
       const get = jest
         .spyOn(cache, "get")
@@ -428,7 +433,7 @@ describe("handleTweetCreateService", () => {
         .mockImplementation(() => Promise.resolve(null));
       const lrem = jest.spyOn(cache, "lrem");
       const del = jest.spyOn(cache, "del");
-      await cancelSelection(mockRealMention);
+      await expect(cancelSelection(mockRealMention)).rejects.toThrowError();
       expect(get).toHaveBeenCalled();
       expect(lrem).toHaveBeenCalledTimes(0);
       expect(del).toHaveBeenCalledTimes(0);
