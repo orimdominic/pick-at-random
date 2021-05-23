@@ -55,7 +55,6 @@ class ParTwitterClient {
    * Like a tweet
    * @param {string} id - The id of the tweet to be liked
    */
-
   async likeTweet(
     id: string
   ): Promise<{ data: { liked: boolean } } | undefined> {
@@ -63,9 +62,10 @@ class ParTwitterClient {
       const resp = await this.v2.post<{ data: { liked: boolean } }>(
         `/users/${process.env.PICKATRANDOM_USERID}/likes`,
         {
-          id,
+          tweet_id: id,
         }
       );
+      console.log(resp);
       return resp;
     } catch (error) {
       // TODO: handle error via sentry
