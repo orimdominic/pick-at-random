@@ -1,11 +1,12 @@
-// import { createNodeRedisClient } from "handy-redis";
-// import { createClient } from "redis-mock";
+import { createNodeRedisClient } from "handy-redis";
+import { createClient } from "redis-mock";
+console.log(process.env.NODE_ENV);
 
-// const cache =
-//   process.env.NODE_ENV === "production"
-//     ? createNodeRedisClient({
-//         url: process.env.REDIS_URL,
-//       })
-//     : createClient();
+const cache =
+  process.env.NODE_ENV === "production"
+    ? createClient()
+    : createNodeRedisClient({
+        url: process.env.REDIS_URL,
+      });
 
-// export { cache };
+export { cache };
