@@ -12,8 +12,7 @@ export default async (
   res: VercelResponse
 ): Promise<VercelResponse> => {
   const method = req.method?.toLowerCase();
-  console.log("method:", method)
-  switch (method) {
+    switch (method) {
     case "get": {
       try {
         const { crc_token } = req.query;

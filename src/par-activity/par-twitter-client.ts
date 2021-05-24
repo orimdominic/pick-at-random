@@ -1,5 +1,8 @@
 import Twitter from "twitter-lite";
 import { TwitterEndpoint, ITweet } from ".";
+import request from "request";
+import { promisify } from "util";
+const post = promisify(request.post);
 
 class ParTwitterClient {
   private v1: Twitter;
@@ -9,7 +12,7 @@ class ParTwitterClient {
    * Initialise the parameters for PAR account
    */
   constructor() {
-    const params = {
+    const oauth = {
       consumer_key: process.env.TWITTER_CONSUMER_KEY as string,
       consumer_secret: process.env.TWITTER_CONSUMER_SECRET as string,
       access_token_key: process.env.TWITTER_PAR_ACCESS_TOKEN as string,
@@ -17,12 +20,12 @@ class ParTwitterClient {
         .TWITTER_PAR_ACCESS_TOKEN_SECRET as string,
     };
     this.v1 = new Twitter({
-      ...params,
+      ...oauth,
     });
     this.v2 = new Twitter({
       extension: false,
       version: "2",
-      ...params,
+      ...oauth,
     });
   }
 
@@ -46,7 +49,7 @@ class ParTwitterClient {
       return resp;
     } catch (error) {
       // TODO: handle error via sentry
-      console.error("parTwitterClient.replyMention", error);
+      console.error("parTwitterClient.replyMention", error, null, 2);
     }
   }
 
@@ -55,16 +58,27 @@ class ParTwitterClient {
    * @param {string} id - The id of the tweet to be liked
    */
   async likeTweet(id: string) {
-    console.log(id);
     try {
-      const resp = await this.v1.post(`favorites/create.json`, {
-        id
+      const resp = await post({
+        url: `https://api.twitter.com/2/users/${process.env.PICKATRANDOM_USERID}/likes`,
+        oauth: {
+          consumer_key: process.env.TWITTER_CONSUMER_KEY as string,
+          consumer_secret: process.env.TWITTER_CONSUMER_SECRET as string,
+          token: process.env.TWITTER_PAR_ACCESS_TOKEN as string,
+          token_secret: process.env.TWITTER_PAR_ACCESS_TOKEN_SECRET as string,
+        },
+        json: {
+          tweet_id: id,
+        },
       });
-      console.log(resp);
-      return resp;
+      return resp.body;
     } catch (error) {
-      // TODO: handle error via sentry
-      console.error("parTwitterClient.likeTweet", JSON.stringify(error));
+      console.error(
+        // TODO: handle with sentry
+        "parTwitterClient.likeTweet",
+        JSON.stringify(error, null, 2)
+      );
+      return error;
     }
   }
 }
