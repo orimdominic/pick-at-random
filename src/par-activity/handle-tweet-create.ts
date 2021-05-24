@@ -37,7 +37,6 @@ export async function handleTweetCreate(
         any of the errors in one place and responds adequately. It also
         kills the whole process on any error, which is what's needed
          */
-        // eslint-disable @typescript-eslint/no-unused-vars
         const [count, engagement, selectionDate, _] = await Promise.all([
           await service.getEngagementCount(mention.cmdText as string),
           await service.getEngagementType(mention.cmdText as string),

@@ -1,3 +1,5 @@
+/* eslint @typescript-eslint/no-var-requires: "off" */
+
 import { createNodeRedisClient, WrappedNodeRedisClient } from "handy-redis";
 
 let cache: WrappedNodeRedisClient;
