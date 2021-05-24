@@ -57,7 +57,7 @@ class ParTwitterClient {
    * Like a tweet
    * @param {string} id - The id of the tweet to be liked
    */
-  async likeTweet(id: string) {
+  async likeTweet(id: string): Promise<{ data: { liked: boolean } }> {
     try {
       const resp = await post({
         url: `https://api.twitter.com/2/users/${process.env.PICKATRANDOM_USERID}/likes`,
