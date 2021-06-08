@@ -12,7 +12,7 @@ import {
   NumericConstant,
 } from "..";
 import { mockRealMention, mockSelReq, mockTweet } from "../__mocks__/data";
-import { cache } from "../cache";
+import { cache } from "../../cache";
 import {
   cancelSelection,
   scheduleExpiration,

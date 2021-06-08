@@ -14,7 +14,7 @@ import {
 
 import { parTwitterClient } from "./par-twitter-client";
 import { customChronoParser as timeParser } from "./time-parser";
-import { cache } from "./cache";
+import { cache } from "../cache";
 
 /**
  * Validates if a mention tweet is a quoted reply and also
@@ -234,7 +234,7 @@ export const scheduleSelection = async (
 };
 
 /**
- * Schedules a selection request for expiration and removal from
+ * Schedules a selection request for expiration/cancellation and removal from
  * cache
  * @param {string} replyTweetId - The PAR reply tweet id
  * @param {SelectionRequest} selReq - The selection request

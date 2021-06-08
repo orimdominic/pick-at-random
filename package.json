@@ -23,12 +23,14 @@
     "delete-webhook": "NODE_ENV=development ts-node src/scripts/delete-webhook",
     "create-subscription": "NODE_ENV=development ts-node src/scripts/create-subscription",
     "get-user-token": "NODE_ENV=development ts-node src/scripts/get-user-token",
+    "persist-mock-tweet": "NODE_ENV=production ts-node src/scripts/persist-mock-tweet",
     "par-responder:deploy": "yarn serverless deploy",
     "par-responder:dashboard": "yarn serverless dashboard",
-    "par-responder:local": "yarn serverless schedule"
+    "par-responder:local": "NODE_ENV=development yarn serverless schedule"
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",
+    "@types/minimist": "^1.2.1",
     "@types/redis-mock": "^0.17.0",
     "@types/request": "^2.48.5",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
@@ -39,14 +41,16 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "jest": "^26.6.3",
+    "minimist": "^1.2.5",
     "node-mocks-http": "^1.10.1",
     "nodemon": "^2.0.7",
     "prettier": "^2.2.1",
     "redis-mock": "^0.56.3",
     "serverless-offline-scheduler": "^0.4.2",
+    "serverless-plugin-typescript": "^1.1.9",
     "ts-jest": "^26.5.3",
     "ts-node": "^9.1.1",
-    "typescript": "^4.3.2",
+    "typescript": "4.2.3",
     "vercel": "^22.0.1"
   },
   "dependencies": {

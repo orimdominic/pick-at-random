@@ -5,7 +5,7 @@
     "sourceMap": true,
     "declaration": true,
     "outDir": "./build",
-    "rootDir": "./src",
+    "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
     "lib": ["es2017", "DOM"], // https://github.com/draftbit/twitter-lite/issues/135
