@@ -1,6 +1,6 @@
 "use strict";
 
-require("../config");
+import("../config");
 import { getRequests } from "./compute-respond.service";
 
 module.exports.computeAndRespond = async () => {
@@ -8,6 +8,9 @@ module.exports.computeAndRespond = async () => {
   if (!selReqs.length) {
     return;
   }
+  // for await (const selReq of selReqs) {
+
+  // }
   return {
     statusCode: 200,
     body: {
