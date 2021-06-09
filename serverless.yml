@@ -17,6 +17,7 @@ app: pick-at-random
 org: ${env:SERVERLESS_ORG}
 
 plugins:
+  - serverless-plugin-typescript
   - serverless-offline-scheduler
 
 # You can pin your service to only deploy with a specific Serverless version
@@ -80,7 +81,7 @@ functions:
   computeAndRespond:
     handler: src/par-responder/handler.computeAndRespond
     events:
-      - schedule: rate(1 hour)
+      - schedule: rate(1 minute)
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details

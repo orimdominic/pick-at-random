@@ -8,6 +8,7 @@ lerna-debug.log*
 
 # Builds
 build/
+.build/
 dist/
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
