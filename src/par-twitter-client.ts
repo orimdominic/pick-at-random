@@ -1,5 +1,5 @@
 import Twitter from "twitter-lite";
-import { TwitterEndpoint, ITweet } from ".";
+import { TwitterEndpoint, ITweet } from "./par-activity";
 import request from "request";
 import { promisify } from "util";
 const post = promisify(request.post);

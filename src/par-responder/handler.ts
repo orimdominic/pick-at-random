@@ -1,16 +1,36 @@
 "use strict";
+require("../config");
+import { SelectionRequest } from "../par-activity";
 
-import("../config");
-import { cache } from "../cache";
-
-module.exports.computeAndRespond = async (event: any) => {
-  console.log("TEST_CRC_TOKEN", process.env.TEST_CRC_TOKEN);
-  console.log("TWITTER_WEBHOOK_URL", process.env.TWITTER_WEBHOOK_URL);
-
+module.exports.computeAndRespond = async () => {
+  const selReqs = await getRequests();
+  if (!selReqs.length) {
+    return;
+  }
   return {
     statusCode: 200,
     body: {
-      status: "Working!!",
+      requests: selReqs,
     },
   };
 };
+
+async function getRequests(): Promise<SelectionRequest[]> {
+  const { cache } = await import("../cache");
+  const { roundToNearestMinute } = await import(
+    "../par-activity/handle-tweet-create.service"
+  );
+  const currentTime = roundToNearestMinute(new Date()).toUTCString();
+  console.log("currentTime:", currentTime);
+  const cachedReqs = await cache.lrange(currentTime, 0, -1);
+  if (!cachedReqs.length) {
+    await cache.quit();
+    return [];
+  }
+  const selReqs: SelectionRequest[] = [];
+  for (const req of cachedReqs) {
+    selReqs.push(JSON.parse(req));
+  }
+  await cache.quit();
+  return selReqs;
+}

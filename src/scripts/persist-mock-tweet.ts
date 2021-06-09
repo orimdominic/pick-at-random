@@ -24,9 +24,9 @@ function genId(): string {
   return (Math.random() * Math.pow(10, 7)).toString(10).split(".")[0];
 }
 
-count = parseInt(count, 10) || 2;
-delay = parseInt(delay, 10) || 3;
-numOfReqs = parseInt(numOfReqs, 10) || 2;
+count = parseInt(count, 10) || 1;
+delay = parseInt(delay, 10) || 1;
+numOfReqs = parseInt(numOfReqs, 10) || 1;
 engType = engType || "retweet";
 const millisecsInOneMin = 60 * 1000;
 

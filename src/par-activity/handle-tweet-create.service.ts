@@ -12,7 +12,7 @@ import {
   POTOFactory,
 } from ".";
 
-import { parTwitterClient } from "./par-twitter-client";
+import { parTwitterClient } from "../par-twitter-client";
 import { customChronoParser as timeParser } from "./time-parser";
 import { cache } from "../cache";
 

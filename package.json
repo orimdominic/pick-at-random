@@ -23,10 +23,10 @@
     "delete-webhook": "NODE_ENV=development ts-node src/scripts/delete-webhook",
     "create-subscription": "NODE_ENV=development ts-node src/scripts/create-subscription",
     "get-user-token": "NODE_ENV=development ts-node src/scripts/get-user-token",
-    "persist-mock-tweet": "NODE_ENV=production ts-node src/scripts/persist-mock-tweet",
+    "persist-mock-tweet": "NODE_ENV=local ts-node src/scripts/persist-mock-tweet",
     "par-responder:deploy": "yarn serverless deploy",
     "par-responder:dashboard": "yarn serverless dashboard",
-    "par-responder:local": "NODE_ENV=development yarn serverless schedule"
+    "par-responder:local": "NODE_ENV=local yarn serverless schedule"
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",
