@@ -15,6 +15,9 @@ module.exports.computeAndRespond = async () => {
   };
 };
 
+/**
+ * Get requests for the current time from cache
+ */
 async function getRequests(): Promise<SelectionRequest[]> {
   const { cache } = await import("../cache");
   const { roundToNearestMinute } = await import(
