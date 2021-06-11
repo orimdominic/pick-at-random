@@ -118,15 +118,16 @@ class ParTwitterClient {
     req: SelectionRequest,
     message: string
   ): Promise<ITweet | undefined> {
+    const status = `${
+      req.authorName
+    } Hi! ${message}
+${Message.TweetUrlBuilder.replace(
+      "%screen_name%",
+      req.authorName
+    ).replace("%tweet_id%", req.id)}`
     try {
       const resp = await this.v1.post<ITweet>(TwitterEndpointV1.StatusUpdate, {
-        status: `${
-          req.authorName
-        } Hi! ${message}
-${Message.TweetUrlBuilder.replace(
-          "%screen_name%",
-          req.authorName
-        ).replace("%tweet_id%", req.id)}`,
+        status,
       });
       return resp;
     } catch (error) {

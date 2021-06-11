@@ -44,6 +44,7 @@ const startTime = roundToNearestMinute(
       startTime.toUTCString()
     );
     await scheduleSelection(req);
+    console.log("Scheduled for", req.selectionTime);
   }
 })()
   .then(() => process.exit(0))
