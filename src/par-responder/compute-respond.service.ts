@@ -8,7 +8,7 @@ export const getRequests = async (): Promise<SelectionRequest[]> => {
   const { roundToNearestMinute } = await import(
     "../par-activity/handle-tweet-create.service"
   );
-  const currentTime = roundToNearestMinute(new Date()).toUTCString();
+  const currentTime = roundToNearestMinute(new Date()).toISOString();
   const cachedReqs = await cache.lrange(currentTime, 0, -1);
   if (!cachedReqs.length) {
     await cache.quit();
@@ -24,15 +24,21 @@ export const getRequests = async (): Promise<SelectionRequest[]> => {
   return selReqs;
 };
 
-export const pickAtRandom = (pool: string[], count: number) => {
-  if (pool.length <= count) {
-    return pool;
+export const pickAtRandom = (
+  pool: ITweet[],
+  req: SelectionRequest
+): string[] => {
+  const usernames: string[] = pool
+    .filter((r) => r.user.id_str !== req.authorId)
+    .map((r) => `@${r.user.screen_name}`);
+  if (pool.length <= req.count) {
+    return usernames;
   }
-  let counter = count;
+  let counter = req.count;
   const selections: string[] = [];
   while (counter !== 0) {
     const randomIndex = Math.floor(Math.random() * pool.length);
-    const selection = pool[randomIndex];
+    const selection = usernames[randomIndex];
     selections.push(selection);
     pool.splice(randomIndex, 1);
     counter--;

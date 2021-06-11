@@ -24,11 +24,7 @@ module.exports.computeAndRespond = async () => {
         const retweets = await parTwitterClient.getRetweets(
           req.refTweetId as string
         );
-        const retweeters = retweets.map((r) => `@${r.user.screen_name}`);
-        const selectedRetweeters: string[] = pickAtRandom(
-          retweeters,
-          req.count
-        );
+        const selectedRetweeters: string[] = pickAtRandom(retweets, req);
         const message = buildRetweetersResponse(selectedRetweeters);
         await parTwitterClient.respondWithSelectionList(req, message);
       } catch (error) {

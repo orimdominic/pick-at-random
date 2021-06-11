@@ -68,6 +68,7 @@ provider:
     TWITTER_WEBHOOK_URL: ${env:TWITTER_WEBHOOK_URL}
     TEST_CRC_TOKEN: ${env:TEST_CRC_TOKEN}
     TEST_CRC_RESPONSE: ${env:TEST_CRC_RESPONSE}
+    NODE_ENV: ${env:NODE_ENV}
 
 # you can add packaging information here
 #package:
@@ -80,6 +81,7 @@ provider:
 functions:
   computeAndRespond:
     handler: src/par-responder/handler.computeAndRespond
+    timeout: 45
     events:
       - schedule: rate(1 minute)
 #    The following are a few example events you can configure
