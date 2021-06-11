@@ -49,7 +49,7 @@ export const setRealMention = (tweet: ITweet): IRealMentionTweet => {
   return {
     createdAt: tweet.created_at,
     id: tweet.id_str,
-    refTweetId: tweet.in_reply_to_status_id_str,
+    refTweetId: tweet.in_reply_to_status_id_str || tweet.id_str,
     authorName: tweet.user.screen_name,
     authorId: tweet.user.id_str,
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

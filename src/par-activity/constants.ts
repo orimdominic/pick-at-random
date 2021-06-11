@@ -3,8 +3,9 @@ export enum CommandType {
   Feedback = "feedback",
 }
 
-export enum TwitterEndpoint {
+export enum TwitterEndpointV1 {
   StatusUpdate = "statuses/update",
+  StatusRetweets = "statuses/retweets",
 }
 
 export enum EngagementCountErrorMsg {
@@ -45,4 +46,8 @@ export enum NumericConstant {
 
 export enum CancelSelectionErrorMsg {
   NotFound = "Could not find selection request with id -",
+}
+
+export enum Message {
+  TweetUrlBuilder = "https://twitter.com/%screen_name%/status/%tweet_id%",
 }

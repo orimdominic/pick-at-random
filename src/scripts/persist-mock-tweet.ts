@@ -20,10 +20,6 @@ import {
 import minimist from "minimist";
 let { engType, count, delay, numOfReqs } = minimist(process.argv.slice(2));
 
-function genId(): string {
-  return (Math.random() * Math.pow(10, 7)).toString(10).split(".")[0];
-}
-
 count = parseInt(count, 10) || 1;
 delay = parseInt(delay, 10) || 1;
 numOfReqs = parseInt(numOfReqs, 10) || 1;
@@ -38,16 +34,17 @@ const startTime = roundToNearestMinute(
   for (let i = 0; i < numOfReqs; i++) {
     const req = new SelectionRequest(
       {
-        refTweetId: genId(),
-        authorName: "author_name",
-        authorId: "author_id",
-        id: genId(),
+        refTweetId: "1402696928744378379",
+        authorName: "@Bolaji___",
+        authorId: "@Bolaji___",
+        id: "1402696928744378379",
       } as IRealMentionTweet,
       count,
       engType,
       startTime.toUTCString()
     );
     await scheduleSelection(req);
+    console.log("Scheduled for", req.selectionTime);
   }
 })()
   .then(() => process.exit(0))
