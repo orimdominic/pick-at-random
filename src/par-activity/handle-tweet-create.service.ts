@@ -222,15 +222,20 @@ export const scheduleSelection = async (
   selReq: SelectionRequest
 ): Promise<void> => {
   // FIXME: Not handling errors here.. Scary!
-  const selReqExpiryTimeInSecs =
-    Math.floor(
-      (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
-        NumericConstant.MillisecsInOneSec
-    ) + NumericConstant.SecsInOneHour; // One hour later
-  // Push to list
-  await cache.rpush(selReq.selectionTime, selReq.stringify());
-  // delete after selReqExpiryTimeInSecs
-  await cache.expire(selReq.selectionTime, selReqExpiryTimeInSecs);
+  try {
+    const selReqExpiryTimeInSecs =
+      Math.floor(
+        (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
+          NumericConstant.MillisecsInOneSec
+      ) + NumericConstant.SecsInOneHour; // One hour later
+    // Push to list
+    await cache.rpush(selReq.selectionTime, selReq.stringify());
+    // delete after selReqExpiryTimeInSecs
+    await cache.expire(selReq.selectionTime, selReqExpiryTimeInSecs);
+  } catch (error) {
+    console.error("error scheduling req", JSON.stringify(error, null, 2))
+    throw(new Error(JSON.stringify(error, null, 2)))
+  }
 };
 
 /**
@@ -244,16 +249,21 @@ export const scheduleExpiration = async (
   selReq: SelectionRequest
 ): Promise<void> => {
   // FIXME: Not handling errors here.. Scary!
-  const selReqExpiryTimeInSecs =
-    Math.floor(
-      (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
-        NumericConstant.MillisecsInOneSec
-    ) + NumericConstant.SecsInOneHour; // One hour later
-  await cache.setex(
-    `${replyTweetId}-${selReq.authorId}`,
-    selReqExpiryTimeInSecs,
-    selReq.stringify()
-  );
+  try {
+    const selReqExpiryTimeInSecs =
+      Math.floor(
+        (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
+          NumericConstant.MillisecsInOneSec
+      ) + NumericConstant.SecsInOneHour; // One hour later
+    await cache.setex(
+      `${replyTweetId}-${selReq.authorId}`,
+      selReqExpiryTimeInSecs,
+      selReq.stringify()
+    );
+  } catch (error) {
+    console.error("error scheduling expiration", JSON.stringify(error, null, 2))
+    throw(new Error(JSON.stringify(error, null, 2)))
+  }
 };
 
 /**
@@ -265,17 +275,22 @@ export const scheduleExpiration = async (
 export const cancelSelection = async (
   mention: IRealMentionTweet
 ): Promise<void> => {
-  const req = await cache.get(`${mention.refTweetId}-${mention.authorId}`);
-  if (!req) {
-    throw Error();
+  try {
+    const req = await cache.get(`${mention.refTweetId}-${mention.authorId}`);
+    if (!req) {
+      throw new Error("scheduled request not found");
+    }
+    const parsedReq = JSON.parse(req as string);
+    const selReq = POTOFactory.buildSelectionRequest(parsedReq);
+    console.error("cancelling", selReq.selectionTime, 0, selReq.stringify());
+    const removed = await cache.lrem(selReq.selectionTime, 0, selReq.stringify());
+    console.error("removed", removed, "items");
+    await cache.del(`${mention.refTweetId}-${mention.authorId}`);
+    return;
+  } catch (error) {
+    console.error("error cancelling selection", JSON.stringify(error, null, 2))
+    throw(new Error(JSON.stringify(error, null, 2)))
   }
-  const parsedReq = JSON.parse(req as string);
-  const selReq = POTOFactory.buildSelectionRequest(parsedReq);
-  console.error("cancelling", selReq.selectionTime, 0, selReq.stringify());
-  const removed = await cache.lrem(selReq.selectionTime, 0, selReq.stringify());
-  console.error("removed", removed, "items");
-  await cache.del(`${mention.refTweetId}-${mention.authorId}`);
-  return;
 };
 
 /**
