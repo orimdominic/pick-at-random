@@ -1,5 +1,10 @@
 import Twitter from "twitter-lite";
-import { TwitterEndpoint, ITweet } from "./par-activity";
+import {
+  TwitterEndpointV1,
+  ITweet,
+  SelectionRequest,
+  Message,
+} from "./par-activity";
 import request from "request";
 import { promisify } from "util";
 const post = promisify(request.post);
@@ -42,7 +47,7 @@ class ParTwitterClient {
     author: string
   ): Promise<ITweet | undefined> {
     try {
-      const resp = await this.v1.post<ITweet>(TwitterEndpoint.StatusUpdate, {
+      const resp = await this.v1.post<ITweet>(TwitterEndpointV1.StatusUpdate, {
         status: `@${author} ${message}`,
         in_reply_to_status_id: id,
       });
@@ -79,6 +84,58 @@ class ParTwitterClient {
         JSON.stringify(error, null, 2)
       );
       return error;
+    }
+  }
+
+  /**
+   * Get retweets of a tweet
+   * @param {string} id - The id of the tweet
+   */
+  async getRetweets(id: string): Promise<ITweet[]> {
+    try {
+      const retweets: ITweet[] = await this.v1.get<ITweet[]>(
+        `${TwitterEndpointV1.StatusRetweets}/${id}`
+      );
+      return retweets;
+    } catch (error) {
+      console.error(
+        // TODO: handle with sentry
+        "parTwitterClient.getRetweets",
+        JSON.stringify(error, null, 2)
+      );
+      return error;
+    }
+  }
+
+  /**
+   * Respond to a selection request tweet with the selected users
+   * @param {string} id - The id of the request tweet to reply
+   * @param {string} message - The message
+   * @param {string} author - The screen name of the requester e.g PickAtRandom
+   * @returns {Promise<ITweet>} The tweeted feedback
+   */
+  async respondWithSelectionList(
+    req: SelectionRequest,
+    message: string
+  ): Promise<ITweet | undefined> {
+    try {
+      const resp = await this.v1.post<ITweet>(TwitterEndpointV1.StatusUpdate, {
+        status: `@${
+          req.authorName
+        } Hi! ${message} ${Message.TweetUrlBuilder.replace(
+          "%screen_name%",
+          req.authorName
+        ).replace("%tweet_id%", req.id)}`,
+      });
+      return resp;
+    } catch (error) {
+      // TODO: handle error via sentry
+      console.error(
+        "parTwitterClient.respondWithSelectionList",
+        error,
+        null,
+        2
+      );
     }
   }
 }
