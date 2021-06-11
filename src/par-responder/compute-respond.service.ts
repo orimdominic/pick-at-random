@@ -9,19 +9,25 @@ export const getRequests = async (): Promise<SelectionRequest[]> => {
     "../par-activity/handle-tweet-create.service"
   );
   const currentTime = roundToNearestMinute(new Date()).toISOString();
-  const cachedReqs = await cache.lrange(currentTime, 0, -1);
-  if (!cachedReqs.length) {
+  try {
+    const cachedReqs = await cache.lrange(currentTime, 0, -1);
+    if (!cachedReqs.length) {
+      await cache.quit();
+      return [];
+    }
+    const selReqs: SelectionRequest[] = [];
+    for (const req of cachedReqs) {
+      selReqs.push(JSON.parse(req));
+    }
+    console.log("currentTime:", currentTime);
+    console.log("selReqs:", JSON.stringify(selReqs, null, 2));
     await cache.quit();
-    return [];
+    return selReqs;
+
+  } catch (error) {
+    console.error(error);
+    return []
   }
-  const selReqs: SelectionRequest[] = [];
-  for (const req of cachedReqs) {
-    selReqs.push(JSON.parse(req));
-  }
-  console.log("currentTime:", currentTime);
-  console.log("selReqs:", JSON.stringify(selReqs, null, 2));
-  await cache.quit();
-  return selReqs;
 };
 
 export const pickAtRandom = (

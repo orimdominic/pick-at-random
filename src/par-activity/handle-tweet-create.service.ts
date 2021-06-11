@@ -271,9 +271,9 @@ export const cancelSelection = async (
   }
   const parsedReq = JSON.parse(req as string);
   const selReq = POTOFactory.buildSelectionRequest(parsedReq);
-  console.info("cancelling", selReq.selectionTime, 0, selReq.stringify());
+  console.error("cancelling", selReq.selectionTime, 0, selReq.stringify());
   const removed = await cache.lrem(selReq.selectionTime, 0, selReq.stringify());
-  console.info("removed", removed, "items");
+  console.error("removed", removed, "items");
   await cache.del(`${mention.refTweetId}-${mention.authorId}`);
   return;
 };
