@@ -24,7 +24,7 @@
     "create-subscription": "NODE_ENV=development ts-node src/scripts/create-subscription",
     "get-user-token": "NODE_ENV=development ts-node src/scripts/get-user-token",
     "persist-mock-tweet": "NODE_ENV=local ts-node src/scripts/persist-mock-tweet",
-    "par-responder:deploy": "yarn serverless deploy",
+    "par-responder:deploy": "NODE_ENV=production yarn serverless deploy",
     "par-responder:dashboard": "yarn serverless dashboard",
     "par-responder:local": "NODE_ENV=local yarn serverless schedule"
   },
