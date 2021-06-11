@@ -122,7 +122,8 @@ class ParTwitterClient {
       const resp = await this.v1.post<ITweet>(TwitterEndpointV1.StatusUpdate, {
         status: `@${
           req.authorName
-        } Hi! ${message} ${Message.TweetUrlBuilder.replace(
+        } Hi! ${message}
+${Message.TweetUrlBuilder.replace(
           "%screen_name%",
           req.authorName
         ).replace("%tweet_id%", req.id)}`,
