@@ -23,10 +23,9 @@ export const getRequests = async (): Promise<SelectionRequest[]> => {
     console.log("selReqs:", JSON.stringify(selReqs, null, 2));
     await cache.quit();
     return selReqs;
-
   } catch (error) {
     console.error(error);
-    return []
+    return [];
   }
 };
 

@@ -233,8 +233,8 @@ export const scheduleSelection = async (
     // delete after selReqExpiryTimeInSecs
     await cache.expire(selReq.selectionTime, selReqExpiryTimeInSecs);
   } catch (error) {
-    console.error("error scheduling req", JSON.stringify(error, null, 2))
-    throw(new Error(JSON.stringify(error, null, 2)))
+    console.error("error scheduling req", JSON.stringify(error, null, 2));
+    throw new Error(JSON.stringify(error, null, 2));
   }
 };
 
@@ -261,8 +261,11 @@ export const scheduleExpiration = async (
       selReq.stringify()
     );
   } catch (error) {
-    console.error("error scheduling expiration", JSON.stringify(error, null, 2))
-    throw(new Error(JSON.stringify(error, null, 2)))
+    console.error(
+      "error scheduling expiration",
+      JSON.stringify(error, null, 2)
+    );
+    throw new Error(JSON.stringify(error, null, 2));
   }
 };
 
@@ -282,14 +285,27 @@ export const cancelSelection = async (
     }
     const parsedReq = JSON.parse(req as string);
     const selReq = POTOFactory.buildSelectionRequest(parsedReq);
-    console.error("cancelling", selReq.selectionTime, 0, selReq.stringify());
-    const removed = await cache.lrem(selReq.selectionTime, 0, selReq.stringify());
-    console.error("removed", removed, "items");
+    const selReqsOnThatDate = await cache.lrange(selReq.selectionTime, 0, -1);
+    const selReqsToKeep: SelectionRequest[] = selReqsOnThatDate
+      .map((r) => JSON.parse(r))
+      .filter((r: SelectionRequest) => r.id !== selReq.id);
+    await cache.del(selReq.selectionTime);
+    if (selReqsToKeep.length) {
+      const selReqExpiryTimeInSecs =
+        Math.floor(
+          (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
+            NumericConstant.MillisecsInOneSec
+        ) + NumericConstant.SecsInOneHour; // One hour later
+      await cache.rpush(selReq.selectionTime, JSON.stringify(selReqsToKeep));
+      // delete after selReqExpiryTimeInSecs
+      await cache.expire(selReq.selectionTime, selReqExpiryTimeInSecs);
+    }
+    // delete cancellation key/value
     await cache.del(`${mention.refTweetId}-${mention.authorId}`);
     return;
   } catch (error) {
-    console.error("error cancelling selection", JSON.stringify(error, null, 2))
-    throw(new Error(JSON.stringify(error, null, 2)))
+    console.error("error cancelling selection", JSON.stringify(error, null, 2));
+    throw new Error(JSON.stringify(error, null, 2));
   }
 };
 
