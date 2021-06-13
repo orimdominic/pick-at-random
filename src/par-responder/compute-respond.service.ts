@@ -1,12 +1,10 @@
 import { ITweet, SelectionRequest } from "../par-activity";
-import { WrappedNodeRedisClient } from "../cache";
+import { cache } from "../cache";
 
 /**
  * Get requests for the current time from cache
  */
-export const getRequests = async (
-  cache: WrappedNodeRedisClient
-): Promise<SelectionRequest[]> => {
+export const getRequests = async (): Promise<SelectionRequest[]> => {
   const { roundToNearestMinute } = await import(
     "../par-activity/handle-tweet-create.service"
   );

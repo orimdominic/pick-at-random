@@ -1,7 +1,6 @@
 "use strict";
 
 import("../config");
-import { cache } from "../cache";
 import { EngagementType } from "../par-activity";
 import {
   buildRetweetersResponse,
@@ -11,8 +10,7 @@ import {
 import { parTwitterClient } from "../par-twitter-client";
 
 module.exports.computeAndRespond = async () => {
-  const selReqs = await getRequests(cache);
-  await cache.quit();
+  const selReqs = await getRequests();
   if (selReqs.length === 0) {
     return;
   }

@@ -223,6 +223,16 @@ export const mockRealMention = {
   text: "text",
 };
 
+export const mockCancelMention = {
+  createdAt: "created_at",
+  id: "tweet_id",
+  refTweetId: "ref_tweet_id",
+  authorName: "author_name",
+  authorId: "author_id",
+  text: "text",
+  cmdText: "cancel",
+};
+
 export const mockSelReq: SelectionRequest = {
   authorId: "author_id",
   authorName: "author_name",
