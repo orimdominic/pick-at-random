@@ -27,7 +27,7 @@ export class SelectionRequest {
    */
   engagement: EngagementType;
   /**
-   * When to make the selection
+   * When to make the selection (time in ISO string)
    */
   selectionTime: string;
   constructor(

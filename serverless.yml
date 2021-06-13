@@ -24,12 +24,13 @@ plugins:
 # Check out our docs for more details
 frameworkVersion: "2"
 useDotenv: true
+unresolvedVariablesNotificationMode: warn
 
 provider:
   name: aws
   runtime: nodejs14.x
   lambdaHashingVersion: 20201221
-  memorySize: 128
+  memorySize: 256
   logRetentionInDays: 14
 
   # you can overwrite defaults here
@@ -69,6 +70,7 @@ provider:
     TEST_CRC_TOKEN: ${env:TEST_CRC_TOKEN}
     TEST_CRC_RESPONSE: ${env:TEST_CRC_RESPONSE}
     NODE_ENV: ${env:NODE_ENV}
+    REDIS_URL: ${env:REDIS_URL}
 
 # you can add packaging information here
 #package:
@@ -81,7 +83,7 @@ provider:
 functions:
   computeAndRespond:
     handler: src/par-responder/handler.computeAndRespond
-    timeout: 45
+    timeout: 15
     events:
       - schedule: rate(1 minute)
 #    The following are a few example events you can configure

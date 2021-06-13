@@ -11,7 +11,7 @@ import { parTwitterClient } from "../par-twitter-client";
 
 module.exports.computeAndRespond = async () => {
   const selReqs = await getRequests();
-  if (!selReqs.length) {
+  if (selReqs.length === 0) {
     return;
   }
   // TODO: Monitor rate limits!
@@ -36,7 +36,5 @@ Error:`,
       }
     }
   }
-  return {
-    statusCode: 200,
-  };
+  return;
 };

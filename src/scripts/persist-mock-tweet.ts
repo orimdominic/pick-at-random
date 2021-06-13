@@ -41,7 +41,7 @@ const startTime = roundToNearestMinute(
       } as IRealMentionTweet,
       count,
       engType,
-      startTime.toUTCString()
+      startTime.toISOString()
     );
     await scheduleSelection(req);
     console.log("Scheduled for", req.selectionTime);

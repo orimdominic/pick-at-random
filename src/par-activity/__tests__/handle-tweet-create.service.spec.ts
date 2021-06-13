@@ -422,12 +422,20 @@ describe("handleTweetCreateService", () => {
       const get = jest
         .spyOn(cache, "get")
         .mockImplementation(() => Promise.resolve(JSON.stringify(mockSelReq)));
-      const lrem = jest.spyOn(cache, "lrem");
-      const del = jest.spyOn(cache, "del");
+      const lrange = jest
+        .spyOn(cache, "lrange")
+        .mockImplementation(() =>
+          Promise.resolve([JSON.stringify(mockSelReq)])
+        );
+      const del = jest
+        .spyOn(cache, "del")
+        .mockImplementation(() => Promise.resolve(1));
       await cancelSelection(mockRealMention);
-      expect(get).toHaveBeenCalled();
-      expect(lrem).toHaveBeenCalled();
-      expect(del).toHaveBeenCalled();
+      expect(get).toHaveBeenCalledWith(
+        `${mockRealMention.refTweetId}-${mockRealMention.authorId}`
+      );
+      expect(lrange).toHaveBeenCalledWith(mockSelReq.selectionTime, 0, -1);
+      expect(del).toHaveBeenCalledWith(mockSelReq.selectionTime);
     });
 
     it("doesn't remove a selection request if the key isnt found", async () => {
@@ -437,9 +445,7 @@ describe("handleTweetCreateService", () => {
       const lrem = jest.spyOn(cache, "lrem");
       const del = jest.spyOn(cache, "del");
       await expect(cancelSelection(mockRealMention)).rejects.toThrowError();
-      expect(get).toHaveBeenCalled();
-      expect(lrem).toHaveBeenCalledTimes(0);
-      expect(del).toHaveBeenCalledTimes(0);
+      expect(get).toHaveBeenCalledTimes(1);
     });
   });
 

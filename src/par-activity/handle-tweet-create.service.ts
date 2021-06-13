@@ -305,7 +305,7 @@ export const cancelSelection = async (
     return;
   } catch (error) {
     console.error("error cancelling selection", JSON.stringify(error, null, 2));
-    throw new Error(JSON.stringify(error, null, 2));
+    throw new Error("error cancelling selection");
   }
 };
 
