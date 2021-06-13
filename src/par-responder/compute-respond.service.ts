@@ -1,30 +1,34 @@
 import { ITweet, SelectionRequest } from "../par-activity";
+import { WrappedNodeRedisClient } from "../cache";
 
 /**
  * Get requests for the current time from cache
  */
-export const getRequests = async (): Promise<SelectionRequest[]> => {
-  const { cache } = await import("../cache");
+export const getRequests = async (
+  cache: WrappedNodeRedisClient
+): Promise<SelectionRequest[]> => {
   const { roundToNearestMinute } = await import(
     "../par-activity/handle-tweet-create.service"
   );
   const currentTime = roundToNearestMinute(new Date()).toISOString();
   try {
     const cachedReqs = await cache.lrange(currentTime, 0, -1);
+    console.log(
+      "currentTime:",
+      currentTime,
+      "request count",
+      cachedReqs.length
+    );
     if (!cachedReqs.length) {
-      await cache.quit();
       return [];
     }
     const selReqs: SelectionRequest[] = [];
     for (const req of cachedReqs) {
       selReqs.push(JSON.parse(req));
     }
-    console.log("currentTime:", currentTime);
-    console.log("selReqs:", JSON.stringify(selReqs, null, 2));
-    await cache.quit();
     return selReqs;
   } catch (error) {
-    console.error(error);
+    console.error("ERROR getRequests", error);
     return [];
   }
 };

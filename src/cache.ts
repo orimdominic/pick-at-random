@@ -3,7 +3,6 @@
 import { createNodeRedisClient, WrappedNodeRedisClient } from "handy-redis";
 
 let cache: WrappedNodeRedisClient;
-let createClient;
 
 switch (process.env.NODE_ENV) {
   case "production":
@@ -11,13 +10,15 @@ switch (process.env.NODE_ENV) {
       url: process.env.REDIS_URL,
     });
     break;
-  case "local":
-    cache = createNodeRedisClient();
+  case "development":
+    cache = createNodeRedisClient({
+      host: "localhost",
+      port: 6379,
+    });
     break;
   default:
-    createClient = require("redis-mock").createClient;
-    cache = createClient();
+    cache = require("redis-mock").createClient();
     break;
 }
 
-export { cache };
+export { cache, WrappedNodeRedisClient };

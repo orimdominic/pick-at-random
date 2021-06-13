@@ -1,6 +1,7 @@
 "use strict";
 
 import("../config");
+import { cache } from "../cache";
 import { EngagementType } from "../par-activity";
 import {
   buildRetweetersResponse,
@@ -10,8 +11,9 @@ import {
 import { parTwitterClient } from "../par-twitter-client";
 
 module.exports.computeAndRespond = async () => {
-  const selReqs = await getRequests();
-  if (!selReqs.length) {
+  const selReqs = await getRequests(cache);
+  await cache.quit();
+  if (selReqs.length === 0) {
     return;
   }
   // TODO: Monitor rate limits!
@@ -36,7 +38,5 @@ Error:`,
       }
     }
   }
-  return {
-    statusCode: 200,
-  };
+  return;
 };
