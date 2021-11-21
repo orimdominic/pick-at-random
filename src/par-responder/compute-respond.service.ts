@@ -1,5 +1,7 @@
-import { ITweet, SelectionRequest } from "../par-activity";
+import { SelectionRequest } from "../par-activity";
 import { cache } from "../cache";
+import { parTwitterClient } from "../par-twitter-client";
+
 
 /**
  * Get requests for the current time from cache
@@ -11,19 +13,16 @@ export const getRequests = async (): Promise<SelectionRequest[]> => {
   const currentTime = roundToNearestMinute(new Date()).toISOString();
   try {
     const cachedReqs = await cache.lrange(currentTime, 0, -1);
-    console.log(
-      "currentTime:",
-      currentTime,
-      "request count",
-      cachedReqs.length
-    );
+
     if (!cachedReqs.length) {
       return [];
     }
+
     const selReqs: SelectionRequest[] = [];
     for (const req of cachedReqs) {
       selReqs.push(JSON.parse(req));
     }
+
     return selReqs;
   } catch (error) {
     console.error("ERROR getRequests", error);
@@ -31,32 +30,50 @@ export const getRequests = async (): Promise<SelectionRequest[]> => {
   }
 };
 
+/**
+ * Pick and returns usernames from a username pool
+ */
 export const pickAtRandom = (
-  pool: ITweet[],
-  req: SelectionRequest
+  usernamePool: string[],
+  total: number
 ): string[] => {
-  const usernames: string[] = pool
-    .filter((r) => r.user.id_str !== req.authorId)
-    .map((r) => `@${r.user.screen_name}`);
-  if (pool.length <= req.count) {
-    return usernames;
+
+  if (usernamePool.length <= total) {
+    return usernamePool;
   }
-  let counter = req.count;
-  const selections: string[] = [];
-  while (counter !== 0) {
-    const randomIndex = Math.floor(Math.random() * pool.length);
-    const selection = usernames[randomIndex];
-    selections.push(selection);
-    pool.splice(randomIndex, 1);
+
+  let counter = total;
+  const selection: string[] = [];
+
+  while (counter !== 0 || usernamePool.length !== 0) {
+    // Fortunately, the API does not return duplicates
+    // Unfortunately, it doesn't return > 99 results
+    const randomIndex = Math.floor(Math.random() * usernamePool.length);
+    const selected = usernamePool[randomIndex];
+    selection.push(selected);
+    usernamePool.splice(randomIndex, 1);
     counter--;
   }
-  return selections;
+  return selection;
 };
 
-export const buildRetweetersResponse = (retweeters: string[]): string => {
-  return retweeters.length === 1
-    ? `
-Here's one selected retweeter - ${retweeters[0]}`
-    : `
-${retweeters.length} retweeters as requested - ${retweeters.join(", ")}`;
+export const buildRetweetersResponse = (usernames: string[]): string => {
+  return usernames.length === 1
+    ? `the selected retweeter is ${usernames[0]}`
+    : `the selected retweeters are - ${usernames.map((u) => `@${u}`).join(", ")}`;
 };
+
+export const handleRetweetRequest = async (req: SelectionRequest) => {
+  const users = await parTwitterClient.getRetweeters(
+    req.refTweetId as string
+  );
+
+  const usernames: string[] = users
+    .filter((u) => u.id !== req.authorId)
+    .map((u) => `${u.username}`);
+
+  const selectedRetweeters: string[] = pickAtRandom(usernames, req.count);
+  const message = buildRetweetersResponse(selectedRetweeters);
+
+  await parTwitterClient.respondWithSelectionList(req, message);
+}

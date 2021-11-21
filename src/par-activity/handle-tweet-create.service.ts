@@ -17,10 +17,6 @@ import { customChronoParser as timeParser } from "./time-parser";
 import { cache } from "../cache";
 
 /**
- * Validates if a mention tweet is a quoted reply and also
- * not a pure retweet, and that it is not a mention by
- * self (@PickAtRandom)
- *
  * It returns false if the tweet is a pure retweet,
  * or is a tweet by @PickAtRandom, else, it returns true
  *
@@ -102,7 +98,7 @@ export const isFeedbackText = (text: string): boolean =>
  */
 export const isPickCommand = (text: string): boolean => {
   const [firstWord] = text.split(" ");
-  // at minimum, a pick command text can be '2 retweets tomorrow'
+  // at minimum, a pick command text can be '2 retweets tomorrow' or '4 replies on'
   return (
     Number.isInteger(parseInt(firstWord, 10)) && text.split(" ").length >= 3
   );
@@ -112,91 +108,88 @@ export const isPickCommand = (text: string): boolean => {
  * Extracts and returns the engagement count in a command
  * tweet
  * @param {string} text - The command text
- * @returns {Promise<number>} The engagement count
- * @throws {Error}
+ * @returns {number} The engagement count
  */
-export const getEngagementCount = async (text: string): Promise<number> => {
-  return new Promise((resolve, reject) => {
-    const [countStr] = text.split(" ");
-    const count = parseInt(countStr.trim(), 10);
-    if (Number.isNaN(count)) {
-      return reject(new Error(EngagementCountErrorMsg.CannotParse));
-    }
-    if (count < 1) {
-      return reject(new Error(EngagementCountErrorMsg.LessThanOne));
-    }
-    resolve(count);
-  });
+export const getEngagementCount = (text: string): number => {
+  /* could use NLP but Arabic numerals are a universal language */
+  const [countStr] = text.split(" ");
+  const count = parseInt(countStr.trim(), 10);
+  if (Number.isNaN(count)) {
+    throw new Error(EngagementCountErrorMsg.CannotParse);
+  }
+  if (count < 1) {
+    throw new Error(EngagementCountErrorMsg.LessThanOne);
+  }
+  return count
 };
 
 /**
  * Extracts and returns the engagement type from a command
  * tweet
  * @param {string} text - The command text
- * @returns {Promise<string>} The engagement count
+ * @returns {EngagementType} The engagement type (retweet, replies...)
  * @throws {Error}
  */
-export const getEngagementType = async (
+export const getEngagementType = (
   text: string
-): Promise<EngagementType> => {
-  return new Promise((resolve, reject) => {
-    const [, engagementType] = text.split(" ");
-    if (engagementType.trim().length < 3) {
-      return reject(new Error(EngagementTypeErrorMsg.CannotParse));
-    }
-    const sub = engagementType.trim().substring(0, 3);
-    switch (sub) {
-      case "ret":
-        resolve(EngagementType.Retweet);
-        break;
-      default:
-        // FIXME: When the algorithm for finding replies is developed, include it
-        reject(new Error(EngagementTypeErrorMsg.CannotHandle));
-    }
-  });
+): EngagementType => {
+  const [, engagementType] = text.split(" ");
+  if (engagementType.trim().length < 3) {
+    throw new Error(EngagementTypeErrorMsg.CannotParse);
+  }
+
+  const sub = engagementType.trim().substring(0, 3);
+
+  switch (sub) {
+    case "ret":
+      return EngagementType.Retweet;
+    default:
+      // FIXME: When the algorithm for finding replies is developed, include it
+      throw new Error(EngagementTypeErrorMsg.CannotHandle);
+  }
 };
 
 /**
  * Parses and extracts the date for the random pick from the mention tweet
  * @param {IRealMentionTweet}
- * @returns {Promise<Date>} The date for the random selection e.g "2021-05-01T05:30:06.000Z"
+ * @returns {Date} The date for the random selection e.g "2021-05-01T05:30:06.000Z"
  * @throws {Error} if the date in the tweet is in the past or invalid
  */
-export const getSelectionDate = async ({
+export const getSelectionDate = ({
   cmdText,
   createdAt,
-}: IRealMentionTweet): Promise<Date> => {
-  // this snippet of code runs on vibes and insha Allah. lol
+}: IRealMentionTweet): Date => {
+  // this function runs on vibes and insha Allah. lol
   // converting human language to computer language is a feat!
-  return new Promise((resolve, reject) => {
-    const refDate = new Date(createdAt);
-    const [parsedResult] = timeParser.parse(cmdText as string, refDate, {
-      forwardDate: true,
-    }); // returns either a date string or null
-    if (!parsedResult) {
-      return reject(new Error(TimeParserErrorMsg.NullValue));
-    }
-    if (parsedResult.start.date().getTime() < Date.now()) {
-      return reject(new Error(TimeParserErrorMsg.PastDate));
-    }
-    return resolve(parsedResult.start.date());
-  });
+  const refDate = new Date(createdAt);
+  const [parsedResult] = timeParser.parse(cmdText as string, refDate, {
+    forwardDate: true,
+  }); // returns either a date string or null
+
+  if (!parsedResult) {
+    throw new Error(TimeParserErrorMsg.NullValue);
+  }
+
+  if (parsedResult.start.date().getTime() < Date.now()) {
+    throw new Error(TimeParserErrorMsg.PastDate);
+  }
+
+  return parsedResult.start.date();
 };
 
 /**
  * Get the tweet id to make a random selection for
  * @param {IRealMentionTweet}
- * @returns {Promise<string>} The id of the tweet that was replied to
+ * @returns {string} The id of the tweet that was replied to
  * @throws {Error} if the reply tweet id is null
  */
-export const getSelectionTweetId = async ({
+export const getSelectionTweetId = ({
   refTweetId,
-}: IRealMentionTweet): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    return !refTweetId
-      ? reject(new Error(SelectionTweetIdErrorMsg.NoneFound))
-      : resolve(refTweetId);
-  });
+}: IRealMentionTweet): string => {
+  if (!refTweetId) {
+    throw new Error(SelectionTweetIdErrorMsg.NoneFound)
+  }
+  return refTweetId;
 };
 
 /**
@@ -210,7 +203,7 @@ export const getSelectionTweetId = async ({
 export const roundToNearestMinute = (date: Date = new Date()): Date => {
   return new Date(
     Math.floor(date.getTime() / NumericConstant.MillisecsInOneMin) *
-      NumericConstant.MillisecsInOneMin
+    NumericConstant.MillisecsInOneMin
   );
 };
 
@@ -221,12 +214,11 @@ export const roundToNearestMinute = (date: Date = new Date()): Date => {
 export const scheduleSelection = async (
   selReq: SelectionRequest
 ): Promise<void> => {
-  // FIXME: Not handling errors here.. Scary!
   try {
     const selReqExpiryTimeInSecs =
       Math.floor(
         (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
-          NumericConstant.MillisecsInOneSec
+        NumericConstant.MillisecsInOneSec
       ) + NumericConstant.SecsInOneHour; // One hour later
     // Push to list
     await cache.rpush(selReq.selectionTime, selReq.stringify());
@@ -234,7 +226,7 @@ export const scheduleSelection = async (
     await cache.expire(selReq.selectionTime, selReqExpiryTimeInSecs);
   } catch (error) {
     console.error("error scheduling req", JSON.stringify(error, null, 2));
-    throw new Error(JSON.stringify(error, null, 2));
+    throw new Error("An error occured in scheduling your request");
   }
 };
 
@@ -248,12 +240,11 @@ export const scheduleExpiration = async (
   replyTweetId: string,
   selReq: SelectionRequest
 ): Promise<void> => {
-  // FIXME: Not handling errors here.. Scary!
   try {
     const selReqExpiryTimeInSecs =
       Math.floor(
         (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
-          NumericConstant.MillisecsInOneSec
+        NumericConstant.MillisecsInOneSec
       ) + NumericConstant.SecsInOneHour; // One hour later
     await cache.setex(
       `${replyTweetId}-${selReq.authorId}`,
@@ -265,7 +256,7 @@ export const scheduleExpiration = async (
       "error scheduling expiration",
       JSON.stringify(error, null, 2)
     );
-    throw new Error(JSON.stringify(error, null, 2));
+    throw new Error("An error occured");
   }
 };
 
@@ -273,40 +264,38 @@ export const scheduleExpiration = async (
  * Removes a persisted selection from the cache
  * @param {IRealMentionTweet} mention - The mention request for a cancel
  * @returns {Promise<void>}
- * @throws Error if selection tweet is not found
  */
 export const cancelSelection = async (
   mention: IRealMentionTweet
-): Promise<void> => {
-  try {
-    const req = await cache.get(`${mention.refTweetId}-${mention.authorId}`);
-    if (!req) {
-      throw new Error("scheduled request not found");
-    }
-    const parsedReq = JSON.parse(req as string);
-    const selReq = POTOFactory.buildSelectionRequest(parsedReq);
-    const selReqsOnThatDate = await cache.lrange(selReq.selectionTime, 0, -1);
-    const selReqsToKeep: SelectionRequest[] = selReqsOnThatDate
-      .map((r) => JSON.parse(r))
-      .filter((r: SelectionRequest) => r.id !== selReq.id);
-    await cache.del(selReq.selectionTime);
-    if (selReqsToKeep.length) {
-      const selReqExpiryTimeInSecs =
-        Math.floor(
-          (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
-            NumericConstant.MillisecsInOneSec
-        ) + NumericConstant.SecsInOneHour; // One hour later
-      await cache.rpush(selReq.selectionTime, JSON.stringify(selReqsToKeep));
-      // delete after selReqExpiryTimeInSecs
-      await cache.expire(selReq.selectionTime, selReqExpiryTimeInSecs);
-    }
-    // delete cancellation key/value
-    await cache.del(`${mention.refTweetId}-${mention.authorId}`);
-    return;
-  } catch (error) {
-    console.error("error cancelling selection", JSON.stringify(error, null, 2));
-    throw new Error("error cancelling selection");
+): Promise<string> => {
+  const req = await cache.get(`${mention.refTweetId}-${mention.authorId}`);
+  if (!req) {
+    throw new Error("Request to cancel not found in database")
   }
+
+  const parsedReq = JSON.parse(req as string);
+  const selReq = POTOFactory.buildSelectionRequest(parsedReq);
+
+  const selReqsOnRequestToCancelDate = await cache.lrange(selReq.selectionTime, 0, -1);
+  const selReqsToKeep: SelectionRequest[] = selReqsOnRequestToCancelDate
+    .map((r) => JSON.parse(r))
+    .filter((r: SelectionRequest) => r.id !== selReq.id);
+
+  await cache.del(selReq.selectionTime);
+
+  if (selReqsToKeep.length) {
+    const selReqExpiryTimeInSecs =
+      Math.floor(
+        (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
+        NumericConstant.MillisecsInOneSec
+      ) + NumericConstant.SecsInOneHour; // One hour later
+    await cache.rpush(selReq.selectionTime, JSON.stringify(selReqsToKeep));
+    // delete after selReqExpiryTimeInSecs
+    await cache.expire(selReq.selectionTime, selReqExpiryTimeInSecs);
+  }
+  // delete cancellation key/value
+  await cache.del(`${mention.refTweetId}-${mention.authorId}`);
+  return mention.refTweetId as string;
 };
 
 /**
@@ -315,9 +304,11 @@ export const cancelSelection = async (
  * @param {SelectionRequest} selReq - The selection request
  * @returns {string} The success message
  */
-export const getScheduleSuccessReply = (selReq: SelectionRequest): string => {
+export const createScheduleSuccessReply = (selReq: SelectionRequest): string => {
   const engagement = `${selReq.engagement}${selReq.count > 1 ? "s" : ""}`;
+
   const selectionTime = new Date(selReq.selectionTime).toUTCString();
+
   const messages = [
     `Got you covered!
 ${selReq.count} randomly picked ${engagement} coming up on ${selectionTime}`,
@@ -327,8 +318,9 @@ Expect ${selReq.count} ${engagement} picked at random and delivered on ${selecti
     `Got that!
 ${selReq.count} randomly picked ${engagement} scheduled to be delivered on ${selectionTime}`,
   ];
-  const message = messages[Math.floor(Math.random() * messages.length)];
-  return `${message}.
+
+  const reply = messages[Math.floor(Math.random() * messages.length)];
+  return `${reply}
 
 Reply this tweet with "@PickAtRandom cancel" to cancel the selection`;
 };

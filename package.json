@@ -64,6 +64,7 @@
     "redis": "^3.1.2",
     "request": "^2.88.2",
     "serverless": "^2.38.0",
+    "twitter-api-v2": "^1.6.5",
     "twitter-error-handler": "^3.1.0",
     "twitter-lite": "^1.1.0"
   }
