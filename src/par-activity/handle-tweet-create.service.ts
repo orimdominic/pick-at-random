@@ -120,7 +120,7 @@ export const getEngagementCount = (text: string): number => {
   if (count < 1) {
     throw new Error(EngagementCountErrorMsg.LessThanOne);
   }
-  return count
+  return count;
 };
 
 /**
@@ -130,9 +130,7 @@ export const getEngagementCount = (text: string): number => {
  * @returns {EngagementType} The engagement type (retweet, replies...)
  * @throws {Error}
  */
-export const getEngagementType = (
-  text: string
-): EngagementType => {
+export const getEngagementType = (text: string): EngagementType => {
   const [, engagementType] = text.split(" ");
   if (engagementType.trim().length < 3) {
     throw new Error(EngagementTypeErrorMsg.CannotParse);
@@ -187,7 +185,7 @@ export const getSelectionTweetId = ({
   refTweetId,
 }: IRealMentionTweet): string => {
   if (!refTweetId) {
-    throw new Error(SelectionTweetIdErrorMsg.NoneFound)
+    throw new Error(SelectionTweetIdErrorMsg.NoneFound);
   }
   return refTweetId;
 };
@@ -203,7 +201,7 @@ export const getSelectionTweetId = ({
 export const roundToNearestMinute = (date: Date = new Date()): Date => {
   return new Date(
     Math.floor(date.getTime() / NumericConstant.MillisecsInOneMin) *
-    NumericConstant.MillisecsInOneMin
+      NumericConstant.MillisecsInOneMin
   );
 };
 
@@ -218,7 +216,7 @@ export const scheduleSelection = async (
     const selReqExpiryTimeInSecs =
       Math.floor(
         (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
-        NumericConstant.MillisecsInOneSec
+          NumericConstant.MillisecsInOneSec
       ) + NumericConstant.SecsInOneHour; // One hour later
     // Push to list
     await cache.rpush(selReq.selectionTime, selReq.stringify());
@@ -244,7 +242,7 @@ export const scheduleExpiration = async (
     const selReqExpiryTimeInSecs =
       Math.floor(
         (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
-        NumericConstant.MillisecsInOneSec
+          NumericConstant.MillisecsInOneSec
       ) + NumericConstant.SecsInOneHour; // One hour later
     await cache.setex(
       `${replyTweetId}-${selReq.authorId}`,
@@ -270,13 +268,17 @@ export const cancelSelection = async (
 ): Promise<string> => {
   const req = await cache.get(`${mention.refTweetId}-${mention.authorId}`);
   if (!req) {
-    throw new Error("Request to cancel not found in database")
+    throw new Error("Request to cancel not found in database");
   }
 
   const parsedReq = JSON.parse(req as string);
   const selReq = POTOFactory.buildSelectionRequest(parsedReq);
 
-  const selReqsOnRequestToCancelDate = await cache.lrange(selReq.selectionTime, 0, -1);
+  const selReqsOnRequestToCancelDate = await cache.lrange(
+    selReq.selectionTime,
+    0,
+    -1
+  );
   const selReqsToKeep: SelectionRequest[] = selReqsOnRequestToCancelDate
     .map((r) => JSON.parse(r))
     .filter((r: SelectionRequest) => r.id !== selReq.id);
@@ -287,7 +289,7 @@ export const cancelSelection = async (
     const selReqExpiryTimeInSecs =
       Math.floor(
         (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
-        NumericConstant.MillisecsInOneSec
+          NumericConstant.MillisecsInOneSec
       ) + NumericConstant.SecsInOneHour; // One hour later
     await cache.rpush(selReq.selectionTime, JSON.stringify(selReqsToKeep));
     // delete after selReqExpiryTimeInSecs
@@ -304,7 +306,9 @@ export const cancelSelection = async (
  * @param {SelectionRequest} selReq - The selection request
  * @returns {string} The success message
  */
-export const createScheduleSuccessReply = (selReq: SelectionRequest): string => {
+export const createScheduleSuccessReply = (
+  selReq: SelectionRequest
+): string => {
   const engagement = `${selReq.engagement}${selReq.count > 1 ? "s" : ""}`;
 
   const selectionTime = new Date(selReq.selectionTime).toUTCString();

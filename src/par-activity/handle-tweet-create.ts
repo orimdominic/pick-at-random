@@ -21,14 +21,20 @@ export async function handleTweetCreate(
   ];
 
   if (cancelCommandlMentions.length) {
-    const cancelSelectionReqs = cancelCommandlMentions.map((cm) => service.cancelSelection(cm))
-    const cancellationResults = await Promise.allSettled(cancelSelectionReqs)
+    const cancelSelectionReqs = cancelCommandlMentions.map((cm) =>
+      service.cancelSelection(cm)
+    );
+    const cancellationResults = await Promise.allSettled(cancelSelectionReqs);
 
     const giveLikeFeedbackToCancellationReqs = cancellationResults
       .filter((cr) => cr.status === "fulfilled")
-      .map(cr => service.parTwitterClient.likeTweet((cr as PromiseFulfilledResult<string>).value))
+      .map((cr) =>
+        service.parTwitterClient.likeTweet(
+          (cr as PromiseFulfilledResult<string>).value
+        )
+      );
 
-    await Promise.allSettled(giveLikeFeedbackToCancellationReqs)
+    await Promise.allSettled(giveLikeFeedbackToCancellationReqs);
   }
 
   if (pickCommandMentions.length) {

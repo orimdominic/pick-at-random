@@ -1,9 +1,6 @@
 import("../config");
 import { EngagementType } from "../par-activity";
-import {
-  getRequests,
-  handleRetweetRequest
-} from "./compute-respond.service";
+import { getRequests, handleRetweetRequest } from "./compute-respond.service";
 
 module.exports.computeAndRespond = async () => {
   const selReqs = await getRequests();
@@ -16,7 +13,9 @@ module.exports.computeAndRespond = async () => {
   ];
 
   if (retweetRequests.length) {
-    await Promise.allSettled(retweetRequests.map((r) => handleRetweetRequest(r)))
+    await Promise.allSettled(
+      retweetRequests.map((r) => handleRetweetRequest(r))
+    );
   }
   return;
 };

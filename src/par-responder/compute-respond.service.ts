@@ -2,7 +2,6 @@ import { SelectionRequest } from "../par-activity";
 import { cache } from "../cache";
 import { parTwitterClient } from "../par-twitter-client";
 
-
 /**
  * Get requests for the current time from cache
  */
@@ -37,7 +36,6 @@ export const pickAtRandom = (
   usernamePool: string[],
   total: number
 ): string[] => {
-
   if (usernamePool.length <= total) {
     return usernamePool;
   }
@@ -60,13 +58,13 @@ export const pickAtRandom = (
 export const buildRetweetersResponse = (usernames: string[]): string => {
   return usernames.length === 1
     ? `the selected retweeter is ${usernames[0]}`
-    : `the selected retweeters are - ${usernames.map((u) => `@${u}`).join(", ")}`;
+    : `the selected retweeters are - ${usernames
+        .map((u) => `@${u}`)
+        .join(", ")}`;
 };
 
 export const handleRetweetRequest = async (req: SelectionRequest) => {
-  const users = await parTwitterClient.getRetweeters(
-    req.refTweetId as string
-  );
+  const users = await parTwitterClient.getRetweeters(req.refTweetId as string);
 
   const usernames: string[] = users
     .filter((u) => u.id !== req.authorId)
@@ -76,4 +74,4 @@ export const handleRetweetRequest = async (req: SelectionRequest) => {
   const message = buildRetweetersResponse(selectedRetweeters);
 
   await parTwitterClient.respondWithSelectionList(req, message);
-}
+};

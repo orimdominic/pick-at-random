@@ -1,9 +1,10 @@
 import Twitter from "twitter-lite";
-import TwitterApi, { TweetV1, TwitterApiReadWrite, UserV2 } from 'twitter-api-v2';
-import {
-  SelectionRequest,
-  Message,
-} from "./par-activity";
+import TwitterApi, {
+  TweetV1,
+  TwitterApiReadWrite,
+  UserV2,
+} from "twitter-api-v2";
+import { SelectionRequest, Message } from "./par-activity";
 
 class ParTwitterClient {
   private v1: Twitter;
@@ -27,9 +28,8 @@ class ParTwitterClient {
       appKey: process.env.TWITTER_CONSUMER_KEY as string,
       appSecret: process.env.TWITTER_CONSUMER_SECRET as string,
       accessToken: process.env.TWITTER_PAR_ACCESS_TOKEN as string,
-      accessSecret: process.env
-        .TWITTER_PAR_ACCESS_TOKEN_SECRET as string,
-    }).readWrite
+      accessSecret: process.env.TWITTER_PAR_ACCESS_TOKEN_SECRET as string,
+    }).readWrite;
     // this.v2 = new Twitter({
     //   extension: false,
     //   version: "2",
@@ -51,7 +51,7 @@ class ParTwitterClient {
   ): Promise<TweetV1 | undefined> {
     // TODO: Use v2
     return await this.client.v1.tweet(`@${author} ${message}`, {
-      in_reply_to_status_id: id
+      in_reply_to_status_id: id,
     });
   }
 
@@ -60,7 +60,10 @@ class ParTwitterClient {
    * @param {string} tweetId - The id of the tweet to be liked
    */
   async likeTweet(tweetId: string): Promise<{ data: { liked: boolean } }> {
-    return await this.client.v2.like(process.env.PICKATRANDOM_USERID as string, tweetId)
+    return await this.client.v2.like(
+      process.env.PICKATRANDOM_USERID as string,
+      tweetId
+    );
   }
 
   /**
@@ -69,11 +72,11 @@ class ParTwitterClient {
    */
   async getRetweeters(tweetId: string): Promise<UserV2[]> {
     try {
-      const { data } = await this.client.v2.tweetRetweetedBy(tweetId)
-      return data
+      const { data } = await this.client.v2.tweetRetweetedBy(tweetId);
+      return data;
     } catch (error) {
-      console.error("error fetching retweeters")
-      return []
+      console.error("error fetching retweeters");
+      return [];
     }
   }
 
@@ -97,27 +100,27 @@ class ParTwitterClient {
 ${message}`;
 
     if (response.length <= 280) {
-      return await this.client.v1.tweet(response)
+      return await this.client.v1.tweet(response);
     } else {
-      const words = response.split(" ")
-      const tweets = []
-      let currentTweet = ""
-      const maxTweetLength = 280
+      const words = response.split(" ");
+      const tweets = [];
+      let currentTweet = "";
+      const maxTweetLength = 280;
 
       for (const word of words) {
-        if ((currentTweet.length + `${word} `.length) > maxTweetLength) {
-          tweets.push(currentTweet)
-          currentTweet = `${word} `
+        if (currentTweet.length + `${word} `.length > maxTweetLength) {
+          tweets.push(currentTweet);
+          currentTweet = `${word} `;
         } else {
-          currentTweet = currentTweet.concat(`${word} `)
+          currentTweet = currentTweet.concat(`${word} `);
         }
       }
 
       if (currentTweet) {
-        tweets.push(currentTweet)
+        tweets.push(currentTweet);
       }
 
-      return await this.client.v1.tweetThread(tweets)
+      return await this.client.v1.tweetThread(tweets);
     }
   }
 }
