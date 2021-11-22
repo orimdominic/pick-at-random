@@ -8,7 +8,7 @@
     "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
-    "lib": ["es2020"], // https://github.com/draftbit/twitter-lite/issues/135
+    "lib": ["es2020", "DOM"], // https://github.com/draftbit/twitter-lite/issues/135
     "forceConsistentCasingInFileNames": true,
     "removeComments": true
   },

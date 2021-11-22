@@ -32,6 +32,7 @@
   "devDependencies": {
     "@types/jest": "^26.0.22",
     "@types/minimist": "^1.2.1",
+    "@types/node": "^16.11.9",
     "@types/redis-mock": "^0.17.0",
     "@types/request": "^2.48.5",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
