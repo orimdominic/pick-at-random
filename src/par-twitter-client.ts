@@ -1,4 +1,3 @@
-import Twitter from "twitter-lite";
 import TwitterApi, {
   TweetV1,
   TwitterApiReadWrite,
@@ -7,7 +6,6 @@ import TwitterApi, {
 import { SelectionRequest, Message } from "./par-activity";
 
 class ParTwitterClient {
-  private v1: Twitter;
   private client: TwitterApiReadWrite;
 
   /**
@@ -21,20 +19,12 @@ class ParTwitterClient {
       access_token_secret: process.env
         .TWITTER_PAR_ACCESS_TOKEN_SECRET as string,
     };
-    this.v1 = new Twitter({
-      ...oauth,
-    });
     this.client = new TwitterApi({
       appKey: process.env.TWITTER_CONSUMER_KEY as string,
       appSecret: process.env.TWITTER_CONSUMER_SECRET as string,
       accessToken: process.env.TWITTER_PAR_ACCESS_TOKEN as string,
       accessSecret: process.env.TWITTER_PAR_ACCESS_TOKEN_SECRET as string,
     }).readWrite;
-    // this.v2 = new Twitter({
-    //   extension: false,
-    //   version: "2",
-    //   ...oauth,
-    // });
   }
 
   /**
