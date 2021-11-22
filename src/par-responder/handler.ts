@@ -1,13 +1,6 @@
-"use strict";
-
 import("../config");
 import { EngagementType } from "../par-activity";
-import {
-  buildRetweetersResponse,
-  getRequests,
-  pickAtRandom,
-} from "./compute-respond.service";
-import { parTwitterClient } from "../par-twitter-client";
+import { getRequests, handleRetweetRequest } from "./compute-respond.service";
 
 module.exports.computeAndRespond = async () => {
   const selReqs = await getRequests();
@@ -18,23 +11,11 @@ module.exports.computeAndRespond = async () => {
   const [retweetRequests] = [
     selReqs.filter((r) => r.engagement === EngagementType.Retweet),
   ];
+
   if (retweetRequests.length) {
-    for (const req of retweetRequests) {
-      try {
-        const retweets = await parTwitterClient.getRetweets(
-          req.refTweetId as string
-        );
-        const selectedRetweeters: string[] = pickAtRandom(retweets, req);
-        const message = buildRetweetersResponse(selectedRetweeters);
-        await parTwitterClient.respondWithSelectionList(req, message);
-      } catch (error) {
-        console.error(
-          `could not select retweeters for ${req.refTweetId}
-Error:`,
-          JSON.stringify(error, null, 2)
-        );
-      }
-    }
+    await Promise.allSettled(
+      retweetRequests.map((r) => handleRetweetRequest(r))
+    );
   }
   return;
 };

@@ -1,17 +1,12 @@
-import Twitter from "twitter-lite";
-import {
-  TwitterEndpointV1,
-  ITweet,
-  SelectionRequest,
-  Message,
-} from "./par-activity";
-import request from "request";
-import { promisify } from "util";
-const post = promisify(request.post);
+import TwitterApi, {
+  TweetV1,
+  TwitterApiReadWrite,
+  UserV2,
+} from "twitter-api-v2";
+import { SelectionRequest, Message } from "./par-activity";
 
 class ParTwitterClient {
-  private v1: Twitter;
-  private v2: Twitter;
+  private client: TwitterApiReadWrite;
 
   /**
    * Initialise the parameters for PAR account
@@ -24,14 +19,12 @@ class ParTwitterClient {
       access_token_secret: process.env
         .TWITTER_PAR_ACCESS_TOKEN_SECRET as string,
     };
-    this.v1 = new Twitter({
-      ...oauth,
-    });
-    this.v2 = new Twitter({
-      extension: false,
-      version: "2",
-      ...oauth,
-    });
+    this.client = new TwitterApi({
+      appKey: process.env.TWITTER_CONSUMER_KEY as string,
+      appSecret: process.env.TWITTER_CONSUMER_SECRET as string,
+      accessToken: process.env.TWITTER_PAR_ACCESS_TOKEN as string,
+      accessSecret: process.env.TWITTER_PAR_ACCESS_TOKEN_SECRET as string,
+    }).readWrite;
   }
 
   /**
@@ -45,65 +38,35 @@ class ParTwitterClient {
     id: string,
     message: string,
     author: string
-  ): Promise<ITweet | undefined> {
-    try {
-      const resp = await this.v1.post<ITweet>(TwitterEndpointV1.StatusUpdate, {
-        status: `@${author} ${message}`,
-        in_reply_to_status_id: id,
-      });
-      return resp;
-    } catch (error) {
-      // TODO: handle error via sentry
-      console.error("parTwitterClient.replyMention", error, null, 2);
-    }
+  ): Promise<TweetV1 | undefined> {
+    // TODO: Use v2
+    return await this.client.v1.tweet(`@${author} ${message}`, {
+      in_reply_to_status_id: id,
+    });
   }
 
   /**
    * Like a tweet
-   * @param {string} id - The id of the tweet to be liked
+   * @param {string} tweetId - The id of the tweet to be liked
    */
-  async likeTweet(id: string): Promise<{ data: { liked: boolean } }> {
-    try {
-      const resp = await post({
-        url: `https://api.twitter.com/2/users/${process.env.PICKATRANDOM_USERID}/likes`,
-        oauth: {
-          consumer_key: process.env.TWITTER_CONSUMER_KEY as string,
-          consumer_secret: process.env.TWITTER_CONSUMER_SECRET as string,
-          token: process.env.TWITTER_PAR_ACCESS_TOKEN as string,
-          token_secret: process.env.TWITTER_PAR_ACCESS_TOKEN_SECRET as string,
-        },
-        json: {
-          tweet_id: id,
-        },
-      });
-      return resp.body;
-    } catch (error) {
-      console.error(
-        // TODO: handle with sentry
-        "parTwitterClient.likeTweet",
-        JSON.stringify(error, null, 2)
-      );
-      return error;
-    }
+  async likeTweet(tweetId: string): Promise<{ data: { liked: boolean } }> {
+    return await this.client.v2.like(
+      process.env.PICKATRANDOM_USERID as string,
+      tweetId
+    );
   }
 
   /**
    * Get retweets of a tweet
-   * @param {string} id - The id of the tweet
+   * @param {string} tweetId - The id of the tweet
    */
-  async getRetweets(id: string): Promise<ITweet[]> {
+  async getRetweeters(tweetId: string): Promise<UserV2[]> {
     try {
-      const retweets: ITweet[] = await this.v1.get<ITweet[]>(
-        `${TwitterEndpointV1.StatusRetweets}/${id}`
-      );
-      return retweets;
+      const { data } = await this.client.v2.tweetRetweetedBy(tweetId);
+      return data;
     } catch (error) {
-      console.error(
-        // TODO: handle with sentry
-        "parTwitterClient.getRetweets",
-        JSON.stringify(error, null, 2)
-      );
-      return error;
+      console.error("error fetching retweeters");
+      return [];
     }
   }
 
@@ -117,25 +80,37 @@ class ParTwitterClient {
   async respondWithSelectionList(
     req: SelectionRequest,
     message: string
-  ): Promise<ITweet | undefined> {
-    try {
-      const tweetUrl = Message.TweetUrlBuilder.replace(
-        "%screen_name%",
-        req.authorName
-      ).replace("%tweet_id%", req.id);
-      const resp = await this.v1.post<ITweet>(TwitterEndpointV1.StatusUpdate, {
-        status: `${req.authorName} Hi! ${message}
-${tweetUrl}`,
-      });
-      return resp;
-    } catch (error) {
-      // TODO: handle error via sentry
-      console.error(
-        "parTwitterClient.respondWithSelectionList",
-        error,
-        null,
-        2
-      );
+  ): Promise<TweetV1 | TweetV1[]> {
+    const tweetUrl = Message.TweetUrlBuilder.replace(
+      "%screen_name%",
+      req.authorName
+    ).replace("%tweet_id%", req.id);
+
+    const response = `${req.authorName} Hi! Based on your request @ ${tweetUrl}
+${message}`;
+
+    if (response.length <= 280) {
+      return await this.client.v1.tweet(response);
+    } else {
+      const words = response.split(" ");
+      const tweets = [];
+      let currentTweet = "";
+      const maxTweetLength = 280;
+
+      for (const word of words) {
+        if (currentTweet.length + `${word} `.length > maxTweetLength) {
+          tweets.push(currentTweet);
+          currentTweet = `${word} `;
+        } else {
+          currentTweet = currentTweet.concat(`${word} `);
+        }
+      }
+
+      if (currentTweet) {
+        tweets.push(currentTweet);
+      }
+
+      return await this.client.v1.tweetThread(tweets);
     }
   }
 }
