@@ -90,6 +90,7 @@ class ParTwitterClient {
 ${message}`;
 
     if (response.length <= 280) {
+      console.log(response)
       return await this.client.v1.tweet(response);
     } else {
       const words = response.split(" ");
@@ -109,7 +110,7 @@ ${message}`;
       if (currentTweet) {
         tweets.push(currentTweet);
       }
-
+      JSON.stringify(tweets)
       return await this.client.v1.tweetThread(tweets);
     }
   }

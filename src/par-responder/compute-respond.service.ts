@@ -73,5 +73,6 @@ export const handleRetweetRequest = async (req: SelectionRequest) => {
   const selectedRetweeters: string[] = pickAtRandom(usernames, req.count);
   const message = buildRetweetersResponse(selectedRetweeters);
 
-  await parTwitterClient.respondWithSelectionList(req, message);
+  const tweets = await parTwitterClient.respondWithSelectionList(req, message);
+  console.log(JSON.stringify(tweets))
 };
