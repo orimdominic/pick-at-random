@@ -12,10 +12,15 @@ module.exports.computeAndRespond = async () => {
     selReqs.filter((r) => r.engagement === EngagementType.Retweet),
   ];
 
-  if (retweetRequests.length) {
-    await Promise.allSettled(
-      retweetRequests.map((r) => handleRetweetRequest(r))
-    );
+  for (const retweetReq of retweetRequests) {
+    console.log("running request", JSON.stringify(retweetReq))
+    await handleRetweetRequest(retweetReq)
   }
+
+  // if (retweetRequests.length) {
+  //   await Promise.allSettled(
+  //     retweetRequests.map((r) => handleRetweetRequest(r))
+  //   );
+  // }
   return;
 };
