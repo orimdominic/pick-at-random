@@ -49,7 +49,7 @@
     "nodemon": "^2.0.7",
     "prettier": "^2.2.1",
     "redis-mock": "^0.56.3",
-    "serverless-offline-scheduler": "^0.4.2",
+    "serverless-offline": "^8.3.1",
     "serverless-plugin-typescript": "^1.1.9",
     "ts-jest": "^26.5.3",
     "ts-node": "^9.1.1",
@@ -66,7 +66,6 @@
     "redis": "^3.1.2",
     "request": "^2.88.2",
     "serverless": "^2.38.0",
-    "serverless-offline": "^8.3.1",
     "twitter-api-v2": "^1.6.5"
   }
 }

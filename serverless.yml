@@ -18,7 +18,6 @@ org: ${env:SERVERLESS_ORG}
 
 plugins:
   - serverless-plugin-typescript
-  - serverless-offline-scheduler
   - serverless-offline
 
 # You can pin your service to only deploy with a specific Serverless version

@@ -21,7 +21,7 @@ module.exports.computeAndRespond = async () => {
 
   if (favouritedRequests.length) {
     await Promise.allSettled(
-      retweetRequests.map((r) => handleFavouritedRequest(r))
+      favouritedRequests.map((r) => handleFavouritedRequest(r))
     );
   }
 

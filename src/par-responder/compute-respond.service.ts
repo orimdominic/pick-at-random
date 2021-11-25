@@ -75,7 +75,7 @@ export const handleRetweetRequest = async (req: SelectionRequest) => {
   const selectedRetweeters: string[] = pickAtRandom(usernames, req.count);
   const message = buildRetweetersResponse(selectedRetweeters);
 
-   await parTwitterClient.respondWithSelectionList(req, message);
+  await parTwitterClient.respondWithSelectionList(req, message);
   // console.log(JSON.stringify(tweets))
 };
 
@@ -92,6 +92,7 @@ export const handleFavouritedRequest = async (req: SelectionRequest) => {
   const usernames: string[] = users
     .filter((u) => u.id !== req.authorId)
     .map((u) => `${u.username}`);
+  console.log(usernames);
 
   const selectedFavouriters: string[] = pickAtRandom(usernames, req.count);
   const message = buildFavouritersResponse(selectedFavouriters);
