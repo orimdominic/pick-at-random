@@ -81,7 +81,7 @@ class ParTwitterClient {
       req.authorName
     ).replace("%tweet_id%", req.id);
 
-    const response = `@${req.authorName} Hi! Based on your request ${tweetUrl}
+    const response = `${req.authorName} Hi! Based on your request ${tweetUrl}
 ${message}`;
 
     if (response.length <= 280) {
