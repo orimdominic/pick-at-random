@@ -3,7 +3,6 @@ import TwitterApi, {
   TwitterApiReadWrite,
   UserV2,
 } from "twitter-api-v2";
-require("../src/config");
 import { SelectionRequest, Message } from "./par-activity";
 
 class ParTwitterClient {
