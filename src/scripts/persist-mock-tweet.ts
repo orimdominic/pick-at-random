@@ -34,10 +34,10 @@ const startTime = roundToNearestMinute(
   for (let i = 0; i < numOfReqs; i++) {
     const req = new SelectionRequest(
       {
-        refTweetId: "1402696928744378379",
-        authorName: "@Bolaji___",
-        authorId: "@Bolaji___",
-        id: "1402696928744378379",
+        refTweetId: "1462606262017970183",
+        authorName: "@sudo_kaizen",
+        authorId: "@sudo_kaizen",
+        id: "1463901915121688582",
       } as IRealMentionTweet,
       count,
       engType,

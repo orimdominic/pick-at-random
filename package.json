@@ -27,6 +27,7 @@
     "par-responder:deploy": "rm -rf .build && NODE_ENV=production yarn serverless deploy",
     "par-responder:dashboard": "yarn serverless dashboard",
     "par-responder:development": "NODE_ENV=development yarn serverless schedule",
+    "par-responder:offline": "NODE_ENV=development serverless offline",
     "par-responder:logs": "yarn serverless logs -f computeAndRespond -t"
   },
   "devDependencies": {
@@ -65,6 +66,7 @@
     "redis": "^3.1.2",
     "request": "^2.88.2",
     "serverless": "^2.38.0",
+    "serverless-offline": "^8.3.1",
     "twitter-api-v2": "^1.6.5"
   }
 }

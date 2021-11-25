@@ -3,6 +3,7 @@ import TwitterApi, {
   TwitterApiReadWrite,
   UserV2,
 } from "twitter-api-v2";
+require("../src/config");
 import { SelectionRequest, Message } from "./par-activity";
 
 class ParTwitterClient {
@@ -12,13 +13,7 @@ class ParTwitterClient {
    * Initialise the parameters for PAR account
    */
   constructor() {
-    const oauth = {
-      consumer_key: process.env.TWITTER_CONSUMER_KEY as string,
-      consumer_secret: process.env.TWITTER_CONSUMER_SECRET as string,
-      access_token_key: process.env.TWITTER_PAR_ACCESS_TOKEN as string,
-      access_token_secret: process.env
-        .TWITTER_PAR_ACCESS_TOKEN_SECRET as string,
-    };
+    console.log(process.env.TWITTER_CONSUMER_KEY)
     this.client = new TwitterApi({
       appKey: process.env.TWITTER_CONSUMER_KEY as string,
       appSecret: process.env.TWITTER_CONSUMER_SECRET as string,

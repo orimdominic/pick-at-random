@@ -36,6 +36,7 @@ export const pickAtRandom = (
   usernamePool: string[],
   total: number
 ): string[] => {
+  console.log("username pool", usernamePool)
   if (usernamePool.length <= total) {
     return usernamePool;
   }
@@ -43,7 +44,7 @@ export const pickAtRandom = (
   let counter = total;
   const selection: string[] = [];
 
-  while (counter !== 0 || usernamePool.length !== 0) {
+  while (counter !== 0) {
     // Fortunately, the API does not return duplicates
     // Unfortunately, it doesn't return > 99 results
     const randomIndex = Math.floor(Math.random() * usernamePool.length);
@@ -65,10 +66,11 @@ export const buildRetweetersResponse = (usernames: string[]): string => {
 
 export const handleRetweetRequest = async (req: SelectionRequest) => {
   const users = await parTwitterClient.getRetweeters(req.refTweetId as string);
-
+  console.log("users length", users.length)
   const usernames: string[] = users
     .filter((u) => u.id !== req.authorId)
     .map((u) => `${u.username}`);
+  console.log(usernames);
 
   const selectedRetweeters: string[] = pickAtRandom(usernames, req.count);
   const message = buildRetweetersResponse(selectedRetweeters);
