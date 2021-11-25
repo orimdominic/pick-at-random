@@ -141,6 +141,9 @@ export const getEngagementType = (text: string): EngagementType => {
   switch (sub) {
     case "ret":
       return EngagementType.Retweet;
+    case "fav":
+    case "like":
+      return EngagementType.Favourite;
     default:
       // FIXME: When the algorithm for finding replies is developed, include it
       throw new Error(EngagementTypeErrorMsg.CannotHandle);
@@ -201,7 +204,7 @@ export const getSelectionTweetId = ({
 export const roundToNearestMinute = (date: Date = new Date()): Date => {
   return new Date(
     Math.floor(date.getTime() / NumericConstant.MillisecsInOneMin) *
-      NumericConstant.MillisecsInOneMin
+    NumericConstant.MillisecsInOneMin
   );
 };
 
@@ -216,7 +219,7 @@ export const scheduleSelection = async (
     const selReqExpiryTimeInSecs =
       Math.floor(
         (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
-          NumericConstant.MillisecsInOneSec
+        NumericConstant.MillisecsInOneSec
       ) + NumericConstant.SecsInOneHour; // One hour later
     // Push to list
     await cache.rpush(selReq.selectionTime, selReq.stringify());
@@ -242,7 +245,7 @@ export const scheduleExpiration = async (
     const selReqExpiryTimeInSecs =
       Math.floor(
         (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
-          NumericConstant.MillisecsInOneSec
+        NumericConstant.MillisecsInOneSec
       ) + NumericConstant.SecsInOneHour; // One hour later
     await cache.setex(
       `${replyTweetId}-${selReq.authorId}`,
@@ -289,7 +292,7 @@ export const cancelSelection = async (
     const selReqExpiryTimeInSecs =
       Math.floor(
         (new Date(selReq.selectionTime).getTime() - new Date().getTime()) /
-          NumericConstant.MillisecsInOneSec
+        NumericConstant.MillisecsInOneSec
       ) + NumericConstant.SecsInOneHour; // One hour later
     await cache.rpush(selReq.selectionTime, JSON.stringify(selReqsToKeep));
     // delete after selReqExpiryTimeInSecs

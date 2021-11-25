@@ -60,8 +60,8 @@ export const buildRetweetersResponse = (usernames: string[]): string => {
   return usernames.length === 1
     ? `the selected retweeter is ${usernames[0]}`
     : `the selected retweeters are - ${usernames
-        .map((u) => `@${u}`)
-        .join(", ")}`;
+      // .map((u) => `@${u}`)
+      .join(", ")}`;
 };
 
 export const handleRetweetRequest = async (req: SelectionRequest) => {
@@ -75,6 +75,26 @@ export const handleRetweetRequest = async (req: SelectionRequest) => {
   const selectedRetweeters: string[] = pickAtRandom(usernames, req.count);
   const message = buildRetweetersResponse(selectedRetweeters);
 
-  const tweets = await parTwitterClient.respondWithSelectionList(req, message);
-  console.log(JSON.stringify(tweets))
+   await parTwitterClient.respondWithSelectionList(req, message);
+  // console.log(JSON.stringify(tweets))
 };
+
+export const buildFavouritersResponse = (usernames: string[]): string => {
+  return usernames.length === 1
+    ? `the selected favouriter is ${usernames[0]}`
+    : `the selected favouriters are - ${usernames
+      // .map((u) => `@${u}`)
+      .join(", ")}`;
+};
+
+export const handleFavouritedRequest = async (req: SelectionRequest) => {
+  const users = await parTwitterClient.getFavouritersList(req.refTweetId as string);
+  const usernames: string[] = users
+    .filter((u) => u.id !== req.authorId)
+    .map((u) => `${u.username}`);
+
+  const selectedFavouriters: string[] = pickAtRandom(usernames, req.count);
+  const message = buildFavouritersResponse(selectedFavouriters);
+
+  await parTwitterClient.respondWithSelectionList(req, message);
+}

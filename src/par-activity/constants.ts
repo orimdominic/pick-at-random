@@ -16,7 +16,7 @@ export enum EngagementCountErrorMsg {
 
 export enum EngagementType {
   Retweet = "retweet",
-  Follow = "follow",
+  Favourite = "favourite",
 }
 
 export enum EngagementTypeErrorMsg {

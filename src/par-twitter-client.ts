@@ -56,7 +56,9 @@ class ParTwitterClient {
    */
   async getRetweeters(tweetId: string): Promise<UserV2[]> {
     try {
-      const { data } = await this.client.v2.tweetRetweetedBy(tweetId);
+      const { data } = await this.client.v2.tweetRetweetedBy(tweetId, {
+        "user.fields": ["username", "id"]
+      });
       return data;
     } catch (error) {
       console.error("error fetching retweeters");
@@ -84,7 +86,6 @@ class ParTwitterClient {
 ${message}`;
 
     if (response.length <= 280) {
-      console.log(response)
       return await this.client.v1.tweet(response);
     } else {
       const words = response.split(" ");
@@ -104,8 +105,19 @@ ${message}`;
       if (currentTweet) {
         tweets.push(currentTweet);
       }
-      JSON.stringify(tweets)
       return await this.client.v1.tweetThread(tweets);
+    }
+  }
+
+  async getFavouritersList(tweetId: string) {
+    try {
+      const { data } = await this.client.v2.tweetLikedBy(tweetId, {
+        "user.fields": ["username", "id"]
+      });
+      return data;
+    } catch (error) {
+      console.error("error fetching favouriters");
+      return [];
     }
   }
 }
