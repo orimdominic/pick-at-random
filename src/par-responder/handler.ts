@@ -1,6 +1,11 @@
 import("../config");
 import { EngagementType } from "../par-activity";
-import { getRequests, handleFavouritedRequest, handleRetweetRequest } from "./compute-respond.service";
+import {
+  getRequests,
+  handleFavouritedRequest,
+  handleReplyRequests,
+  handleRetweetRequest,
+} from "./compute-respond.service";
 
 module.exports.computeAndRespond = async () => {
   const selReqs = await getRequests();
@@ -8,22 +13,23 @@ module.exports.computeAndRespond = async () => {
     return;
   }
   // TODO: Monitor rate limits!
-  const [retweetRequests, favouritedRequests] = [
-    selReqs.filter((r) => r.engagement === EngagementType.Retweet),
-    selReqs.filter((r) => r.engagement === EngagementType.Favourite),
+  const [retweetRequests, favouritedRequests, replyRequests] = [
+    selReqs
+      .filter((r) => r.engagement === EngagementType.Retweet)
+      .map((r) => handleRetweetRequest(r)),
+    selReqs
+      .filter((r) => r.engagement === EngagementType.Favourite)
+      .map((r) => handleFavouritedRequest(r)),
+    selReqs
+      .filter((r) => r.engagement === EngagementType.Reply)
+      .map((r) => handleReplyRequests(r)),
   ];
 
-  if (retweetRequests.length) {
-    await Promise.allSettled(
-      retweetRequests.map((r) => handleRetweetRequest(r))
-    );
-  }
-
-  if (favouritedRequests.length) {
-    await Promise.allSettled(
-      favouritedRequests.map((r) => handleFavouritedRequest(r))
-    );
-  }
+  await Promise.allSettled([
+    ...retweetRequests,
+    ...favouritedRequests,
+    ...replyRequests,
+  ]);
 
   return;
 };

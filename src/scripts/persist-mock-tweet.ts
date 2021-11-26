@@ -12,7 +12,7 @@
 delay in mins, numOfReqs is reqs to create
  */
 
-require("../config")
+require("../config");
 import { IRealMentionTweet, SelectionRequest } from "../par-activity";
 import {
   scheduleSelection,
@@ -37,8 +37,8 @@ const startTime = roundToNearestMinute(
       {
         refTweetId: "1463682275657273346",
         authorName: "@sudo_kaizen",
-        authorId: "@sudo_kaizen",
-        id: "1464002745124462602",
+        authorId: "427089628",
+        id: "",
       } as IRealMentionTweet,
       count,
       engType,

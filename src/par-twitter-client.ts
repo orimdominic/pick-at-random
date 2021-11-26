@@ -12,7 +12,6 @@ class ParTwitterClient {
    * Initialise the parameters for PAR account
    */
   constructor() {
-    console.log(process.env.TWITTER_CONSUMER_KEY)
     this.client = new TwitterApi({
       appKey: process.env.TWITTER_CONSUMER_KEY as string,
       appSecret: process.env.TWITTER_CONSUMER_SECRET as string,
@@ -57,7 +56,7 @@ class ParTwitterClient {
   async getRetweeters(tweetId: string): Promise<UserV2[]> {
     try {
       const { data } = await this.client.v2.tweetRetweetedBy(tweetId, {
-        "user.fields": ["username", "id"]
+        "user.fields": ["username", "id"],
       });
       return data;
     } catch (error) {
@@ -112,11 +111,39 @@ ${message}`;
   async getFavouritersList(tweetId: string) {
     try {
       const { data } = await this.client.v2.tweetLikedBy(tweetId, {
-        "user.fields": ["username", "id"]
+        "user.fields": ["username", "id"],
       });
       return data;
     } catch (error) {
       console.error("error fetching favouriters");
+      return [];
+    }
+  }
+
+  async getAllReplyTweets(tweetId: string) {
+    const { data: tweet } = await this.client.v2.singleTweet(tweetId, {
+      "tweet.fields": ["conversation_id"],
+    });
+
+    const { tweets } = await this.client.v2.search(
+      `conversation_id:${tweet.conversation_id}`,
+      {
+        "tweet.fields": ["in_reply_to_user_id", "author_id"],
+        max_results: 100,
+      }
+    );
+    return tweets;
+  }
+
+  async getUsersByIds(userIds: string[]) {
+    try {
+      const { data } = await this.client.v2.users(userIds);
+      return data;
+    } catch (error) {
+      console.error(
+        "error fetching users by user ids",
+        (error as Error).message
+      );
       return [];
     }
   }
