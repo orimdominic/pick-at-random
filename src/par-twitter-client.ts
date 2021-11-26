@@ -120,7 +120,7 @@ ${message}`;
     }
   }
 
-  async getAllReplyTweets(tweetId: string) {
+  async getTweetReplies(tweetId: string) {
     const { data: tweet } = await this.client.v2.singleTweet(tweetId, {
       "tweet.fields": ["conversation_id"],
     });

@@ -315,7 +315,8 @@ export const cancelSelection = async (
 export const createScheduleSuccessReply = (
   selReq: SelectionRequest
 ): string => {
-  const engagement = `${selReq.engagement}${selReq.count > 1 ? "s" : ""}`;
+  let engagement = `${selReq.engagement}${selReq.count > 1 ? "s" : ""}`;
+  engagement = selReq.engagement === EngagementType.Reply ? `${selReq.engagement}${selReq.count > 1 ? "ies" : ""}` : engagement
 
   const selectionTime = new Date(selReq.selectionTime).toUTCString();
 
