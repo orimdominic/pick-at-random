@@ -110,6 +110,7 @@ export const handleReplyRequests = async (req: SelectionRequest) => {
     const replies = await parTwitterClient.getTweetReplies(
       req.refTweetId as string
     );
+console.log(replies);
 
     const userIdsThatRepliedToTweet = replies
       .filter(
@@ -117,6 +118,7 @@ export const handleReplyRequests = async (req: SelectionRequest) => {
           ((r.author_id !== req.authorId) && (r.in_reply_to_user_id === req.authorId))
       )
       .map((r) => r.author_id as string);
+console.log(userIdsThatRepliedToTweet);
 
     const users = await parTwitterClient.getUsersByIds(
       userIdsThatRepliedToTweet
