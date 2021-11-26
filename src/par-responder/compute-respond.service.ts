@@ -128,7 +128,7 @@ console.log(userIdsThatRepliedToTweet);
     const message = buildRepliersResponse(selectedRepliers);
     console.log(message);
 
-    // await parTwitterClient.respondWithSelectionList(req, message);
+    await parTwitterClient.respondWithSelectionList(req, message);
   } catch (error) {
     console.error("Error fetching replies", (error as Error).message);
   }
