@@ -316,7 +316,7 @@ export const createScheduleSuccessReply = (
   selReq: SelectionRequest
 ): string => {
   let engagement = `${selReq.engagement}${selReq.count > 1 ? "s" : ""}`;
-  engagement = selReq.engagement === EngagementType.Reply ? `${selReq.engagement}${selReq.count > 1 ? "ies" : ""}` : engagement
+  engagement = selReq.engagement === EngagementType.Reply ? `repl${selReq.count > 1 ? "ies" : "y"}` : engagement
 
   const selectionTime = new Date(selReq.selectionTime).toUTCString();
 

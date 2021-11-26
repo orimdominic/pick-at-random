@@ -115,7 +115,7 @@ console.log(replies);
     const userIdsThatRepliedToTweet = replies
       .filter(
         (r) =>
-          ((r.author_id !== req.authorId) && (r.in_reply_to_user_id === req.authorId))
+          ((r.author_id !== req.authorId))
       )
       .map((r) => r.author_id as string);
 console.log(userIdsThatRepliedToTweet);
