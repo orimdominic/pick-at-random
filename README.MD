@@ -2,11 +2,11 @@
 
 ![PickAtRandom header image](./assets/par-twitter-header-image.png "PickAtRandom")
 
-# <center> pick-at-random </center>
+# pick-at-random
 
 ## What it does
 
-[@PickAtRandom](https://twitter.com/PickAtRandom) selects Twitter users at random that showed interest for a giveaway via retweeting, replying or favouriting a tweet.
+[@PickAtRandom](https://twitter.com/PickAtRandom) selects Twitter users at random that showed interest in a giveaway via retweeting, replying or favouriting a tweet.
 
 Let's say that a Twitter user wants to run a giveaway on Twitter; and the user makes an announcement about the giveaway via a tweet, which is usually in the form of
 
