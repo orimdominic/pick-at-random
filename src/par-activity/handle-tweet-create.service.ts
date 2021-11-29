@@ -16,6 +16,16 @@ import { parTwitterClient } from "../par-twitter-client";
 import { customChronoParser as timeParser } from "./time-parser";
 import { cache } from "../cache";
 
+export const isFromTweetAuthor = (tweet: ITweet): boolean => {
+  if (
+    tweet.user.id_str === tweet.in_reply_to_user_id_str ||
+    tweet.user.id_str === null
+  ) {
+    return true;
+  }
+  return false;
+};
+
 /**
  * It returns false if the tweet is a pure retweet,
  * or is a tweet by @PickAtRandom, else, it returns true
@@ -316,7 +326,10 @@ export const createScheduleSuccessReply = (
   selReq: SelectionRequest
 ): string => {
   let engagement = `${selReq.engagement}${selReq.count > 1 ? "s" : ""}`;
-  engagement = selReq.engagement === EngagementType.Reply ? `repl${selReq.count > 1 ? "ies" : "y"}` : engagement
+  engagement =
+    selReq.engagement === EngagementType.Reply
+      ? `repl${selReq.count > 1 ? "ies" : "y"}`
+      : engagement;
 
   const selectionTime = new Date(selReq.selectionTime).toUTCString();
 

@@ -7,10 +7,14 @@ export async function handleTweetCreate(
   events: ITweet[],
   service: typeof handleTweetCreateService
 ): Promise<undefined> {
+  events = events.filter(service.isFromTweetAuthor);
+
   const realMentions = events.filter(service.isRealMention);
+
   if (!realMentions.length) {
     return;
   }
+
   const mentions = realMentions
     .map(service.setRealMention)
     .map(service.setCommandText);
