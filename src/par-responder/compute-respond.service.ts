@@ -58,9 +58,7 @@ export const pickAtRandom = (
 export const buildRetweetersResponse = (usernames: string[]): string => {
   return usernames.length === 1
     ? `the selected retweeter is ${usernames[0]}`
-    : `the selected retweeters are ${usernames
-        .map((u) => `@${u}`)
-        .join(", ")}`;
+    : `the selected retweeters are ${usernames.map((u) => `@${u}`).join(", ")}`;
 };
 
 export const handleRetweetRequest = async (req: SelectionRequest) => {
@@ -110,15 +108,12 @@ export const handleReplyRequests = async (req: SelectionRequest) => {
     const replies = await parTwitterClient.getTweetReplies(
       req.refTweetId as string
     );
-console.log(replies);
+    console.log(replies);
 
     const userIdsThatRepliedToTweet = replies
-      .filter(
-        (r) =>
-          ((r.author_id !== req.authorId))
-      )
+      .filter((r) => r.author_id !== req.authorId)
       .map((r) => r.author_id as string);
-console.log(userIdsThatRepliedToTweet);
+    console.log(userIdsThatRepliedToTweet);
 
     const users = await parTwitterClient.getUsersByIds(
       userIdsThatRepliedToTweet
