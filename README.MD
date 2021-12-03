@@ -20,11 +20,7 @@ All that the Twitter user that's running the giveaway needs to do is to to reply
 
 and @PickAtRandom will respond after 1 hour with the handles of 5 randomly picked tweeps that faved the tweet.
 
-## Inspiration
-
-Having noticed that selecting Twitter users that applied for a giveaway is arduous, [mykeels](https://github.com/mykeels) came up with an [idea for a Twitter bot](https://gist.github.com/mykeels/2c1a04301c7ef9cb54696529565c3b10) that does this task automatically.
-
-## How it does work?
+## How does it work?
 
 Requests made to @PickAtRandom are handled by a serverless function that listens for mentions to @PickAtRandom and parses and saves valid mentions as selection requests in a redis cache.
 
@@ -32,7 +28,9 @@ Another serverless function runs a cron that polls the redis cache every minute 
 
 ## Inspiration
 
-Work on this bot was made easier by the work already done on [@RemindMeOfThis](https://github.com/shalvah/RemindMeOfThisTweet)
+Having noticed that selecting Twitter users that applied for a giveaway is arduous, [mykeels](https://github.com/mykeels) came up with an [idea for a Twitter bot](https://gist.github.com/mykeels/2c1a04301c7ef9cb54696529565c3b10) that does this task automatically.
+
+Work on this bot was made easier by the awesome work already done in [@RemindMeOfThis](https://github.com/shalvah/RemindMeOfThisTweet)
 
 ## Screenshots
 
