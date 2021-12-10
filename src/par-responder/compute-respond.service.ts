@@ -36,20 +36,20 @@ export const pickAtRandom = (
   usernamePool: string[],
   total: number
 ): string[] => {
-  if (usernamePool.length <= total) {
-    return usernamePool;
+  const uniqueUsernames = [...new Set(usernamePool)]
+  if (uniqueUsernames.length <= total) {
+    return uniqueUsernames;
   }
 
   let counter = total;
   const selection: string[] = [];
 
   while (counter !== 0) {
-    // Fortunately, the API does not return duplicates
     // Unfortunately, it doesn't return > 99 results
-    const randomIndex = Math.floor(Math.random() * usernamePool.length);
-    const selected = usernamePool[randomIndex];
+    const randomIndex = Math.floor(Math.random() * uniqueUsernames.length);
+    const selected = uniqueUsernames[randomIndex];
     selection.push(selected);
-    usernamePool.splice(randomIndex, 1);
+    uniqueUsernames.splice(randomIndex, 1);
     counter--;
   }
   return selection;
