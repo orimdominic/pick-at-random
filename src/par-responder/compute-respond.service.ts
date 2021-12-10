@@ -37,8 +37,7 @@ export const pickAtRandom = (
   total: number
 ): string[] => {
 // pull bot username from env
-  usernamePool = usernamePool
-   .filter((username) => username.toLowerCase() !== "pickatrandom"))
+  usernamePool = usernamePool.filter((username) => {return username.toLowerCase() !== "pickatrandom"});
 
   const uniqueUsernames = [...new Set(usernamePool)]
   if (uniqueUsernames.length <= total) {
