@@ -60,7 +60,7 @@ export const pickAtRandom = (
 
 export const buildRetweetersResponse = (usernames: string[]): string => {
   return usernames.length === 1
-    ? `the selected retweeter is ${usernames[0]}`
+    ? `the selected retweeter is @${usernames[0]}`
     : `the selected retweeters are ${usernames
       .map((u) => `@${u}`)
       .join(", ")}`;
@@ -80,7 +80,7 @@ export const handleRetweetRequest = async (req: SelectionRequest) => {
 
 export const buildFavouritersResponse = (usernames: string[]): string => {
   return usernames.length === 1
-    ? `the selected favouriter is ${usernames[0]}`
+    ? `the selected favouriter is @${usernames[0]}`
     : `the selected favouriters are ${usernames
       .map((u) => `@${u}`)
       .join(", ")}`;
