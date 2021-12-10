@@ -59,8 +59,8 @@ export const buildRetweetersResponse = (usernames: string[]): string => {
   return usernames.length === 1
     ? `the selected retweeter is ${usernames[0]}`
     : `the selected retweeters are ${usernames
-        .map((u) => `@${u}`)
-        .join(", ")}`;
+      .map((u) => `@${u}`)
+      .join(", ")}`;
 };
 
 export const handleRetweetRequest = async (req: SelectionRequest) => {
@@ -79,8 +79,8 @@ export const buildFavouritersResponse = (usernames: string[]): string => {
   return usernames.length === 1
     ? `the selected favouriter is ${usernames[0]}`
     : `the selected favouriters are ${usernames
-        .map((u) => `@${u}`)
-        .join(", ")}`;
+      .map((u) => `@${u}`)
+      .join(", ")}`;
 };
 
 export const handleFavouritedRequest = async (req: SelectionRequest) => {
@@ -101,7 +101,7 @@ export const handleFavouritedRequest = async (req: SelectionRequest) => {
 // closure to hold the different texts in them
 export const buildRepliersResponse = (usernames: string[]): string => {
   return usernames.length === 1
-    ? `the selected replier is ${usernames[0]}`
+    ? `the selected replier is @${usernames[0]}`
     : `the selected repliers are ${usernames.map((u) => `@${u}`).join(", ")}`;
 };
 
@@ -110,7 +110,6 @@ export const handleReplyRequests = async (req: SelectionRequest) => {
     const replies = await parTwitterClient.getTweetReplies(
       req.refTweetId as string
     );
-console.log(replies);
 
     const userIdsThatRepliedToTweet = replies
       .filter(
@@ -118,7 +117,6 @@ console.log(replies);
           ((r.author_id !== req.authorId))
       )
       .map((r) => r.author_id as string);
-console.log(userIdsThatRepliedToTweet);
 
     const users = await parTwitterClient.getUsersByIds(
       userIdsThatRepliedToTweet
@@ -126,7 +124,6 @@ console.log(userIdsThatRepliedToTweet);
     const usernames: string[] = users.map((u) => `${u.username}`);
     const selectedRepliers: string[] = pickAtRandom(usernames, req.count);
     const message = buildRepliersResponse(selectedRepliers);
-    console.log(message);
 
     await parTwitterClient.respondWithSelectionList(req, message);
   } catch (error) {

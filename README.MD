@@ -22,9 +22,9 @@ and @PickAtRandom will respond after 1 hour with the handles of 5 randomly picke
 
 ## How does it work?
 
-Requests made to @PickAtRandom are handled by a serverless function that listens for mentions to @PickAtRandom and parses and saves valid mentions as selection requests in a redis cache.
+Requests made to @PickAtRandom are handled by a serverless function (`api/twitter-webhook-listener/handle-par-activity`) that listens for mentions to @PickAtRandom and parses and saves valid mentions as selection requests in a redis cache.
 
-Another serverless function runs a cron that polls the redis cache every minute for selection requests. If selection requests are found for that specific time, the function fetches tweeps who have engaged with the tweet for the engagement type stated in the request, selects tweeps at random and responds to the caller.
+Another serverless function (`par-responder/handler/computeAndRespond`) runs a cron that polls the redis cache every minute for selection requests. If selection requests are found for that specific time, the function fetches tweeps who have engaged with the tweet for the engagement type stated in the request, selects tweeps at random and responds to the caller.
 
 ## Inspiration
 
