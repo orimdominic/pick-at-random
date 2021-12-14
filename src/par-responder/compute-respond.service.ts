@@ -36,10 +36,12 @@ export const pickAtRandom = (
   usernamePool: string[],
   total: number
 ): string[] => {
-// pull bot username from env
-  usernamePool = usernamePool.filter((username) => {return username.toLowerCase() !== "pickatrandom"});
+  // pull bot username from env
+  usernamePool = usernamePool.filter((username) => {
+    return username.toLowerCase() !== "pickatrandom";
+  });
 
-  const uniqueUsernames = [...new Set(usernamePool)]
+  const uniqueUsernames = [...new Set(usernamePool)];
   if (uniqueUsernames.length <= total) {
     return uniqueUsernames;
   }
@@ -60,10 +62,8 @@ export const pickAtRandom = (
 
 export const buildRetweetersResponse = (usernames: string[]): string => {
   return usernames.length === 1
-    ? `the selected retweeter is @${usernames[0]}`
-    : `the selected retweeters are ${usernames
-      .map((u) => `@${u}`)
-      .join(", ")}`;
+    ? "the selected retweeter is @" + usernames[0]
+    : `the selected retweeters are ${usernames.map((u) => `@${u}`).join(", ")}`;
 };
 
 export const handleRetweetRequest = async (req: SelectionRequest) => {
@@ -80,10 +80,10 @@ export const handleRetweetRequest = async (req: SelectionRequest) => {
 
 export const buildFavouritersResponse = (usernames: string[]): string => {
   return usernames.length === 1
-    ? `the selected favouriter is @${usernames[0]}`
+    ? "the selected favouriter is @" + usernames[0]
     : `the selected favouriters are ${usernames
-      .map((u) => `@${u}`)
-      .join(", ")}`;
+        .map((u) => `@${u}`)
+        .join(", ")}`;
 };
 
 export const handleFavouritedRequest = async (req: SelectionRequest) => {
@@ -104,7 +104,7 @@ export const handleFavouritedRequest = async (req: SelectionRequest) => {
 // closure to hold the different texts in them
 export const buildRepliersResponse = (usernames: string[]): string => {
   return usernames.length === 1
-    ? `the selected replier is @${usernames[0]}`
+    ? "the selected replier is @" + usernames[0]
     : `the selected repliers are ${usernames.map((u) => `@${u}`).join(", ")}`;
 };
 
@@ -115,10 +115,7 @@ export const handleReplyRequests = async (req: SelectionRequest) => {
     );
 
     const userIdsThatRepliedToTweet = replies
-      .filter(
-        (r) =>
-          ((r.author_id !== req.authorId))
-      )
+      .filter((r) => r.author_id !== req.authorId)
       .map((r) => r.author_id as string);
 
     const users = await parTwitterClient.getUsersByIds(
