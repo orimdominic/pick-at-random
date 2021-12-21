@@ -50,7 +50,6 @@ export const pickAtRandom = (
   const selection: string[] = [];
 
   while (counter !== 0) {
-    // Unfortunately, it doesn't return > 99 results
     const randomIndex = Math.floor(Math.random() * uniqueUsernames.length);
     const selected = uniqueUsernames[randomIndex];
     selection.push(selected);
