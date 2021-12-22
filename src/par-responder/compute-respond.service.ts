@@ -59,10 +59,10 @@ export const pickAtRandom = (
   return selection;
 };
 
-export const buildRetweetersResponse = (usernames: string[]): string => {
+export const buildTweetResponse = (usernames: string[], single: string, multiple: string): string => {
   return usernames.length === 1
-    ? "the selected retweeter is @" + usernames[0]
-    : `the selected retweeters are ${usernames.map((u) => `@${u}`).join(", ")}`;
+    ? "the selected " + single + " is @" + usernames[0]
+    : `the selected ${multiple} are ${usernames.map((u) => `@${u}`).join(", ")}`;
 };
 
 export const handleRetweetRequest = async (req: SelectionRequest) => {
@@ -72,17 +72,9 @@ export const handleRetweetRequest = async (req: SelectionRequest) => {
     .map((u) => `${u.username}`);
 
   const selectedRetweeters: string[] = pickAtRandom(usernames, req.count);
-  const message = buildRetweetersResponse(selectedRetweeters);
+  const message = buildTweetResponse(selectedRetweeters, "retweeter", "retweeters");
 
   await parTwitterClient.respondWithSelectionList(req, message);
-};
-
-export const buildFavouritersResponse = (usernames: string[]): string => {
-  return usernames.length === 1
-    ? "the selected favouriter is @" + usernames[0]
-    : `the selected favouriters are ${usernames
-        .map((u) => `@${u}`)
-        .join(", ")}`;
 };
 
 export const handleFavouritedRequest = async (req: SelectionRequest) => {
@@ -94,17 +86,9 @@ export const handleFavouritedRequest = async (req: SelectionRequest) => {
     .map((u) => `${u.username}`);
 
   const selectedFavouriters: string[] = pickAtRandom(usernames, req.count);
-  const message = buildFavouritersResponse(selectedFavouriters);
+  const message = buildTweetResponse(selectedFavouriters, "favouriter", "favouriters");
 
   await parTwitterClient.respondWithSelectionList(req, message);
-};
-
-// TODO: These buildXXXResponse should be all made into one fn, or we use a
-// closure to hold the different texts in them
-export const buildRepliersResponse = (usernames: string[]): string => {
-  return usernames.length === 1
-    ? "the selected replier is @" + usernames[0]
-    : `the selected repliers are ${usernames.map((u) => `@${u}`).join(", ")}`;
 };
 
 export const handleReplyRequests = async (req: SelectionRequest) => {
@@ -122,7 +106,7 @@ export const handleReplyRequests = async (req: SelectionRequest) => {
     );
     const usernames: string[] = users.map((u) => `${u.username}`);
     const selectedRepliers: string[] = pickAtRandom(usernames, req.count);
-    const message = buildRepliersResponse(selectedRepliers);
+    const message = buildTweetResponse(selectedRepliers, "replier", "repliers");
 
     await parTwitterClient.respondWithSelectionList(req, message);
   } catch (error) {
