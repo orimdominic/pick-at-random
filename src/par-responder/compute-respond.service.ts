@@ -60,6 +60,10 @@ export const pickAtRandom = (
 };
 
 export const buildTweetResponse = (usernames: string[], single: string, multiple: string): string => {
+  if(!!usernames?.length){
+    return `Oops! There are no ${single} entries for your tweet at the moment.
+You can request at a later time.`
+  }
   return usernames.length === 1
     ? "the selected " + single + " is @" + usernames[0]
     : `the selected ${multiple} are ${usernames.map((u) => `@${u}`).join(", ")}`;
