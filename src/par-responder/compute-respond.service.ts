@@ -60,7 +60,7 @@ export const pickAtRandom = (
 };
 
 export const buildTweetResponse = (usernames: string[], single: string, multiple: string): string => {
-  if(!!usernames?.length){
+  if(!usernames?.length){
     return `Oops! There are no ${single} entries for your tweet at the moment.
 You can request at a later time.`
   }
